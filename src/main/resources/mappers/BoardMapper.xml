@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosmo.nexus.mapper.BoardMapper">
+    <resultMap id="BoardResultMap" type="Board">
+        <result property="boardId" column="board_id"/>
+        <result property="boardTitle" column="board_title"/>
+        <result property="boardContent" column="board_content"/>
+        <result property="boardViews" column="board_views"/>
+        <result property="boardCreateDate" column="board_create_date"/>
+        <result property="boardCategory" column="board_category"/>
+        <result property="disclosureStatus" column="disclosure_status"/>
+        <result property="answerStatus" column="answer_status"/>
+        <result property="memberId" column="member_id"/>
+        <result property="isNotice" column="is_notice"/> <!-- 공지 여부 매핑 -->
+    </resultMap>
+
+
+    <select id="selectNotificationList" resultMap="BoardResultMap">
+        SELECT *
+        FROM c_board
+        ORDER BY is_notice DESC, board_id DESC
+    </select>
+
+    <!-- 공지사항 상세보기 -->
+    <select id="selectNotificationById" resultMap="BoardResultMap">
+        SELECT * FROM c_board WHERE board_id = #{num}
+    </select>
+
+    <insert id="insertNotification" parameterType="com.kosmo.nexus.dto.NoticeDTO">
+        INSERT INTO c_board (board_title, board_content, board_views, board_create_date, board_category, member_id, is_notice)
+        VALUES (#{boardTitle}, #{boardContent}, #{boardViews}, NOW(), '공지사항', #{memberId}, #{isNotice})
+    </insert>
+
+    <delete id="deleteNotification">
+        DELETE FROM c_board WHERE board_id = #{num}
+    </delete>
+
+    <update id="updateNotification" parameterType="com.kosmo.nexus.dto.NoticeDTO">
+        UPDATE c_board
+        SET
+            board_title = #{boardTitle},
+            board_content = #{boardContent},
+            is_notice = #{isNotice} <!-- 공지 여부 업데이트 -->
+        WHERE board_id = #{boardId}
+    </update>
+
+    <update id="updateViewCount">
+        UPDATE c_board
+        SET board_views = board_views + 1
+        WHERE board_id = #{num}
+    </update>
+
+
+
+
+
+
+
+</mapper>

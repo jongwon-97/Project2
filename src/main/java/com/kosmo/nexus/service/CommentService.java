@@ -1,0 +1,23 @@
+package com.kosmo.nexus.service;
+
+import com.kosmo.nexus.dto.CommentDTO;
+
+import java.util.List;
+
+public interface CommentService {
+
+    List<CommentDTO> getAllComments();
+
+
+    void saveComment(CommentDTO comment);  // 댓글을 DB에 저장하는 메서드
+
+    // 특정 게시판의 댓글 및 대댓글 조회
+    List<CommentDTO> getCommentsByBoardId(Long boardId);
+
+    void deleteCommentAndReplies(Long commentId, String memberId) throws IllegalAccessException;
+
+//    // 댓글 수정
+    void updateComment(CommentDTO comment, String memberId) throws IllegalAccessException;
+
+
+}

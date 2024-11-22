@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper
+3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosmo.nexus.mapper.MemberMapper">
+    <resultMap id="MemberResultMap" type="Member">
+        <result property="memberId" column="member_id"/>
+        <result property="memberName" column="member_name"/>
+        <result property="memberRole" column="member_role"/>
+        <result property="memberImg" column="member_img"/>
+        <result property="memberSns" column="member_sns"/>
+        <result property="memberEmail" column="member_email"/>
+        <result property="memberPhone" column="member_phone"/>
+        <result property="memberGender" column="member_gender"/>
+        <result property="memberBirth" column="member_birth"/>
+        <result property="memberPostcode" column="member_postcode"/>
+        <result property="memberAddress" column="member_address"/>
+        <result property="memberDAddress" column="member_d_address"/>
+        <result property="memberNum" column="member_num"/>
+        <result property="memberRank" column="member_rank"/>
+        <result property="memberDepartment" column="member_department"/>
+        <result property="companyId" column="company_id"/>
+        <result property="memberStatus" column="member_status"/>
+        <result property="memberStartDate" column="member_start_date"/>
+        <result property="memberLastDate" column="member_last_date"/>
+    </resultMap>
+
+    <select id="findMember" resultMap="MemberResultMap" parameterType="String">
+        SELECT
+        member_id,            -- 아이디
+        member_name,          -- 이름
+        member_role,          -- 권한
+        member_img,           -- 이미지
+        member_sns,           -- sns 번호
+        member_email,         -- 이메일
+        member_phone,         -- 전화번호
+        member_gender,        -- 성별
+        member_birth,         -- 생년월일
+        member_postcode,      -- 우편번호
+        member_address,       -- 주소
+        member_d_address,     -- 상세 주소
+        member_num,                  -- 사번
+        member_rank,          -- 직급
+        member_department,    -- 부서
+        company_id,           -- 회사 ID
+        member_status,        -- 상태
+        member_start_date,    -- 회원 생성일
+        member_last_date      -- 마지막 접속일
+        FROM c_member
+        WHERE member_id = #{id}
+    </select>
+
+    <select id="findMemberList" resultMap="MemberResultMap" parameterType="_int">
+        SELECT
+        member_id,            -- 아이디
+        member_name,          -- 이름
+        member_role,          -- 권한
+        member_img,           -- 이미지
+        member_sns,           -- sns 번호
+        member_email,         -- 이메일
+        member_phone,         -- 전화번호
+        member_gender,        -- 성별
+        member_birth,         -- 생년월일
+        member_postcode,      -- 우편번호
+        member_address,       -- 주소
+        member_d_address,     -- 상세 주소
+        member_num,                  -- 사번
+        member_rank,          -- 직급
+        member_department,    -- 부서
+        company_id,           -- 회사 ID
+        member_status,        -- 상태
+        member_start_date,    -- 회원 생성일
+        member_last_date      -- 마지막 접속일
+        FROM c_member
+        WHERE company_id = #{companyId}
+    </select>
+
+    <update id="updateMember" parameterType="Member">
+        UPDATE c_member set
+        member_img = #{memberImg},           -- 이미지
+        member_email = #{memberEmail},         -- 이메일
+        member_phone = #{memberPhone},         -- 전화번호
+        member_gender = #{memberGender},        -- 성별
+        member_birth= #{memberBirth},          -- 생년월일
+        member_postcode = #{memberPostcode},      -- 우편번호
+        member_address = #{memberAddress},       -- 주소
+        member_d_address = #{memberDAddress}     -- 상세 주소
+        WHERE member_id = #{memberId}
+    </update>
+
+    <delete id="deleteMemberList">
+        DELETE FROM c_member
+        WHERE member_id IN
+        <foreach collection="membersDel" item="member" open="(" close=")" separator=",">
+            #{member}
+        </foreach>
+    </delete>
+</mapper>

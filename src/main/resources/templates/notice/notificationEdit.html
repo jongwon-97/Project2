@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항 수정</title>
+</head>
+<body>
+<h1>공지사항 수정</h1>
+<form th:action="@{/board/editNotification}" th:method="post">
+    <!-- 게시글 ID -->
+    <input type="hidden" name="boardId" th:value="${notification.boardId}">
+
+    <!-- 제목 -->
+    <div>
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="boardTitle" th:value="${notification.boardTitle}" required>
+    </div>
+
+    <!-- 공지 여부 체크박스 -->
+    <div>
+        <input type="checkbox" id="isNotice" name="isNotice" value="true"
+               th:checked="${notification.isNotice}">
+        <label for="isNotice">공지</label>
+    </div>
+
+    <!-- 내용 -->
+    <div>
+        <label for="content">내용:</label>
+        <textarea id="content" name="boardContent" required th:text="${notification.boardContent}"></textarea>
+    </div>
+
+    <!-- 버튼 -->
+    <div>
+        <button type="submit">수정하기</button>
+        <a th:href="@{/board/notificationList}">취소</a>
+    </div>
+</form>
+</body>
+</html>

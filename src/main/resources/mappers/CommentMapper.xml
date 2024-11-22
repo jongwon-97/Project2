@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper
+3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- BoardMapper의 경로를 정확히 넣어줘야 함-->
+<mapper namespace="com.kosmo.nexus.mapper.CommentMapper">
+
+    <!-- 댓글을 DB에 저장하는 SQL -->
+    <insert id="insertComment" parameterType="Comment">
+        INSERT INTO c_comment (board_id, member_id, comment_content, parent_id)
+        VALUES (#{boardId}, #{memberId}, #{commentContent},
+        <choose>
+            <when test="parentId != null">#{parentId}</when>  <!-- 대댓글일 경우, 부모 댓글 ID -->
+            <otherwise>NULL</otherwise>  <!-- 댓글 작성 시, 부모 댓글이 없으므로 parent_id는 NULL -->
+        </choose>);
+    </insert>
+
+    <!-- 댓글 목록을 가져오는 SQL(parent_id가 NULL인 댓글만 가져오기) -->
+    <select id="findCommentsByBoardId" resultType="Comment">
+        SELECT comment_id AS commentId, board_id AS boardId, member_id AS memberId,
+        comment_content AS commentContent, comment_time AS commentTime,
+        parent_id AS parentId
+        FROM c_comment
+        WHERE board_id = #{boardId} AND parent_id IS NULL
+        ORDER BY comment_time ASC;
+    </select>
+    <!-- 대댓글을 가져오는 SQL(parent_id가 부모 댓글의 commentId인 대댓글 가져오기) -->
+    <select id="findRepliesByParentId" resultType="Comment">
+        SELECT comment_id AS commentId, board_id AS boardId, member_id AS memberId,
+        comment_content AS commentContent, comment_time AS commentTime,
+        parent_id AS parentId
+        FROM c_comment
+        WHERE parent_id = #{parentId}
+        ORDER BY comment_time ASC;
+    </select>
+
+    <!-- 댓글 작성자 확인(삭제를 위함) ///////////////////////////////////////- -->
+    <select id="findCommentOwnerById" resultType="String">
+        SELECT member_id
+        FROM c_comment
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <!-- 대댓글 삭제 -->
+    <delete id="deleteReplies">
+        DELETE FROM c_comment
+        WHERE parent_id = #{commentId}
+    </delete>
+
+    <!-- 댓글 삭제 -->
+    <delete id="deleteComment">
+        DELETE FROM c_comment
+        WHERE comment_id = #{commentId}
+    </delete>
+
+    <update id="updateComment" parameterType="Comment">
+        UPDATE c_comment
+        SET comment_content = #{commentContent}
+        WHERE comment_id = #{commentId}
+    </update>
+
+</mapper>

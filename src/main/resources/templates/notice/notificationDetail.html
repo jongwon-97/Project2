@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항 상세보기</title>
+    <script>
+        function deleteNotification(notificationId) {
+            if (confirm("게시물을 삭제할까요?")) {
+                fetch(`/board/deleteNotification?num=${notificationId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("게시물이 삭제되었습니다.");
+                            window.location.href = "/board/notificationList";
+                        } else {
+                            alert("게시물 삭제에 실패했습니다.");
+                        }
+                    })
+                    .catch(error => {
+                        alert("오류가 발생했습니다: " + error.message);
+                    });
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>공지사항 상세보기</h1>
+<div>
+    <p><strong>제목:</strong> <span th:text="${notification.boardTitle}"></span></p>
+    <p><strong>작성자:</strong> <span th:text="${notification.memberId}"></span></p>
+    <p><strong>등록일:</strong> <span th:text="${notification.boardCreateDate}"></span></p>
+    <p><strong>조회수:</strong> <span th:text="${notification.boardViews}"></span></p>
+    <p><strong>내용:</strong></p>
+    <p th:text="${notification.boardContent}"></p>
+</div>
+<div>
+    <a th:href="@{/board/notificationList}">목록으로</a>
+    <button type="button" th:onclick="|deleteNotification(${notification.boardId})|">삭제</button>
+    <a th:href="@{/board/editNotification(num=${notification.boardId})}">
+        <button type="button">수정</button>
+    </a>
+</div>
+</body>
+</html>

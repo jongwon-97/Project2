@@ -10,7 +10,7 @@ public class SignupController {
 
     @GetMapping("/bSignup")
     public String bSignupForm(){
-
+        log.info("btest");
         return "member/bSignup";
     }
 

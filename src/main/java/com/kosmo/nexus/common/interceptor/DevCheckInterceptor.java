@@ -19,7 +19,7 @@ public class DevCheckInterceptor implements HandlerInterceptor {
             throws ServletException, IOException {
         HttpSession ses = req.getSession();
         LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");
-        if(!loginUser.getMemberRole().equals("Dev")){
+        if(loginUser==null || !loginUser.getMemberRole().equals("Dev")){
             res.setContentType("text/html; charset=UTF-8");  // 응답의 콘텐츠 타입 설정
             res.getWriter().write("<script type=\"text/javascript\">"
                     + "alert('개발자만 이용 가능합니다.');"

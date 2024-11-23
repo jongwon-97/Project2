@@ -30,6 +30,35 @@ public class UserController {
 //            log.info("세션 속성: {} = {}",attributeName, session.getAttribute(attributeName));
 //        }
 
+        // 세션에서 memberId를 가져오는 클래스
+        String memberId =  getLoginUserId(ses);
+
+        // DB에서 memberId로 MeberDTO 가져오기
+        MemberDTO member = userService.findMember(memberId);
+
+        // model을 통해 html에 전달
+        model.addAttribute("member", member);
+        // log.info("MemberDTO====={}", member);
+        return "/user/myPage";
+    }
+
+    @PostMapping("/myPage")
+    public String updateMyPage(HttpSession ses, MemberDTO member, Model model){
+        String sesId = getLoginUserId(ses);
+        if(!member.getMemberId().equals(sesId)){
+            // memberDTO의 memberId와 Session의 memberId가 다른 경우(비정상적 접근)
+            model.addAttribute("msg", "로그아웃되었습니다.");
+            model.addAttribute("loc", "/logout");
+            return "message";
+        }
+
+//        log.info("member==={}",member);
+        int result = userService.updateMember(member);
+//        log.info("수정된 데이터의 개수======{}", result);
+        return "redirect:/user/myPage";
+    }
+
+    public String getLoginUserId(HttpSession ses){
         // 세션에서 loginUser 객체 가져오기
         LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");
         if (loginUser == null) {
@@ -37,24 +66,12 @@ public class UserController {
             return "redirect:/";  // 로그인 페이지로 리다이렉트
         }
         String memberId = loginUser.getMemberId();
-        log.info("id ==============={}", memberId);
         if (memberId == null) {     // memberId가 없는 경우
             // 로그아웃 코드 추가해야 할지 이야기(종원)
             return "redirect:/";    // 로그인 페이지로 리다이렉트
         }
 
-        MemberDTO member = userService.findMember(memberId);
-        model.addAttribute("member", member);
-        log.info("MemberDTO====={}", member);
-        return "/user/myPage";
-    }
-
-    @PostMapping("/myPage")
-    public String updateMyPage(MemberDTO member){
-        log.info("member==={}",member);
-        int result = userService.updateMember(member);
-        String url = "redirect:/user/myPage?id="+member.getMemberId();
-        return url;
+        return memberId;
     }
 
 }

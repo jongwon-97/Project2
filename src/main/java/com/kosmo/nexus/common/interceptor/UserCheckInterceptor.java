@@ -21,7 +21,7 @@ public class UserCheckInterceptor implements HandlerInterceptor {
             throws ServletException, IOException {
         HttpSession ses = req.getSession();
         LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");
-        if(!loginUser.getMemberRole().equals("User")){
+        if(loginUser==null || !loginUser.getMemberRole().equals("User")){
             res.setContentType("text/html; charset=UTF-8");  // 응답의 콘텐츠 타입 설정
             res.getWriter().write("<script type=\"text/javascript\">"
                     + "alert('유저만 이용 가능합니다.');"

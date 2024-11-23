@@ -7,8 +7,10 @@ import java.util.List;
 
 @Mapper
 public interface MemberMapper {
-    MemberDTO findMember(String id);
-    List<MemberDTO> findMemberList (int companyId);
+    MemberDTO findMember(String memberId);
+    MemberDTO findMemberWithCompanyId(String memberId, Long companyId);
+    List<MemberDTO> findMemberList (Long companyId);
     int updateMember(MemberDTO member);
     int deleteMemberList(List<String> membersDel);
+    Long findCompanyIdByMemberId(String memberId);
 }

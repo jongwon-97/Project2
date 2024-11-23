@@ -1,7 +1,7 @@
 package com.kosmo.nexus.controller;
 
 import com.kosmo.nexus.dto.LoginDTO;
-import com.kosmo.nexus.common.exception.NoMemberException;
+import com.kosmo.nexus.exception.NoMemberException;
 import com.kosmo.nexus.service.LoginService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

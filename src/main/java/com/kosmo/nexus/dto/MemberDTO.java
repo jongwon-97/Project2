@@ -26,10 +26,10 @@ public class MemberDTO {
     private String memberAddress;      //주소
     private String memberDAddress;    //상세 주소
 
-    private int memberNum;             //사번
+    private String memberNum;             //사번
     private String memberRank;         //직급
     private String memberDepartment;   //부서
-    private int companyId;             //회사 ID
+    private Long companyId;             //회사 ID
 
     private String memberStatus;       //상태
     private String memberStartDate;   //회원생성일

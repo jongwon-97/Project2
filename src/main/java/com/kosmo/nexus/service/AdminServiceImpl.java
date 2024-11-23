@@ -14,14 +14,23 @@ public class AdminServiceImpl implements AdminService{
         this.memberMapper = memberMapper;
     }
 
+    @Override
+    public Long findCompanyIdByMemberId(String memberId){
+        return memberMapper.findCompanyIdByMemberId(memberId);
+    }
 
     @Override
-    public List<MemberDTO> findMemberList(int companyId) {
+    public List<MemberDTO> findMemberList(Long companyId) {
         return memberMapper.findMemberList(companyId);
     }
 
     @Override
     public int deleteMemberList(List<String> membersDel) {
         return memberMapper.deleteMemberList(membersDel);
+    }
+
+    @Override
+    public MemberDTO findMemberWithCompanyId(String memberId, Long companyId){
+        return memberMapper.findMemberWithCompanyId(memberId, companyId);
     }
 }

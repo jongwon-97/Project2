@@ -1,7 +1,7 @@
 package com.kosmo.nexus.service;
 
 import com.kosmo.nexus.dto.LoginDTO;
-import com.kosmo.nexus.exception.NoMemberException;
+import com.kosmo.nexus.common.exception.NoMemberException;
 import com.kosmo.nexus.mapper.LoginMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

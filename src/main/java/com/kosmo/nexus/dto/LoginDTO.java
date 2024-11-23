@@ -15,8 +15,8 @@ public class LoginDTO {
     private String memberRole;         //권한
     private String memberStatus;       //상태
 
-    private Integer companyId;             //회사 ID
-    private int memberNum;             //사번
+    private Long companyId;             //회사 ID
+    private String memberNum;             //사번
 
     private String memberName;         //이름
     private String memberPhone;        //전화번호

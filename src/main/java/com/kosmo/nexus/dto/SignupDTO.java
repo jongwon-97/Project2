@@ -5,13 +5,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@NoArgsConstructor  //기본 생성자
-//@AllArgsConstructor //인자 생성자 (거의 안씀)
-@Setter //setxxx()
-@Getter //getxxx()
-@ToString //toString() 오버라이드
-public class MemberDTO {
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+public class SignupDTO {
     private String memberId;           //아이디
+    private String memberPw;           //비밀번호
     private String memberName;         //이름
     private String memberRole;         //권한
     private String memberImg;          //이미지
@@ -34,4 +34,15 @@ public class MemberDTO {
     private String memberStatus;       //상태
     private String memberStartDate;   //회원생성일
     private String memberLastDate;    //마지막 접속일
+
+    private String companyNum;        //사업자 등록번호
+
+    private String companyName;       //회사 명
+    private String companyEmail;      //회사 이메일
+    private String companyPhone;      //회사 전화번호
+
+    private String companyPostcode;   //우편번호
+    private String companyAddress;    //대표주소
+    private String companyLogo;       //대표로고
+
 }

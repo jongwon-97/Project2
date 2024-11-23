@@ -1,12 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>기업회원 회원가입</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기업 회원가입</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
+        .signup-container {
+            background-color: white;
+            width: 500px;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-container h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            resize: none;
+        }
+
+        .form-group .btn-search {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 10px 15px;
+            font-size: 12px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .form-group .btn-search:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        .btn-container button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-container button:hover {
+            background-color: #218838;
+        }
+
+        .notice {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .notice a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .notice a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>기업 회원가입 페이지 입니다.</h1>
-</body>
+<div class="signup-container">
+    <h1>기업 회원가입</h1>
+    <form action="/pSignup" method="post" enctype="multipart/form-data">
+        <!-- Business Registration Number -->
+        <div class="form-group">
+            <label for="businessNumber">사업자 등록번호</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="businessNumber" name="companyNum" placeholder="사업자 등록번호를 입력하세요" readonly required>
+                <button type="button" class="btn-search" onclick="searchBusiness()">검색</button>
+            </div>
+        </div>
+        <!-- Company Name -->
+        <div class="form-group">
+            <label for="companyName">회사명</label>
+            <input type="text" id="companyName" name="companyName" placeholder="회사명을 입력하세요" required>
+        </div>
+        <!-- Company Email -->
+        <div class="form-group">
+            <label for="companyEmail">대표 이메일</label>
+            <input type="email" id="companyEmail" name="companyEmail" placeholder="대표 이메일을 입력하세요" required>
+        </div>
+        <!-- Company Phone -->
+        <div class="form-group">
+            <label for="companyPhone">대표 전화번호</label>
+            <input type="tel" id="companyPhone" name="companyPhone" placeholder="대표 전화번호를 입력하세요 (예: 02-1234-5678)" required>
+        </div>
+        <!-- Postal Code -->
+        <div class="form-group">
+            <label for="companyPostcode">우편번호</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="companyPostcode" name="companyPostcode" placeholder="우편번호를 검색하세요" readonly required>
+                <button type="button" class="btn-search" onclick="searchPostcode()">검색</button>
+            </div>
+        </div>
+        <!-- Address -->
+        <div class="form-group">
+            <label for="companyAddress">대표 주소</label>
+            <textarea id="companyAddress" name="companyAddress" placeholder="대표 주소를 입력하세요" rows="3" required></textarea>
+        </div>
+        <!-- Company Logo -->
+        <div class="form-group">
+            <label for="companyLogo">회사 로고</label>
+            <input type="file" id="companyLogo" name="companyLogo" accept="image/*">
+        </div>
+        <!-- Submit Button -->
+        <div class="btn-container">
+            <button type="submit">가입하기</button>
+        </div>
+        <!-- Notice -->
+        <div class="notice">
+            가입 시 <a href="/terms">이용 약관</a> 및 <a href="/privacy">개인정보 처리방침</a>에 동의하는 것으로 간주됩니다.
+        </div>
+    </form>
+</div>
 
+<script>
+    function searchBusiness() {
+        alert("사업자 등록번호 API 호출 예정입니다.");
+        // 여기에 사업자 등록번호 검색 API 호출 로직 작성
+    }
+
+    function searchPostcode() {
+        alert("우편번호 검색 API 호출 예정입니다.");
+        // 여기에 우편번호 검색 API 호출 로직 작성
+    }
+</script>
+</body>
 </html>

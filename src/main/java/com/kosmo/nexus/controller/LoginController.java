@@ -211,8 +211,8 @@ public class LoginController {
 
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
-        session.invalidate(); // 세션 무효화
-        return ResponseEntity.ok("로그아웃 성공");
+    public String logout(HttpSession ses) {
+        ses.invalidate(); // 세션 무효화
+        return "redirect:/";
     }
 }

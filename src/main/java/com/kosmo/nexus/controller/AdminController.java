@@ -3,7 +3,6 @@ package com.kosmo.nexus.controller;
 import com.kosmo.nexus.dto.LoginDTO;
 import com.kosmo.nexus.dto.MemberDTO;
 import com.kosmo.nexus.service.AdminService;
-import com.kosmo.nexus.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,6 @@ import java.util.List;
 @Controller
 @Slf4j
 public class AdminController {
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private AdminService adminService;
@@ -87,5 +83,7 @@ public class AdminController {
         model.addAttribute("loc", loc);
         return "message";
     }
+
+
 
 }

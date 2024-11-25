@@ -1,16 +1,248 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>개인회원 회원가입</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인 회원가입</title>
     <style>
-        input {
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .signup-container {
+            background-color: white;
+            width: 450px;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-container h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="file"] {
+            padding: 5px;
+        }
+
+        .form-group .gender-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .form-group .gender-container input {
+            width: auto;
+        }
+
+        .form-group .gender-container label {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .file-upload-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .image-preview {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .address-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .address-container input:first-child {
+            flex: 1;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        .btn-container button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
             border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .notice {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .notice a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .notice a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h1>개인회원 회원가입 페이지입니다.</h1>
-</body>
+<div class="signup-container">
+    <h1>개인회원 가입</h1>
+    <form action="/pSignup" method="post" enctype="multipart/form-data">
+        <div class="header-link">
+            <p>개인 회원가입 페이지입니다. <a href="/bSignup" class="business-link">기업회원가입으로 가기</a></p>
+        </div>
+        <!-- ID -->
+        <div class="form-group">
+            <label for="memberId">아이디</label>
+            <input type="text" id="memberId" name="memberId" placeholder="아이디를 입력하세요" required>
+        </div>
+        <!-- Password -->
+        <div class="form-group">
+            <label for="memberPw">비밀번호</label>
+            <input type="password" id="memberPw" name="memberPw" placeholder="비밀번호를 입력하세요" required>
+        </div>
+        <!-- Email -->
+        <div class="form-group">
+            <label for="memberEmail">이메일</label>
+            <input type="email" id="memberEmail" name="memberEmail" placeholder="이메일을 입력하세요" required>
+        </div>
 
+        <!-- Name -->
+        <div class="form-group">
+            <label for="memberName">이름</label>
+            <input type="text" id="memberName" name="memberName" placeholder="이름을 입력하세요" required>
+        </div>
+        <!-- Birthdate -->
+        <div class="form-group">
+            <label for="memberBirth">생년월일</label>
+            <input type="date" id="memberBirth" name="memberBirth" required>
+        </div>
+        <!-- Phone -->
+        <div class="form-group">
+            <label for="memberPhone">전화번호</label>
+            <input type="tel" id="memberPhone" name="memberPhone" placeholder="전화번호를 입력하세요 (예: 010-1234-5678)" required>
+        </div>
+        <!-- Gender -->
+        <div class="form-group">
+            <label>성별</label>
+            <div class="gender-container">
+                <input type="radio" id="male" name="memberGender" value="male" required>
+                <label for="male">남성</label>
+                <input type="radio" id="female" name="memberGender" value="female" required>
+                <label for="female">여성</label>
+            </div>
+        </div>
+
+
+        <!-- Address -->
+        <div class="form-group">
+            <label for="memberPostcode">우편번호 및 주소</label>
+            <div class="address-container">
+                <input type="text" id="memberPostcode" name="memberPostcode" placeholder="우편번호" readonly required>
+                <button type="button" class="btn-search" onclick="searchPostcode()">검색</button>
+            </div>
+            <input type="text" id="memberAddress" name="memberAddress" placeholder="주소" readonly required style="margin-top: 10px;">
+            <input type="text" id="memberDAddress" name="memberDAddress" placeholder="상세 주소" style="margin-top: 10px;">
+        </div>
+        <!-- Profile Image -->
+        <div class="form-group">
+            <label for="memberImg">프로필 이미지</label>
+            <div class="file-upload-container">
+                <div class="image-preview" id="imagePreview">
+                    <img src="images/noimage.png" alt="기본 이미지" id="previewImg">
+                </div>
+                <input type="file" id="memberImg" name="memberImg" accept="image/*" onchange="previewImage(event)">
+            </div>
+        </div>
+        <!-- Submit Button -->
+        <div class="btn-container">
+            <button type="submit">가입하기</button>
+        </div>
+        <!-- Notice -->
+        <div class="notice">
+            가입 시 <a href="/terms">이용 약관</a> 및 <a href="/privacy">개인정보 처리방침</a>에 동의하는 것으로 간주됩니다.
+        </div>
+    </form>
+</div>
+<script>
+    // 이미지 미리보기 기능
+    function previewImage(event) {
+        const input = event.target;
+        const previewImg = document.getElementById('previewImg');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                previewImg.src = reader.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            previewImg.src = "images/noimage.png"; // 기본 이미지 복원
+        }
+    }
+
+    // 우편번호 검색 API 호출 (예: 카카오 API)
+    function searchPostcode() {
+        alert("우편번호 검색 API 호출 예정입니다.");
+        // API 연동 코드 작성
+    }
+</script>
+</body>
 </html>

@@ -14,15 +14,17 @@
     <form id="actionForm" method="POST" >
     <div class="search-container">
         <div>
-            <label for="simple-search">간단검색</label>
-            <input type="text" id="simple-search" placeholder="검색어를 입력하세요">
-            <select>
-                <option>부서별</option>
-                <option>ID</option>
-                <option>사번</option>
-                <option>이름</option>
-                <option>직급</option>
+            <label for="simpleSearch">간단검색</label>
+            <input type="text" id="simpleSearch" name ="simpleSearch" placeholder="검색어를 입력하세요">
+            <select id="searchOption" name="searchOption">
+                <option value="memberDepartment">부서별</option>
+                <option value="memberId">ID</option>
+                <option value="memberNum">사번</option>
+                <option value="memberName">이름</option>
+                <option value="memberRank">직급</option>
             </select>
+            <button type="button" onclick="submitAction('search')">검색</button>
+            <button type="button" onclick="window.location.href='/admin/memberList'"> 전체보기</button>
         </div>
         <!-- 상세 검색 -->
     </div>
@@ -91,7 +93,7 @@
             <button type="button" onclick="submitAction('delete')" >삭제</button>
             <button type="button" >부서이동</button>
             <button type="button" >상태변경</button>
-            <button type="button" >추가하기</button>
+            <button type="button" onclick="location.href='/admin/addMember'" >추가하기</button>
         </div>
     </div>
     </form>
@@ -135,26 +137,35 @@
     }
 
     function submitAction(actionType) {
-        // 선택된 체크박스의 memberId 값을 폼에 추가합니다.
         const form = document.forms['actionForm']; // Form element
-        const selectedMembers = document.querySelectorAll('input[name="selectedMembers"]:checked');
-
-        // 폼에서 기존에 존재하는 hidden input들을 모두 제거
-        const hiddenInputs = form.querySelectorAll('input[type="hidden"]');
-        hiddenInputs.forEach(input => input.remove());
-
-        // 선택된 항목을 form에 hidden input으로 추가
-        selectedMembers.forEach(checkbox => {
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'membersDel';  // 서버에서 받을 이름
-            hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
-            form.appendChild(hiddenInput);
-        });
-
         switch (actionType) {
             case 'delete':
+                // 선택된 체크박스의 memberId 값을 폼에 추가합니다.
+                const selectedMembers = document.querySelectorAll('input[name="selectedMembers"]:checked');
+
+                // 폼에서 기존에 존재하는 hidden input들을 모두 제거
+                const hiddenInputs = form.querySelectorAll('input[type="hidden"]');
+                hiddenInputs.forEach(input => input.remove());
+
+                // 선택된 항목을 form에 hidden input으로 추가
+                selectedMembers.forEach(checkbox => {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'membersDel';  // 서버에서 받을 이름
+                    hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
+                    form.appendChild(hiddenInput);
+                });
                 form.action = '/admin/memberDel'; // Delete action
+                break;
+
+            case 'search':
+                const searchValue = document.getElementById('simpleSearch').value.trim();
+                const searchOption = document.getElementById('searchOption').value;
+                if (searchValue == "") {
+                    alert("검색어를 입력해주세요.");
+                    return;
+                }
+                form.action = '/admin/search';       // search action
                 break;
         }
         form.submit(); // Submit the form

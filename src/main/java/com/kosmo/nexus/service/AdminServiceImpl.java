@@ -25,6 +25,15 @@ public class AdminServiceImpl implements AdminService{
     }
 
     @Override
+    public List<MemberDTO> searchMemberList(String search, String option, Long companyId) {
+        return memberMapper.searchMemberList(search, option, companyId);
+    }
+
+    @Override
+    public int updateMemberByAdmin(MemberDTO member, Long companyId) {
+        return memberMapper.updateMemberByAdmin(member, companyId);
+    }
+    @Override
     public int deleteMemberList(List<String> membersDel) {
         return memberMapper.deleteMemberList(membersDel);
     }
@@ -33,4 +42,6 @@ public class AdminServiceImpl implements AdminService{
     public MemberDTO findMemberWithCompanyId(String memberId, Long companyId){
         return memberMapper.findMemberWithCompanyId(memberId, companyId);
     }
+
+
 }

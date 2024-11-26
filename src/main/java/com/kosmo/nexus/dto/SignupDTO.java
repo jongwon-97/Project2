@@ -39,4 +39,5 @@ public class SignupDTO {
 
     private Date memberStartDate;           //회원생성일
     private Date memberLastDate;            //마지막 접속일
+
 }

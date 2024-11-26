@@ -1,6 +1,7 @@
 package com.kosmo.nexus.service;
 
 import com.kosmo.nexus.dto.MemberDTO;
+import com.kosmo.nexus.dto.SignupDTO;
 
 import java.util.List;
 
@@ -9,7 +10,9 @@ public interface AdminService {
 
     List<MemberDTO> findMemberList(Long companyId);
     List<MemberDTO> searchMemberList(String search, String option, Long companyId);
-    int deleteMemberList(List<String> membersDel);
+    int deleteMemberList(List<String> memberIds, Long companyId);
     MemberDTO findMemberWithCompanyId(String memberId, Long companyId);
     int updateMemberByAdmin(MemberDTO member, Long companyId);
+    int insertMemberList(List<SignupDTO> members);
+    List<String> findImgNamebyIdList(List<String> memberIds, Long companyId);
 }

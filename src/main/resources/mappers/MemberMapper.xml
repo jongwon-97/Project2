@@ -8,7 +8,7 @@
         <result property="memberId" column="member_id"/>
         <result property="memberName" column="member_name"/>
         <result property="memberRole" column="member_role"/>
-        <result property="memberImg" column="member_img"/>
+        <result property="memberImgName" column="member_img"/>
         <result property="memberSns" column="member_sns"/>
         <result property="memberEmail" column="member_email"/>
         <result property="memberPhone" column="member_phone"/>
@@ -149,7 +149,7 @@
 
     <update id="updateMember" parameterType="Member">
         UPDATE c_member set
-        member_img = #{memberImg},           -- 이미지
+        member_img = #{memberImgName},           -- 이미지
         member_email = #{memberEmail},         -- 이메일
         member_phone = #{memberPhone},         -- 전화번호
         member_gender = #{memberGender},        -- 성별
@@ -167,7 +167,6 @@
         member_name = #{member.memberName},        -- 이름
         member_department = #{member.memberDepartment},    -- 부서
         member_rank = #{member.memberRank},        -- 직급
-        member_img = #{member.memberImg},           -- 이미지
         member_email = #{member.memberEmail},         -- 이메일
         member_phone = #{member.memberPhone},         -- 전화번호
         member_gender = #{member.memberGender},        -- 성별
@@ -180,14 +179,69 @@
 
     <delete id="deleteMemberList">
         DELETE FROM c_member
-        WHERE member_id IN
-        <foreach collection="membersDel" item="member" open="(" close=")" separator=",">
+        WHERE company_id =#{companyId} and member_id IN
+        <foreach collection="memberIds" item="member" open="(" close=")" separator=",">
             #{member}
         </foreach>
     </delete>
+
+    <select id ="findImgNamebyIdList" resultType="String">
+        SELECT member_img FROM c_member
+        WHERE company_id =#{companyId} and member_id IN
+        <foreach collection="memberIds" item="member" open="(" close=")" separator=",">
+            #{member}
+        </foreach>
+    </select>
 
     <select id="findCompanyIdByMemberId" resultType="Long">
         SELECT company_id FROM c_member
         WHERE member_id = #{memberId}
     </select>
+
+    <insert id="insertMemberList">
+        INSERT INTO c_member (
+            member_id,
+            member_pw,
+            member_rank,
+            member_num,
+            member_name,
+            member_department,
+            member_phone,
+            member_birth,
+            member_gender,
+            member_email,
+            member_address,
+            member_start_date,
+            member_img,
+            member_role,
+            member_status,
+            member_last_date,
+            company_id,
+            member_sns,
+            member_postcode,
+            member_d_address)
+        VALUES
+        <foreach collection="members" item="member" separator=",">
+            (#{member.memberId},
+            #{member.memberPw},
+            #{member.memberRank},
+            #{member.memberNum},
+            #{member.memberName},
+            #{member.memberDepartment},
+            #{member.memberPhone},
+            #{member.memberBirth},
+            #{member.memberGender},
+            #{member.memberEmail},
+            #{member.memberAddress},
+            #{member.memberStartDate},  -- member_start_date는 입사일
+            #{member.memberImgName},    -- memberImgName은 DB의 이미지 파일명
+            #{member.memberRole},
+            #{member.memberStatus},
+            NOW(),                      -- member_last_date는 현재 날짜로
+            #{member.companyId},
+            #{member.memberSns},
+            #{member.memberPostcode},
+            #{member.memberDAddress})
+        </foreach>
+    </insert>
 </mapper>

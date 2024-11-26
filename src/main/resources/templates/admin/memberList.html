@@ -13,20 +13,32 @@
 <div class="main">
     <form id="actionForm" method="POST" >
     <div class="search-container">
-        <div>
-            <label for="simpleSearch">간단검색</label>
-            <input type="text" id="simpleSearch" name ="simpleSearch" placeholder="검색어를 입력하세요">
-            <select id="searchOption" name="searchOption">
-                <option value="memberDepartment">부서별</option>
-                <option value="memberId">ID</option>
-                <option value="memberNum">사번</option>
-                <option value="memberName">이름</option>
-                <option value="memberRank">직급</option>
-            </select>
-            <button type="button" onclick="submitAction('search')">검색</button>
-            <button type="button" onclick="window.location.href='/admin/memberList'"> 전체보기</button>
-        </div>
-        <!-- 상세 검색 -->
+        <button type="button" onclick="window.location.href='/admin/memberList'"> 전체보기</button>
+        <!-- 간단 검색 -->
+        <fieldset>
+            <legend> 간단 검색 </legend>
+            <div>
+                <label for="simpleSearch">간단검색</label>
+                <input type="text" id="simpleSearch" name ="simpleSearch" placeholder="검색어를 입력하세요">
+                <select id="searchOption" name="searchOption">
+                    <option value="memberDepartment">부서별</option>
+                    <option value="memberId">ID</option>
+                    <option value="memberNum">사번</option>
+                    <option value="memberName">이름</option>
+                    <option value="memberRank">직급</option>
+                </select>
+                <button type="button" onclick="submitAction('search')">검색</button>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend> 상세 검색 </legend>
+            <div>
+            <!-- 부서별 체크 박스 -->
+            <!-- 직급별 체크 박스 -->
+            <!-- 생년월일 -->
+            <!-- 입사일 -->
+            </div>
+        </fieldset>
     </div>
 
     <div class="table-container">
@@ -39,6 +51,8 @@
                 <th>이름</th>
                 <th>부서</th>
                 <th>직급</th>
+                <th>생년월일</th>
+                <th>입사일</th>
                 <th>휴대폰 번호</th>
                 <th>이메일</th>
                 <th>상세보기</th>
@@ -54,7 +68,7 @@
 
                     <!-- 증명사진 -->
                     <td>
-                        <img id="memberImg" th:src="${member.memberImg}" alt="증명사진" style="width: 60px; height: 60px;">
+                        <img id="memberImgName" th:src="${member.memberImgName}" alt="증명사진" style="width: 60px; height: 60px;">
                     </td>
 
                     <!-- 이름 -->
@@ -70,6 +84,16 @@
                     <!-- 직급 -->
                     <td>
                         <input id="memberRank" name="memberRank" th:value="${member.memberRank}" readonly>
+                    </td>
+
+                    <!-- 생년월일 -->
+                    <td>
+                        <input id="memberBirth" name="memberBirth" th:value="${member.memberBirth}" readonly>
+                    </td>
+
+                    <!-- 입사일 -->
+                    <td>
+                        <input id="memberStartDate" name="memberStartDate" th:value="${member.memberStartDate}" readonly>
                     </td>
 
                     <!-- 휴대폰 번호 -->

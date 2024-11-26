@@ -123,7 +123,6 @@ public class LoginController {
     //기업회원 로그인 페이지
     @GetMapping("/bLogin")
     public String businessLoginForm() {
-        log.info("test");
         return "member/business"; // static/member/business.html
     }
 

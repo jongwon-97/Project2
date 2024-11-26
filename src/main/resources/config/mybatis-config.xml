@@ -10,6 +10,7 @@
 		<typeAlias type="com.kosmo.nexus.dto.MemberDTO" alias="Member"/>
 		<typeAlias type="com.kosmo.nexus.dto.BoardDTO" alias="Board"/>
 		<typeAlias type="com.kosmo.nexus.dto.CommentDTO" alias="Comment"/>
+		<typeAlias type="com.kosmo.nexus.dto.SignupDTO" alias="Signup"/>
 	</typeAliases> 
 
 	

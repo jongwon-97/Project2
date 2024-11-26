@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kosmo.nexus.mapper.LoginMapper">
 
-    <resultMap id="LoginResultMap" type="com.kosmo.nexus.dto.LoginDTO">
+    <resultMap id="LoginResultMap" type="Login">
         <result property="memberId" column="member_id"/>
         <result property="memberPw" column="member_pw"/>
         <result property="memberName" column="member_name"/>

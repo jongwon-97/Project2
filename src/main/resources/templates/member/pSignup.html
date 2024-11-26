@@ -31,47 +31,6 @@
             color: #333;
             text-align: center;
         }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 5px;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        .form-group input[type="file"] {
-            padding: 5px;
-        }
-
-        .form-group .gender-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .form-group .gender-container input {
-            width: auto;
-        }
-
-        .form-group .gender-container label {
-            margin: 0;
-            font-size: 14px;
-        }
-
         .file-upload-container {
             display: flex;
             align-items: center;
@@ -139,88 +98,155 @@
         .notice a:hover {
             text-decoration: underline;
         }
+
+        .error-message { color: red; font-size: 12px; margin-top: 5px; }
     </style>
 </head>
 <body>
 <div class="signup-container">
     <h1>개인회원 가입</h1>
     <form action="/pSignup" method="post" enctype="multipart/form-data">
-        <div class="header-link">
-            <p>개인 회원가입 페이지입니다. <a href="/bSignup" class="business-link">기업회원가입으로 가기</a></p>
-        </div>
-        <!-- ID -->
-        <div class="form-group">
-            <label for="memberId">아이디</label>
-            <input type="text" id="memberId" name="memberId" placeholder="아이디를 입력하세요" required>
-        </div>
-        <!-- Password -->
-        <div class="form-group">
-            <label for="memberPw">비밀번호</label>
-            <input type="password" id="memberPw" name="memberPw" placeholder="비밀번호를 입력하세요" required>
-        </div>
-        <!-- Email -->
-        <div class="form-group">
-            <label for="memberEmail">이메일</label>
-            <input type="email" id="memberEmail" name="memberEmail" placeholder="이메일을 입력하세요" required>
-        </div>
+        <table class="signup-table" style="width: 100%; border-collapse: collapse;">
+            <!-- 안내 메시지 -->
+            <tr>
+                <td colspan="3" style="text-align: center;">
+                    <p>개인 회원가입 페이지입니다.
+                        <a href="/bSignup" class="business-link">기업회원가입으로 가기</a>
+                    </p>
+                </td>
+            </tr>
+            <!-- 아이디 -->
+            <tr>
+                <td><label for="memberId">아이디</label></td>
+                <td>
+                    <input type="text" id="memberId" name="memberId" placeholder="아이디를 입력하세요" readonly required>
+                </td>
+                <td>
+                    <button type="button" class="id-check-button" onclick="openIdCheckPopup()">중복 확인</button>
+                </td>
+            </tr>
 
-        <!-- Name -->
-        <div class="form-group">
-            <label for="memberName">이름</label>
-            <input type="text" id="memberName" name="memberName" placeholder="이름을 입력하세요" required>
-        </div>
-        <!-- Birthdate -->
-        <div class="form-group">
-            <label for="memberBirth">생년월일</label>
-            <input type="date" id="memberBirth" name="memberBirth" required>
-        </div>
-        <!-- Phone -->
-        <div class="form-group">
-            <label for="memberPhone">전화번호</label>
-            <input type="tel" id="memberPhone" name="memberPhone" placeholder="전화번호를 입력하세요 (예: 010-1234-5678)" required>
-        </div>
-        <!-- Gender -->
-        <div class="form-group">
-            <label>성별</label>
-            <div class="gender-container">
-                <input type="radio" id="male" name="memberGender" value="male" required>
-                <label for="male">남성</label>
-                <input type="radio" id="female" name="memberGender" value="female" required>
-                <label for="female">여성</label>
-            </div>
-        </div>
+            <!-- 비밀번호 -->
+            <tr>
+                <td><label for="memberPw">비밀번호</label></td>
+                <td colspan="2">
+                    <input type="password" id="memberPw" name="memberPw" placeholder="비밀번호를 입력하세요"
+                           onblur="validatePassword()" oninput="validatePassword()" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><span class="error-message" id="passwordError"></span></td>
+            </tr>
 
+            <!-- 비밀번호 확인 -->
+            <tr>
+                <td><label for="confirmPw">비밀번호 확인</label></td>
+                <td colspan="2">
+                    <input type="password" id="confirmPw" name="confirmPw" placeholder="비밀번호를 다시 입력하세요"
+                           onblur="validateConfirmPassword()" oninput="validateConfirmPassword()" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><span class="error-message" id="confirmPasswordError"></span></td>
+            </tr>
+            <!-- 이메일 -->
+            <tr>
+                <td><label for="memberEmail">이메일</label></td>
+                <td colspan="2">
+                    <input type="email" id="memberEmail" name="memberEmail" placeholder="이메일을 입력하세요"
+                           onblur="validateEmail()" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><span class="error-message" id="emailError"></span></td>
+            </tr>
 
-        <!-- Address -->
-        <div class="form-group">
-            <label for="memberPostcode">우편번호 및 주소</label>
-            <div class="address-container">
-                <input type="text" id="memberPostcode" name="memberPostcode" placeholder="우편번호" readonly required>
-                <button type="button" class="btn-search" onclick="searchPostcode()">검색</button>
-            </div>
-            <input type="text" id="memberAddress" name="memberAddress" placeholder="주소" readonly required style="margin-top: 10px;">
-            <input type="text" id="memberDAddress" name="memberDAddress" placeholder="상세 주소" style="margin-top: 10px;">
-        </div>
-        <!-- Profile Image -->
-        <div class="form-group">
-            <label for="memberImg">프로필 이미지</label>
-            <div class="file-upload-container">
-                <div class="image-preview" id="imagePreview">
-                    <img src="images/noimage.png" alt="기본 이미지" id="previewImg">
-                </div>
-                <input type="file" id="memberImg" name="memberImg" accept="image/*" onchange="previewImage(event)">
-            </div>
-        </div>
-        <!-- Submit Button -->
-        <div class="btn-container">
-            <button type="submit">가입하기</button>
-        </div>
-        <!-- Notice -->
-        <div class="notice">
-            가입 시 <a href="/terms">이용 약관</a> 및 <a href="/privacy">개인정보 처리방침</a>에 동의하는 것으로 간주됩니다.
-        </div>
+            <!-- 이름 -->
+            <tr>
+                <td><label for="memberName">이름</label></td>
+                <td colspan="2">
+                    <input type="text" id="memberName" name="memberName" placeholder="이름을 입력하세요" required>
+                </td>
+            </tr>
+            <!-- 생년월일 -->
+            <tr>
+                <td><label for="memberBirth">생년월일</label></td>
+                <td colspan="2">
+                    <input type="date" id="memberBirth" name="memberBirth" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><span class="error-message" id="birthError"></span></td>
+            </tr>
+            <!-- 전화번호 -->
+            <tr>
+                <td><label for="memberPhone">전화번호</label></td>
+                <td colspan="2">
+                    <input type="tel" id="memberPhone" name="memberPhone" placeholder="010-1234-5678" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><span class="error-message" id="phoneError"></span></td>
+            </tr>
+
+            <!-- 성별 -->
+            <tr>
+                <td>성별</td>
+                <td colspan="2">
+                    <input type="radio" id="M" name="memberGender" value="M" required>
+                    <label for="M">남성</label>
+                    <input type="radio" id="F" name="memberGender" value="F" required>
+                    <label for="F">여성</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><span class="error-message" id="genderError"></span></td>
+            </tr>
+            <!-- 주소 -->
+            <tr>
+                <td><label for="memberPostcode"><button type="button" onclick="searchAddress()">우편번호 찾기</button></label></td>
+                <td colspan="3">
+                    <input type="text" id="memberPostcode" name="memberPostcode" placeholder="우편번호" readonly>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <input type="text" id="memberAddress" name="memberAddress" placeholder="주소" readonly style="width: 400px; margin-top: 10px;">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <input type="text" id="memberDAddress" name="memberDAddress" placeholder="상세 주소" style="width: 400px; margin-top: 10px; margin-bottom: 10px;">
+                </td>
+            </tr>
+            <!-- 프로필 이미지 -->
+            <tr>
+                <td><label for="memberImg"></label></td>
+                <td colspan="2">
+                    <div class="file-upload-container">
+                        <div class="image-preview" id="imagePreview" style="margin-bottom: 10px;">
+                            <img src="images/noimage.png" alt="기본 이미지" id="previewImg" style="width: 100px; height: 100px;">
+                        </div>
+                        <input type="file" id="memberImg" name="memberImg" accept="image/*" onchange="previewImage(event)">
+                    </div>
+                </td>
+            </tr>
+            <!-- 가입 버튼 -->
+            <tr>
+                <td colspan="3" style="text-align: center;">
+                    <button type="submit" style="padding: 10px 20px;">가입하기</button>
+                </td>
+            </tr>
+            <!-- 이용 약관 -->
+            <tr>
+                <td colspan="3" style="text-align: center; font-size: 12px; color: gray;">
+                    가입 시 <a href="/terms">이용 약관</a> 및 <a href="/privacy">개인정보 처리방침</a>에 동의하는 것으로 간주됩니다.
+                </td>
+            </tr>
+        </table>
     </form>
 </div>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     // 이미지 미리보기 기능
     function previewImage(event) {
@@ -239,9 +265,142 @@
     }
 
     // 우편번호 검색 API 호출 (예: 카카오 API)
-    function searchPostcode() {
-        alert("우편번호 검색 API 호출 예정입니다.");
-        // API 연동 코드 작성
+    function searchAddress() {
+    new daum.Postcode({
+        oncomplete: function (data) {
+            // 주소 변수
+            let addr = ''; // 도로명/지번 주소
+            let extraAddr = ''; // 참고항목
+
+            // 사용자가 선택한 주소 타입에 따라 주소 값 결정
+            if (data.userSelectedType === 'R') { // 도로명 주소 선택
+                addr = data.roadAddress;
+            } else { // 지번 주소 선택
+                addr = data.jibunAddress;
+            }
+
+            // 참고항목 설정 (도로명 주소일 경우)
+            if (data.userSelectedType === 'R') {
+                if (data.bname && /[동|로|가]$/g.test(data.bname)) {
+                    extraAddr += data.bname; // 법정동 추가
+                }
+                if (data.buildingName && data.apartment === 'Y') {
+                    extraAddr += (extraAddr ? ', ' + data.buildingName : data.buildingName); // 건물명 추가
+                }
+            }
+
+            // 우편번호와 주소 필드 채우기
+            document.getElementById('memberPostcode').value = data.zonecode; // 우편번호
+            document.getElementById('memberAddress').value = addr; // 도로명 또는 지번 주소
+            // 상세주소 입력란에 포커스
+            document.getElementById('memberDAddress').focus();
+        }
+    }).open();
+}
+
+    function openIdCheckPopup() {
+        window.open("/idCheck", "idCheck", "width=400,height=300,left=100,top=100");
+    }
+
+    function setIdCheckResult(memberId) {
+        const idInput = document.getElementById("memberId");
+        idInput.value = memberId;
+        idInput.readOnly = true; // 수정 불가능하게 설정
+    }
+
+    // 정규식 패턴
+    const passwordPattern = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/; // 비밀번호: 소문자+숫자+특수문자
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 기본 형식
+    const phonePattern = /^01[0|1|6|7|8|9]-\d{3,4}-\d{4}$/; // 전화번호 형식: 010-1234-5678
+
+    // 비밀번호 검증
+    function validatePassword() {
+        const password = document.getElementById("memberPw").value;
+        const error = document.getElementById("passwordError");
+        if (!passwordPattern.test(password)) {
+            error.textContent = "비밀번호는 8자 이상이며, 소문자+숫자+특수문자를 포함해야 합니다.";
+            return false;
+        }
+        error.textContent = "";
+        return true;
+    }
+
+    // 비밀번호 확인 검증
+    function validateConfirmPassword() {
+        const password = document.getElementById("memberPw").value;
+        const confirmPassword = document.getElementById("confirmPw").value;
+        const error = document.getElementById("confirmPasswordError");
+        if (password !== confirmPassword) {
+            error.textContent = "비밀번호가 일치하지 않습니다.";
+            return false;
+        }
+        error.textContent = "";
+        return true;
+    }
+
+    // 이메일 검증
+    function validateEmail() {
+        const email = document.getElementById("memberEmail").value;
+        const error = document.getElementById("emailError");
+        if (!emailPattern.test(email)) {
+            error.textContent = "유효한 이메일 주소를 입력하세요.";
+            return false;
+        }
+        error.textContent = "";
+        return true;
+    }
+
+    // 전화번호 검증
+    function validatePhone() {
+        const phone = document.getElementById("memberPhone").value;
+        const error = document.getElementById("phoneError");
+        if (!phonePattern.test(phone)) {
+            error.textContent = "전화번호 형식이 올바르지 않습니다. 예: 010-1234-5678";
+            return false;
+        }
+        error.textContent = "";
+        return true;
+    }
+
+    // 생년월일 검증
+    function validateBirthDate() {
+        const birthDate = document.getElementById("memberBirth").value;
+        const error = document.getElementById("birthError");
+        if (!birthDate) {
+            error.textContent = "생년월일을 입력하세요.";
+            return false;
+        }
+        error.textContent = "";
+        return true;
+    }
+
+    // 성별 검증
+    function validateGender() {
+        const genderMale = document.getElementById("M").checked;
+        const genderFemale = document.getElementById("F").checked;
+        const error = document.getElementById("genderError");
+        if (!genderMale && !genderFemale) {
+            error.textContent = "성별을 선택하세요.";
+            return false;
+        }
+        error.textContent = "";
+        return true;
+    }
+
+    // 전체 폼 검증
+    function validateForm() {
+        const isPasswordValid = validatePassword();
+        const isConfirmPasswordValid = validateConfirmPassword();
+        const isEmailValid = validateEmail();
+        const isPhoneValid = validatePhone();
+        const isBirthDateValid = validateBirthDate();
+        const isGenderValid = validateGender();
+
+        if (!isPasswordValid || !isConfirmPasswordValid || !isEmailValid || !isPhoneValid || !isBirthDateValid || !isGenderValid) {
+            alert("입력 정보를 다시 확인하세요.");
+            return false;
+        }
+        return true;
     }
 </script>
 </body>

@@ -3,6 +3,7 @@
 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kosmo.nexus.mapper.MemberMapper">
+
     <resultMap id="MemberResultMap" type="Member">
         <result property="memberId" column="member_id"/>
         <result property="memberName" column="member_name"/>

@@ -63,7 +63,7 @@ public class AdminRestController {
                 // 이미지 파일이 존재하면 저장하고 경로를 설정
                 if (imageFile != null && !imageFile.isEmpty()) {
                     String imagePath = saveImage(imageFile);
-                    member.setMemberImg(imagePath);  // 이미지 경로를 member 객체에 설정
+                    member.setMemberImgName(imagePath);  // 이미지 경로를 member 객체에 설정
                 }
             }
             log.info("List<SignupDTO>======{}",membersData);

@@ -40,15 +40,4 @@ public class SignupDTO {
     private Date memberStartDate;   //회원생성일
     private Date memberLastDate;    //마지막 접속일
 
-    private String companyNum;        //사업자 등록번호
-
-    private String companyName;       //회사 명
-    private String companyEmail;      //회사 이메일
-    private String companyPhone;      //회사 전화번호
-
-    private String companyPostcode;   //우편번호
-    private String companyAddress;    //대표주소
-    private MultipartFile companyLogo;       // 회사 로고 이미지 파일
-    private String companyLogoName;      // 파일 이름을 저장할 String 필드 추가
-
 }

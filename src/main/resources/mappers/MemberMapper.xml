@@ -8,7 +8,7 @@
         <result property="memberId" column="member_id"/>
         <result property="memberName" column="member_name"/>
         <result property="memberRole" column="member_role"/>
-        <result property="memberImg" column="member_img"/>
+        <result property="memberImgName" column="member_img"/>
         <result property="memberSns" column="member_sns"/>
         <result property="memberEmail" column="member_email"/>
         <result property="memberPhone" column="member_phone"/>

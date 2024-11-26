@@ -16,7 +16,7 @@ public class MemberDTO {
     private String memberId;           //아이디
     private String memberName;         //이름
     private String memberRole;         //권한
-    private String memberImg;          //이미지
+    private String memberImgName;          //이미지
     private int memberSns;             //sns 번호 (api 연동용 아닐때 0 구글 1 네이버 2 카카오 3)
 
     private String memberEmail;        //이메일

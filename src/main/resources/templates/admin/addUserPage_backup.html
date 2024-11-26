@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>사원 추가하기</title>
+</head>
+<body>
+<h1> 사원 등록하기 </h1>
+<h3> 관리자(admin)는 회원가입으로 등록하거나 개발자에게 연락해야 합니다 </h3>
+<form name="addMemberForm" id="addMemberForm">
+    <table id="memberTable">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+            <th>이미지</th>
+            <th>사번</th>
+            <th>회원 ID</th>
+            <th>이름</th>
+            <th>직급</th>
+            <th>부서</th>
+            <th>전화번호</th>
+            <th>생년월일</th>
+            <th>성별</th>
+            <th>이메일</th>
+            <th>우편번호</th>
+            <th>주소</th>
+            <th>상세주소</th>
+            <th>입사일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 기본 행 -->
+        <tr>
+            <td>1</td>
+            <td><input type="checkbox" name="checkRow"></td>
+            <td><input type="file" name="memberImg"></td>
+            <td><input type="text" name="memberNum" maxlength="15"></td>
+            <td><input type="text" name="memberId" maxlength="20"></td>
+            <td><input type="text" name="memberName" maxlength="10"></td>
+            <td><input type="text" name="memberRank" maxlength="10"></td>
+            <td><input type="text" name="memberDepartment" maxlength="250"></td>
+            <td><input type="text" name="memberPhone" maxlength="13"></td>
+            <td><input type="date" name="memberBirth"></td>
+            <!--  required -->
+            <td>
+                <select name="memberGender">
+                    <option value="M">남성</option>
+                    <option value="F">여성</option>
+                </select>
+            </td>
+            <td><input type="email" name="memberEmail" maxlength="250"></td>
+            <td><input type="number" name="memberPostcode"></td>
+            <td><input type="text" name="memberAddress" maxlength="250"></td>
+            <td><input type="text" name="memberDAddress" maxlength="250"></td>
+            <td><input type="date" name="memberStartDate" value="2024-01-01" readonly></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button type="button" onclick="addRow()">+ 추가</button>
+    <button type="button" onclick="deleteSelectedRows()">삭제</button>
+    <button type="button" onclick="addMember()"> 등록하기 </button>
+</form>
+
+</body>
+<script>
+    // 모든 체크박스 선택/해제
+    function toggleSelectAll() {
+        const isChecked = document.getElementById("selectAll").checked;
+        const checkboxes = document.querySelectorAll('input[name="checkRow"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+        checkAllSelected(); // 체크 상태 업데이트
+    }
+
+    // 체크박스 상태에 따라 selectAll 상태 업데이트
+    function checkAllSelected() {
+        const checkboxes = document.querySelectorAll('input[name="checkRow"]');
+        const selectAllCheckbox = document.getElementById("selectAll");
+        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+        // selectAll 체크박스의 상태를 업데이트
+        selectAllCheckbox.checked = allChecked;
+
+        // 하나라도 체크되지 않았다면 selectAll 체크박스 해제
+        if (!allChecked) {
+            selectAllCheckbox.indeterminate = Array.from(checkboxes).some(checkbox => checkbox.checked);
+        } else {
+            selectAllCheckbox.indeterminate = false;  // 모든 체크박스가 체크된 경우
+        }
+    }
+
+    // 선택된 체크박스에 따라 상태 업데이트
+    document.addEventListener('change', function(event) {
+        if (event.target && event.target.name === 'checkRow') {
+            checkAllSelected();
+        }
+    });
+
+    // 행 추가 함수
+    function addRow() {
+        var table = document.getElementById("memberTable");
+        var newRow = table.insertRow(table.rows.length); // 마지막 행 바로 뒤에 추가
+
+        var columns = [
+            "memberImg", "memberNum", "memberId", "memberName",
+            "memberRank", "memberDepartment", "memberPhone",
+            "memberBirth", "memberGender", "memberEmail",
+            "memberPostcode", "memberAddress", "memberDAddress",
+            "memberStartDate"
+        ];
+
+        // 번호 셀 추가
+        var cellIndex = newRow.insertCell(0);
+        cellIndex.innerHTML = table.rows.length - 1; // 0번째 행은 번호 표시
+
+        // 체크박스 셀 추가
+        var cellCheckbox = newRow.insertCell(1);
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "checkRow";
+        cellCheckbox.appendChild(checkbox);
+
+        columns.forEach(function(col, index) {
+            var cell = newRow.insertCell(index + 2); // 번호와 체크박스를 제외한 셀 위치
+            var inputElement;
+
+            // 각 항목에 맞는 input 필드 추가
+            if (col === "memberBirth" || col === "memberStartDate") {
+                inputElement = document.createElement("input");
+                inputElement.type = "date";
+                inputElement.name = col;
+            } else if (col === "memberGender") {
+                inputElement = document.createElement("select");
+                inputElement.name = col;
+                var optionMale = document.createElement("option");
+                optionMale.value = "M"; // 남성 value 변경
+                optionMale.text = "남성";
+                var optionFemale = document.createElement("option");
+                optionFemale.value = "F"; // 여성 value 변경
+                optionFemale.text = "여성";
+                inputElement.append(optionMale, optionFemale);
+            } else if (col === "memberImg") {
+                inputElement = document.createElement("input");
+                inputElement.type = "file";
+                inputElement.name = col;
+            } else {
+                inputElement = document.createElement("input");
+                inputElement.type = "text";
+                inputElement.name = col;
+            }
+
+            cell.appendChild(inputElement);
+            checkAllSelected()
+        });
+    }
+
+    // 선택된 행 삭제 함수
+    function deleteSelectedRows() {
+        var table = document.getElementById("memberTable");
+        var rows = table.getElementsByTagName("tr");
+        for (var i = rows.length - 1; i > 0; i--) { // 첫 번째 행은 헤더이므로 제외
+            var row = rows[i];
+            var checkbox = row.querySelector('input[type="checkbox"]');
+            if (checkbox && checkbox.checked) {
+                table.deleteRow(i); // 체크된 행 삭제
+            }
+        }
+        // 삭제 후, 번호 재조정
+        updateRowNumbers();
+    }
+
+    // 행 번호 업데이트 함수
+    function updateRowNumbers() {
+        var table = document.getElementById("memberTable");
+        var rows = table.getElementsByTagName("tr");
+        for (var i = 1; i < rows.length; i++) { // 첫 번째 행은 헤더이므로 제외
+            var row = rows[i];
+            row.cells[0].innerText = i; // 첫 번째 셀에 번호 재조정
+        }
+    }
+
+    const addMember = async () => {
+        let formData = new FormData();
+        const table = document.getElementById("memberTable");
+        const rows = table.getElementsByTagName("tr");
+
+        let membersData = []; // 데이터를 담을 배열
+
+        // 첫 번째 행은 헤더이므로 1부터 시작
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const checkBox = row.querySelector('input[type="checkbox"]');
+
+            // 체크된 행만 보내기
+            if (checkBox && checkBox.checked) {
+                let member = {};
+                const inputs = row.getElementsByTagName("input");
+
+                // 각 행의 셀에 있는 데이터 읽기
+                for (let j = 0; j < inputs.length; j++) {
+                    const input = inputs[j];
+                    const name = input.name;
+                    // 'checkRow'는 불필요하므로, 이 값을 제외하고 처리
+                    if (name !== 'checkRow') {  // 'checkRow' 제외
+                        const value = input.type === 'file' ? input.files[0] : input.value;
+                        member[name] = value;
+                    }
+                }
+
+                // 선택된 행의 데이터가 있으면 배열에 추가
+                membersData.push(member);
+            }
+        }
+
+        // 데이터가 비어있지 않으면 서버로 전송
+        if (membersData.length > 0) {
+            formData.append('membersData', JSON.stringify(membersData)); // 배열을 JSON 문자열로 추가
+            console.log(formData);
+            try {
+                const response = await fetch("/admin/addMember", {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (data.status == "success") {
+                        alert(data.message);
+                        deleteSelectedRows();
+                    } else {
+                        alert(data.message);
+                    }
+                } else {
+                    // 서버가 에러 상태 코드를 반환한 경우
+                    const errorText = await response.text();
+                    alert(`서버 오류: ${errorText}`);
+                }
+            } catch (error) {
+                alert("Error: " + error);
+            }
+        } else {
+            alert("선택된 행이 없습니다.");
+        }
+    }
+</script>
+</html>

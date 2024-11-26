@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -43,7 +44,8 @@ public class UserController {
     }
 
     @PostMapping("/myPage")
-    public String updateMyPage(HttpSession ses, MemberDTO member, Model model){
+    public String updateMyPage( @ModelAttribute MemberDTO member, HttpSession ses,Model model){
+        log.info("입력받은 내용===={}",member);
         String sesId = getLoginUserId(ses);
         if(!member.getMemberId().equals(sesId)){
             // memberDTO의 memberId와 Session의 memberId가 다른 경우(비정상적 접근)
@@ -52,9 +54,9 @@ public class UserController {
             return "message";
         }
 
-//        log.info("member==={}",member);
+        log.info("member==={}",member);
         int result = userService.updateMember(member);
-//        log.info("수정된 데이터의 개수======{}", result);
+        log.info("수정된 데이터의 개수======{}", result);
         return "redirect:/user/myPage";
     }
 

@@ -102,6 +102,51 @@
         ORDER BY member_num
     </select>
 
+    <select id="searchMemberList" resultMap="MemberResultMap">
+        SELECT
+        member_id,            -- 아이디
+        member_name,          -- 이름
+        member_role,          -- 권한
+        member_img,           -- 이미지
+        member_sns,           -- sns 번호
+        member_email,         -- 이메일
+        member_phone,         -- 전화번호
+        member_gender,        -- 성별
+        member_birth,         -- 생년월일
+        member_postcode,      -- 우편번호
+        member_address,       -- 주소
+        member_d_address,     -- 상세 주소
+        member_num,                  -- 사번
+        member_rank,          -- 직급
+        member_department,    -- 부서
+        company_id,           -- 회사 ID
+        member_status,        -- 상태
+        member_start_date,    -- 회원 생성일
+        member_last_date      -- 마지막 접속일
+        FROM c_member
+        WHERE company_id = #{companyId}
+        <if test="option != null and search != null">
+            AND
+            <choose>
+                <when test="option == 'memberDepartment'">
+                    LOWER(member_department) LIKE CONCAT('%', LOWER(#{search}), '%')
+                </when>
+                <when test="option == 'memberId'">member_id = #{search}</when>
+                <when test="option == 'memberNum'">
+                    LOWER(member_num) LIKE CONCAT('%', LOWER(#{search}), '%')
+                </when>
+                <when test="option == 'memberName'">
+                    LOWER(member_name) LIKE CONCAT('%', LOWER(#{search}), '%')
+                </when>
+                <when test="option == 'memberRank'">
+                    LOWER(member_rank) LIKE CONCAT('%', LOWER(#{search}), '%')
+                </when>
+                <otherwise>1 = 0</otherwise> <!-- 잘못된 option일 경우 예외 처리 -->
+            </choose>
+        </if>
+        ORDER BY member_num
+    </select>
+
     <update id="updateMember" parameterType="Member">
         UPDATE c_member set
         member_img = #{memberImg},           -- 이미지
@@ -113,6 +158,24 @@
         member_address = #{memberAddress},       -- 주소
         member_d_address = #{memberDAddress}     -- 상세 주소
         WHERE member_id = #{memberId}
+    </update>
+
+
+    <update id="updateMemberByAdmin">
+        UPDATE c_member set
+        member_num = #{member.memberNum},          -- 사번
+        member_name = #{member.memberName},        -- 이름
+        member_department = #{member.memberDepartment},    -- 부서
+        member_rank = #{member.memberRank},        -- 직급
+        member_img = #{member.memberImg},           -- 이미지
+        member_email = #{member.memberEmail},         -- 이메일
+        member_phone = #{member.memberPhone},         -- 전화번호
+        member_gender = #{member.memberGender},        -- 성별
+        member_birth= #{member.memberBirth},          -- 생년월일
+        member_postcode = #{member.memberPostcode},      -- 우편번호
+        member_address = #{member.memberAddress},       -- 주소
+        member_d_address = #{member.memberDAddress}     -- 상세 주소
+        WHERE member_id = #{member.memberId} and company_id =#{companyId}
     </update>
 
     <delete id="deleteMemberList">

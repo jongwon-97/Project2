@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -22,7 +24,7 @@ public class SignupDTO {
     private String memberEmail;        //이메일
     private String memberPhone;        //전화번호
     private String memberGender;       //성별
-    private String memberBirth;        //생년월일
+    private Date memberBirth;        //생년월일
 
     private Integer memberPostcode;        //우편번호  (api 연동용 우편번호 int)
     private String memberAddress;      //주소
@@ -34,8 +36,9 @@ public class SignupDTO {
     private Long companyId;             //회사 ID
 
     private String memberStatus;       //상태
-    private String memberStartDate;   //회원생성일
-    private String memberLastDate;    //마지막 접속일
+
+    private Date memberStartDate;   //회원생성일
+    private Date memberLastDate;    //마지막 접속일
 
     private String companyNum;        //사업자 등록번호
 

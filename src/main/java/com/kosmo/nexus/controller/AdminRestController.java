@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kosmo.nexus.dto.LoginDTO;
 import com.kosmo.nexus.dto.SignupDTO;
+import com.kosmo.nexus.service.AdminService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,10 @@ import java.util.UUID;
 @RestController
 @Slf4j
 public class AdminRestController {
+
+    @Autowired
+    private AdminService adminService;
+
     @Autowired
     private ServletContext servletContext;
 
@@ -35,6 +40,7 @@ public class AdminRestController {
                           HttpSession ses, Model model) throws JsonProcessingException {
 
         imageFiles.forEach((key, value) -> log.info("Key: {}, Value: {}", key, value));
+        String savedImagePath = null;  // 이미지 경로를 저장할 변수
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             List<SignupDTO> membersData = objectMapper.readValue(membersDataJson, new TypeReference<List<SignupDTO>>() {});
@@ -64,15 +70,17 @@ public class AdminRestController {
                 if (imageFile != null && !imageFile.isEmpty()) {
                     String imagePath = saveImage(imageFile);
                     member.setMemberImgName(imagePath);  // 이미지 경로를 member 객체에 설정
+                    log.info("이미지 경로===={}", member.getMemberImgName());
                 }
             }
             log.info("List<SignupDTO>======{}",membersData);
+
             // 정규성 확인식 필요
+            // 1. 데이터 내의 중복 확인(id, 사번)
+            // 2. null 확인
 
             // signupDTO를 가져와서 전송하기
-
-
-            // Service->mapper를 통한 DB 업데이트 필요
+            int result = adminService.insertMemberList(membersData);
 
 
 
@@ -81,6 +89,16 @@ public class AdminRestController {
 
         }catch (Exception e) {
             e.printStackTrace();
+
+            // DB 업데이트 오류 나면, 올라갔던 파일을 삭제하는 코드
+            if (savedImagePath != null) {
+                try {
+                    deleteImage(savedImagePath);  // 이미지 삭제
+                } catch (IOException ioException) {
+                    log.error("이미지 삭제 실패: {}", ioException.getMessage());
+                }
+            }
+
             return "Error: " + e.getMessage();
         }
     }
@@ -104,6 +122,19 @@ public class AdminRestController {
 
         // 저장된 파일의 경로를 반환 (이 경로는 DB에 저장할 경로)
         return foldPath+"/" + fileName;
+    }
+
+    public void deleteImage(String imagePath) throws IOException {
+        // imagePath가 상대 경로로 저장되었으므로, 절대 경로를 만들어야 할 수도 있습니다.
+        Path path = Paths.get(servletContext.getRealPath(imagePath));
+
+        // 파일이 존재하면 삭제
+        if (Files.exists(path)) {
+            Files.delete(path);
+            log.info("이미지 파일 삭제됨: {}", imagePath);
+        } else {
+            log.warn("이미지 파일을 찾을 수 없음: {}", imagePath);
+        }
     }
 
     public Long getLoginUserCompanyId(HttpSession ses, Model model){

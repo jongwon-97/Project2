@@ -1,6 +1,7 @@
 package com.kosmo.nexus.service;
 
 import com.kosmo.nexus.dto.MemberDTO;
+import com.kosmo.nexus.dto.SignupDTO;
 import com.kosmo.nexus.mapper.MemberMapper;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +34,20 @@ public class AdminServiceImpl implements AdminService{
     public int updateMemberByAdmin(MemberDTO member, Long companyId) {
         return memberMapper.updateMemberByAdmin(member, companyId);
     }
+
     @Override
-    public int deleteMemberList(List<String> membersDel) {
-        return memberMapper.deleteMemberList(membersDel);
+    public int insertMemberList(List<SignupDTO> members) {
+        return memberMapper.insertMemberList(members);
+    }
+
+    @Override
+    public List<String> findImgNamebyIdList(List<String> memberIds, Long companyId) {
+        return memberMapper.findImgNamebyIdList(memberIds, companyId);
+    }
+
+    @Override
+    public int deleteMemberList(List<String> memberIds, Long companyId) {
+        return memberMapper.deleteMemberList(memberIds, companyId);
     }
 
     @Override

@@ -21,9 +21,10 @@ public class DevCheckInterceptor implements HandlerInterceptor {
         LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");
         if(loginUser==null || !loginUser.getMemberRole().equals("Dev")){
             res.setContentType("text/html; charset=UTF-8");  // 응답의 콘텐츠 타입 설정
+            ses.invalidate();
             res.getWriter().write("<script type=\"text/javascript\">"
                     + "alert('개발자만 이용 가능합니다.');"
-                    + "history.back();"
+                    + "window.location.href = '/';"
                     + "</script>");
             return false;  // 인터셉터에서 false를 반환하여 컨트롤러로 넘어가지 않도록 함
         }// ------------------

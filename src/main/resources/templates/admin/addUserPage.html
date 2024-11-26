@@ -13,7 +13,8 @@
 <input type="file" id="csvFileInput" accept=".csv">
 <button type="button" onclick="loadCSV()">불러오기</button>
 
-<form name="addMemberForm" id="addMemberForm">
+<form name="addMemberForm" id="addMemberForm" method="POST" enctype="multipart/form-data">
+    <input type="file" id="imageFileInput" name="imageFile" accept="image/*" multiple>
     <table id="memberTable">
         <thead>
         <tr>
@@ -65,7 +66,7 @@
     <button type="button" onclick="deleteSelectedRows()">삭제</button>
     <button type="button" onclick="addMember()"> 등록하기 </button>
 </form>
-
+<button type="button" onclick="window.location.href='/admin/memberList'">목록으로</button>
 </body>
 
 <script>
@@ -92,7 +93,7 @@
             // PapaParse로 CSV 파싱
             Papa.parse(decodedText, {
                 complete: function(results) {
-                    console.log(results); // 파싱된 CSV 내용 로그로 확인
+                    // console.log(results); // 파싱된 CSV 내용 로그로 확인
                     const rows = results.data;
 
                     // 첫 번째 행은 열 이름이므로 두 번째 행부터 데이터 입력
@@ -321,7 +322,38 @@
         // 데이터가 비어있지 않으면 서버로 전송
         if (membersData.length > 0) {
             formData.append('membersData', JSON.stringify(membersData)); // 배열을 JSON 문자열로 추가
-            console.log("membersData", membersData);
+
+            // 이미지 파일을 formData에 추가
+            const imageInput = document.getElementById("imageFileInput");
+            const imageFiles = imageInput.files;
+
+            // 여러 이미지 파일을 처리
+            for (let i = 0; i < imageFiles.length; i++) {
+                const imageFile = imageFiles[i];
+
+                // 각 이미지 파일에 대해 memberId와 일치하는 데이터 찾기
+                let matchedMember = null;
+
+                for (let j = 0; j < membersData.length; j++) {
+                    const memberId = membersData[j].memberId;
+
+                    // memberId와 파일명이 일치하는 경우 찾기
+                    if (imageFile.name.startsWith(memberId)) {
+                        matchedMember = membersData[j];  // 일치하는 멤버 찾기
+                        break;  // 첫 번째 일치하는 멤버만 찾으면 됨
+                    }
+                }
+
+                // 일치하는 멤버가 있으면 파일을 formData에 추가
+                if (matchedMember) {
+                    console.log("Appending image file", matchedMember.memberId, imageFile); // 디버깅
+                    formData.append(`imageFiles[${matchedMember.memberId}]`, imageFile); // key를 'imageFiles[memberId]'로 설정
+                } else {
+                    console.log("Skipping image file due to no matching memberId", imageFile); // 디버깅
+                }
+            }
+
+            // 서버로 데이터 전송
             try {
                 const response = await fetch("/admin/addMember", {
                     method: 'POST',

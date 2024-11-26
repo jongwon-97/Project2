@@ -5,21 +5,36 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kosmo.nexus.dto.LoginDTO;
 import com.kosmo.nexus.dto.SignupDTO;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @Slf4j
 public class AdminRestController {
+    @Autowired
+    private ServletContext servletContext;
 
     @PostMapping("/admin/addMember")
-    public String addUser(@RequestParam("membersData") String membersDataJson, HttpSession ses, Model model) throws JsonProcessingException {
+    public String addUser(@RequestParam("membersData") String membersDataJson,
+                          @RequestParam Map<String, MultipartFile> imageFiles,
+                          HttpSession ses, Model model) throws JsonProcessingException {
+
+        imageFiles.forEach((key, value) -> log.info("Key: {}, Value: {}", key, value));
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             List<SignupDTO> membersData = objectMapper.readValue(membersDataJson, new TypeReference<List<SignupDTO>>() {});
@@ -41,12 +56,21 @@ public class AdminRestController {
                     // 전화번호가 유효하지 않은 경우 기본값 설정 (선택 사항)
                     member.setMemberPw("0000");  // 기본값 "0000"으로 설정
                 }
+                // imageFiles에서 멤버 ID에 해당하는 파일 찾기
+                String key = "imageFiles[" + member.getMemberId() + "]";  // 멤버 ID에 맞는 key 생성
+                MultipartFile imageFile = imageFiles != null ? imageFiles.get(key) : null;  // 해당 key로 이미지 찾기
+
+                // 이미지 파일이 존재하면 저장하고 경로를 설정
+                if (imageFile != null && !imageFile.isEmpty()) {
+                    String imagePath = saveImage(imageFile);
+                    member.setMemberImg(imagePath);  // 이미지 경로를 member 객체에 설정
+                }
             }
             log.info("List<SignupDTO>======{}",membersData);
             // 정규성 확인식 필요
 
-            // signupDTO를 가져와서
-            // memberDTO + CompanyDTO(Admin과 같은 companyId를 가진 company table 행을 가져올 것!)
+            // signupDTO를 가져와서 전송하기
+
 
             // Service->mapper를 통한 DB 업데이트 필요
 
@@ -59,6 +83,27 @@ public class AdminRestController {
             e.printStackTrace();
             return "Error: " + e.getMessage();
         }
+    }
+
+    public String saveImage(MultipartFile imageFile) throws IOException {
+        // 스프링의 Resource로 파일 경로 지정
+        String foldPath="/bSignup_upload";
+        Path path = Paths.get(servletContext.getRealPath(foldPath));
+        if (!Files.exists(path)) {
+            Files.createDirectories(path);  // 경로가 없으면 디렉토리 생성
+        }
+
+        // 파일 이름 생성 (UUID + 원본 파일명)
+        String originalFilename = imageFile.getOriginalFilename();
+        //String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString() + "_" + originalFilename;
+
+        // 파일 저장
+        Path destination = path.resolve(fileName);
+        Files.copy(imageFile.getInputStream(), destination);
+
+        // 저장된 파일의 경로를 반환 (이 경로는 DB에 저장할 경로)
+        return foldPath+"/" + fileName;
     }
 
     public Long getLoginUserCompanyId(HttpSession ses, Model model){

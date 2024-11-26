@@ -1,5 +1,6 @@
 package com.kosmo.nexus.controller;
 
+import com.kosmo.nexus.dto.CompanyDTO;
 import com.kosmo.nexus.dto.SignupDTO;
 import com.kosmo.nexus.service.SignupService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -106,7 +107,7 @@ public class SignupController {
         return "member/bSignup";
     }
     @PostMapping("/bSignup")
-    public String bSignupProcess(SignupDTO signup,
+    public String bSignupProcess(CompanyDTO signup,
                                  Model model,
                                  HttpServletRequest req,
                                  HttpSession ses) {
@@ -165,7 +166,7 @@ public class SignupController {
     }
     @GetMapping("/bSignup2")
     public String BsignupForm2(HttpSession ses, Model model){
-        SignupDTO companySignup = (SignupDTO) ses.getAttribute("companySignup");
+        CompanyDTO companySignup = (CompanyDTO) ses.getAttribute("companySignup");
 
 
         if (companySignup == null) {
@@ -174,7 +175,7 @@ public class SignupController {
             return "message"; // 에러 메시지 출력
         }
 
-        SignupDTO companyData = signupService.findCompanyByCompanyNum(companySignup.getCompanyNum());
+        CompanyDTO companyData = signupService.findCompanyByCompanyNum(companySignup.getCompanyNum());
         if (companyData == null) {
             model.addAttribute("msg", "해당 사업자등록번호에 해당하는 회사가 존재하지 않습니다. 다시 입력해주세요.");
             model.addAttribute("loc", "/bSignup");

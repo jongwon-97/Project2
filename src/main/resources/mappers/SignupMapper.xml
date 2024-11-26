@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kosmo.nexus.mapper.SignupMapper">
 
-    <resultMap id="CompanyResultMap" type="Signup">
+    <resultMap id="CompanyResultMap" type="Company">
         <result property="companyId" column="company_id"/>
         <result property="companyNum" column="company_num"/>
         <result property="companyName" column="company_name"/>
@@ -12,7 +12,9 @@
         <result property="companyPhone" column="company_phone"/>
         <result property="companyPostcode" column="company_postcode"/>
         <result property="companyAddress" column="company_address"/>
+        <result property="companyDAddress" column="company_d_address"/>
         <result property="companyLogoName" column="company_logo"/>
+        <result property="companyStartDate" column="company_start_date"/>
     </resultMap>
 
     <!-- 아이디 중복 확인 -->
@@ -45,18 +47,18 @@
         #{memberPostcode},  #{memberDAddress}
         )
     </insert>
-    <select id="gind"></select>
 
 
     <insert id="insertCompany" parameterType="Signup">
         INSERT INTO c_company (
         company_num, company_name, company_email, company_phone,
-        company_postcode, company_address, company_logo
+        company_postcode, company_address, company_d_address, company_logo , company_start_date
         ) VALUES (
         #{companyNum}, #{companyName}, #{companyEmail}, #{companyPhone},
-        #{companyPostcode}, #{companyAddress}, #{companyLogoName}
+        #{companyPostcode}, #{companyAddress}, #{companyDAddress}, #{companyLogoName},CURRENT_TIMESTAMP
         )
     </insert>
+
     <!-- 정보 찾기 -->
     <select id="findCompanyByCompanyNum" resultMap="CompanyResultMap" parameterType="string">
         SELECT company_id, company_num, company_name, company_email, company_phone,

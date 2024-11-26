@@ -1,5 +1,6 @@
 package com.kosmo.nexus.service;
 
+import com.kosmo.nexus.dto.CompanyDTO;
 import com.kosmo.nexus.dto.SignupDTO;
 import com.kosmo.nexus.mapper.SignupMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +69,7 @@ public class SignupServiceImpl implements SignupService{
     }
 
     @Override
-    public int insertCompany(SignupDTO signup) {
+    public int insertCompany(CompanyDTO signup) {
         return signupMapper.insertCompany(signup);
     }
 
@@ -78,7 +79,7 @@ public class SignupServiceImpl implements SignupService{
     }
 
     @Override
-    public SignupDTO findCompanyByCompanyNum(String companyNum) {
+    public CompanyDTO findCompanyByCompanyNum(String companyNum) {
         return signupMapper.findCompanyByCompanyNum(companyNum);
     }
 

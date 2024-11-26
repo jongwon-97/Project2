@@ -12,7 +12,8 @@ const init = () => {
         memberEmail: document.getElementById("memberEmail"),
         memberPhone: document.getElementById("memberPhone"),
         memberBirth: document.getElementById("memberBirth"),
-        memberGender: document.querySelectorAll('input[name="memberGender"]')
+        memberGender: document.querySelectorAll('input[name="memberGender"]'),
+        memberName: document.getElementById("memberName")
     };
 
     // 비밀번호 입력 시 실시간 검증
@@ -27,6 +28,8 @@ const init = () => {
 
     // 생년월일 입력 시 검증
     inputs.memberBirth.addEventListener('blur', validateBirthDate);
+    // 이름 입력 시 실시간 검증 추가
+    inputs.memberName.addEventListener('input', validateName);
 
     // 폼 제출 시 전체 검증
     form.addEventListener('submit', (event) => {
@@ -35,6 +38,16 @@ const init = () => {
         }
     });
 };
+function validateName() {
+    const name = document.getElementById("memberName").value;
+    const error = document.getElementById("nameError");
+    if (!name.trim()) {
+        error.textContent = "이름을 입력하세요.";
+        return false;
+    }
+    error.textContent = "";
+    return true;
+}
 
 // 검증 함수들
 function validatePassword() {
@@ -113,8 +126,10 @@ function validateForm() {
     const isPhoneValid = validatePhone();
     const isBirthDateValid = validateBirthDate();
     const isGenderValid = validateGender();
+    const isNameValid = validateName();
 
-    if (!isPasswordValid || !isConfirmPasswordValid || !isEmailValid || !isPhoneValid || !isBirthDateValid || !isGenderValid) {
+    if (!isPasswordValid || !isConfirmPasswordValid || !isEmailValid ||
+        !isPhoneValid || !isBirthDateValid || !isGenderValid || !isNameValid) {
         alert("입력 정보를 다시 확인하세요.");
         return false;
     }

@@ -11,15 +11,17 @@
         font-family: Arial, sans-serif;
         background-color: #f9f9f9;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
-        height: 100vh;
+        padding: 20px;
     }
+
 
     .signup-container {
         background-color: white;
         width: 450px;
         padding: 20px 30px;
+        margin-bottom: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
@@ -31,6 +33,7 @@
         color: #333;
         text-align: center;
     }
+
     .file-upload-container {
         display: flex;
         align-items: center;
@@ -66,6 +69,10 @@
     .btn-container {
         margin-top: 20px;
     }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
     .btn-container button {
         width: 100%;
@@ -80,7 +87,7 @@
     }
 
     .btn-container button:hover {
-        background-color: #0056b3;
+            background-color: #0056b3;
     }
 
     .notice {
@@ -101,21 +108,17 @@
   </style>
 </head>
 <body>
+
+<!-- 기업 정보 섹션 -->
 <div class="signup-container">
-  <h1>기업 회원 가입</h1>
-  <form action="/bSignup2" method="post" enctype="multipart/form-data">
-    <table class="signup-table" style="width: 100%; border-collapse: collapse;">
+  <h1>기업 정보</h1>
+  <form action="/bSignup" method="get">
+    <table>
       <!-- 회사명 -->
       <tr>
         <td><label for="companyName">회사명</label></td>
         <td colspan="2">
           <input type="text" id="companyName" name="companyName" th:value="${companyInfo.companyName}" readonly>
-        </td>
-      </tr>
-      <!-- 회사번호 -->
-      <tr style="display: none;"> <!-- 화면에 표시되지 않도록 테이블 행 자체를 숨김 -->
-        <td>
-          <input type="hidden" id="companyId" name="companyId" th:value="${companyInfo.companyId}">
         </td>
       </tr>
       <!-- 대표 이메일 -->
@@ -150,28 +153,26 @@
       <tr>
         <td><label for="companyLogo">회사 로고</label></td>
         <td colspan="2">
-          <div class="preview-container" style="margin-right: 10px;">
-            <!-- 로고 미리보기 -->
-            <img th:if="${companyInfo.companyLogoName != null}"
-                 th:src="@{/uploads/company-logos/{fileName}(fileName=${companyInfo.companyLogoName})}"
-                 id="companyLogoPreview" alt="로고 미리보기"
-                 style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 5px;">
-
-            <img th:if="${companyInfo.companyLogoName == null}"
-                 src="images/noimage.png"
-                 id="companyLogoPlaceholder" alt="기본 이미지"
-                 style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 5px;">
-          </div>
+          <img th:src="@{/uploads/company-logos/{fileName}(fileName=${companyInfo.companyLogoName})}" alt="로고 미리보기" style="width: 100px; height: 100px;">
         </td>
       </tr>
+    </table>
+  </form>
+</div>
+
+<!-- 기업 회원 정보 섹션 -->
+<div class="signup-container">
+  <h1>기업 회원 정보</h1>
+  <form action="/bSignup2" method="post" enctype="multipart/form-data">
+    <table>
       <!-- 아이디 -->
       <tr>
         <td><label for="memberId">아이디</label></td>
         <td>
-          <input type="text" id="memberId" name="memberId" placeholder="아이디를 입력하세요" required>
+          <input type="text" id="memberId" name="memberId" placeholder="아이디" readonly required>
         </td>
         <td>
-          <button type="button" class="btn-check" onclick="checkId()">중복 확인</button>
+          <button type="button" onclick="openIdCheckPopup()">중복 확인</button>
         </td>
       </tr>
       <!-- 비밀번호 -->
@@ -179,6 +180,13 @@
         <td><label for="memberPw">비밀번호</label></td>
         <td colspan="2">
           <input type="password" id="memberPw" name="memberPw" placeholder="비밀번호를 입력하세요" required>
+        </td>
+      </tr>
+      <!-- 비밀번호 확인 -->
+      <tr>
+        <td><label for="confirmPw">비밀번호 확인</label></td>
+        <td colspan="2">
+          <input type="password" id="confirmPw" name="confirmPw" placeholder="비밀번호를 다시 입력하세요" required>
         </td>
       </tr>
       <!-- 이메일 -->
@@ -219,31 +227,32 @@
           <label for="F">여성</label>
         </td>
       </tr>
+      <tr>
+        <td colspan="3"><span class="error-message" id="genderError"></span></td>
+      </tr>
       <!-- 주소 -->
       <tr>
-        <td><label for="memberPostcode">우편번호 및 주소</label></td>
-        <td>
-          <input type="text" id="memberPostcode" name="memberPostcode" placeholder="우편번호" readonly required>
-        </td>
-        <td>
-          <button type="button" class="btn-search" onclick="searchPostcode()">검색</button>
+        <td><label for="memberPostcode"><button type="button" onclick="searchAddress()">우편번호 찾기</button></label></td>
+        <td colspan="3">
+          <input type="text" id="memberPostcode" name="memberPostcode" placeholder="우편번호" readonly>
         </td>
       </tr>
       <tr>
-        <td></td>
-        <td colspan="2">
-          <input type="text" id="memberAddress" name="memberAddress" placeholder="주소" readonly required style="margin-top: 10px;">
-          <input type="text" id="memberDAddress" name="memberDAddress" placeholder="상세 주소" style="margin-top: 10px;">
+        <td colspan="3">
+          <input type="text" id="memberAddress" name="memberAddress" placeholder="주소" readonly style="width: 400px; margin-top: 10px;">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <input type="text" id="memberDAddress" name="memberDAddress" placeholder="상세 주소" style="width: 400px; margin-top: 10px; margin-bottom: 10px;">
         </td>
       </tr>
       <!-- 프로필 이미지 -->
       <tr>
-        <td><label for="memberImg">프로필 이미지</label></td>
+        <td><label for="memberImg"></label></td>
         <td colspan="2">
           <div class="file-upload-container">
-
             <div class="image-preview" id="imagePreview" style="margin-bottom: 10px;">
-
               <img src="images/noimage.png" alt="기본 이미지" id="previewImg" style="width: 100px; height: 100px;">
             </div>
             <input type="file" id="memberImg" name="memberImg" accept="image/*" onchange="previewImage(event)">
@@ -253,19 +262,18 @@
       <!-- 가입 버튼 -->
       <tr>
         <td colspan="3" style="text-align: center;">
-          <button type="submit" style="padding: 10px 20px;">가입하기</button>
-        </td>
-      </tr>
-      <!-- 이용 약관 -->
-      <tr>
-        <td colspan="3" style="text-align: center; font-size: 12px; color: gray;">
-          가입 시 <a href="/terms">이용 약관</a> 및 <a href="/privacy">개인정보 처리방침</a>에 동의하는 것으로 간주됩니다.
+          <button type="submit">가입하기</button>
         </td>
       </tr>
     </table>
   </form>
 </div>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+  // 아이디 중복 확인 팝업
+    function openIdCheckPopup() {
+        window.open("/idCheck", "idCheck", "width=400,height=300,left=100,top=100");
+    }
   // 이미지 미리보기 기능
     function previewImage(event) {
         const input = event.target;
@@ -284,8 +292,36 @@
 
   // 우편번호 검색 API 호출 (예: 카카오 API)
   function searchPostcode() {
-      alert("우편번호 검색 API 호출 예정입니다.");
-      // API 연동 코드 작성
+      new daum.Postcode({
+        oncomplete: function (data) {
+            // 주소 변수
+            let addr = ''; // 도로명/지번 주소
+            let extraAddr = ''; // 참고항목
+
+            // 사용자가 선택한 주소 타입에 따라 주소 값 결정
+            if (data.userSelectedType === 'R') { // 도로명 주소 선택
+                addr = data.roadAddress;
+            } else { // 지번 주소 선택
+                addr = data.jibunAddress;
+            }
+
+            // 참고항목 설정 (도로명 주소일 경우)
+            if (data.userSelectedType === 'R') {
+                if (data.bname && /[동|로|가]$/g.test(data.bname)) {
+                    extraAddr += data.bname; // 법정동 추가
+                }
+                if (data.buildingName && data.apartment === 'Y') {
+                    extraAddr += (extraAddr ? ', ' + data.buildingName : data.buildingName); // 건물명 추가
+                }
+            }
+
+            // 우편번호와 주소 필드 채우기
+            document.getElementById('memberPostcode').value = data.zonecode; // 우편번호
+            document.getElementById('memberAddress').value = addr; // 도로명 또는 지번 주소
+            // 상세주소 입력란에 포커스
+            document.getElementById('memberDAddress').focus();
+        }
+    }).open();
   }
 </script>
 </body>

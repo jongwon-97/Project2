@@ -11,7 +11,8 @@
 		<typeAlias type="com.kosmo.nexus.dto.BoardDTO" alias="Board"/>
 		<typeAlias type="com.kosmo.nexus.dto.CommentDTO" alias="Comment"/>
 		<typeAlias type="com.kosmo.nexus.dto.SignupDTO" alias="Signup"/>
-	</typeAliases> 
+		<typeAlias type="com.kosmo.nexus.dto.CompanyDTO" alias="Company"/>
+	</typeAliases>
 
 	
 </configuration>

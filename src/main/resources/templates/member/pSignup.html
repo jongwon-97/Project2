@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>개인 회원가입</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -101,7 +102,9 @@
 
         .error-message { color: red; font-size: 12px; margin-top: 5px; }
     </style>
+
 </head>
+
 <body>
 <div class="signup-container">
     <h1>개인회원 가입</h1>
@@ -246,6 +249,7 @@
         </table>
     </form>
 </div>
+<script src="js/validation.js" type="module"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     // 이미지 미리보기 기능
@@ -308,100 +312,6 @@
         idInput.readOnly = true; // 수정 불가능하게 설정
     }
 
-    // 정규식 패턴
-    const passwordPattern = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/; // 비밀번호: 소문자+숫자+특수문자
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 기본 형식
-    const phonePattern = /^01[0|1|6|7|8|9]-\d{3,4}-\d{4}$/; // 전화번호 형식: 010-1234-5678
-
-    // 비밀번호 검증
-    function validatePassword() {
-        const password = document.getElementById("memberPw").value;
-        const error = document.getElementById("passwordError");
-        if (!passwordPattern.test(password)) {
-            error.textContent = "비밀번호는 8자 이상이며, 소문자+숫자+특수문자를 포함해야 합니다.";
-            return false;
-        }
-        error.textContent = "";
-        return true;
-    }
-
-    // 비밀번호 확인 검증
-    function validateConfirmPassword() {
-        const password = document.getElementById("memberPw").value;
-        const confirmPassword = document.getElementById("confirmPw").value;
-        const error = document.getElementById("confirmPasswordError");
-        if (password !== confirmPassword) {
-            error.textContent = "비밀번호가 일치하지 않습니다.";
-            return false;
-        }
-        error.textContent = "";
-        return true;
-    }
-
-    // 이메일 검증
-    function validateEmail() {
-        const email = document.getElementById("memberEmail").value;
-        const error = document.getElementById("emailError");
-        if (!emailPattern.test(email)) {
-            error.textContent = "유효한 이메일 주소를 입력하세요.";
-            return false;
-        }
-        error.textContent = "";
-        return true;
-    }
-
-    // 전화번호 검증
-    function validatePhone() {
-        const phone = document.getElementById("memberPhone").value;
-        const error = document.getElementById("phoneError");
-        if (!phonePattern.test(phone)) {
-            error.textContent = "전화번호 형식이 올바르지 않습니다. 예: 010-1234-5678";
-            return false;
-        }
-        error.textContent = "";
-        return true;
-    }
-
-    // 생년월일 검증
-    function validateBirthDate() {
-        const birthDate = document.getElementById("memberBirth").value;
-        const error = document.getElementById("birthError");
-        if (!birthDate) {
-            error.textContent = "생년월일을 입력하세요.";
-            return false;
-        }
-        error.textContent = "";
-        return true;
-    }
-
-    // 성별 검증
-    function validateGender() {
-        const genderMale = document.getElementById("M").checked;
-        const genderFemale = document.getElementById("F").checked;
-        const error = document.getElementById("genderError");
-        if (!genderMale && !genderFemale) {
-            error.textContent = "성별을 선택하세요.";
-            return false;
-        }
-        error.textContent = "";
-        return true;
-    }
-
-    // 전체 폼 검증
-    function validateForm() {
-        const isPasswordValid = validatePassword();
-        const isConfirmPasswordValid = validateConfirmPassword();
-        const isEmailValid = validateEmail();
-        const isPhoneValid = validatePhone();
-        const isBirthDateValid = validateBirthDate();
-        const isGenderValid = validateGender();
-
-        if (!isPasswordValid || !isConfirmPasswordValid || !isEmailValid || !isPhoneValid || !isBirthDateValid || !isGenderValid) {
-            alert("입력 정보를 다시 확인하세요.");
-            return false;
-        }
-        return true;
-    }
 </script>
 </body>
 </html>

@@ -114,19 +114,20 @@
             </tr>
             <!-- 우편번호 -->
             <tr>
-                <td><label for="companyPostcode">우편번호</label></td>
-                <td>
-                    <input type="text" id="companyPostcode" name="companyPostcode" placeholder="우편번호를 검색하세요">
-                </td>
-                <td>
-                    <button type="button" class="btn-search" onclick="searchPostcode()">검색</button>
+                <td><label for="companyPostcode"><button type="button" onclick="searchPostcode()">우편번호 찾기</button></label></td>
+                <td colspan="3">
+                    <input type="text" id="companyPostcode" name="companyPostcode" placeholder="우편번호" readonly>
                 </td>
             </tr>
             <!-- 대표 주소 -->
             <tr>
-                <td><label for="companyAddress">대표 주소</label></td>
-                <td colspan="2">
-                    <input type="text" id="companyAddress" name="companyAddress" placeholder="대표 주소를 입력하세요">
+                <td colspan="3">
+                    <input type="text" id="companyAddress" name="companyAddress" placeholder="대표주소" readonly style="width: 400px; margin-top: 10px;">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <input type="text" id="companyDAddress" name="companyDAddress" placeholder="상세 주소" style="width: 400px; margin-top: 10px; margin-bottom: 10px;">
                 </td>
             </tr>
             <!-- 회사 로고 -->
@@ -160,7 +161,7 @@
         </table>
     </form>
 </div>
-
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     function searchBusiness() {
         alert("사업자 등록번호 API 호출 예정입니다.");
@@ -168,8 +169,36 @@
     }
 
     function searchPostcode() {
-        alert("우편번호 검색 API 호출 예정입니다.");
-        // 여기에 우편번호 검색 API 호출 로직 작성
+        new daum.Postcode({
+        oncomplete: function (data) {
+            // 주소 변수
+            let addr = ''; // 도로명/지번 주소
+            let extraAddr = ''; // 참고항목
+
+            // 사용자가 선택한 주소 타입에 따라 주소 값 결정
+            if (data.userSelectedType === 'R') { // 도로명 주소 선택
+                addr = data.roadAddress;
+            } else { // 지번 주소 선택
+                addr = data.jibunAddress;
+            }
+
+            // 참고항목 설정 (도로명 주소일 경우)
+            if (data.userSelectedType === 'R') {
+                if (data.bname && /[동|로|가]$/g.test(data.bname)) {
+                    extraAddr += data.bname; // 법정동 추가
+                }
+                if (data.buildingName && data.apartment === 'Y') {
+                    extraAddr += (extraAddr ? ', ' + data.buildingName : data.buildingName); // 건물명 추가
+                }
+            }
+
+            // 우편번호와 주소 필드 채우기
+            document.getElementById('companyPostcode').value = data.zonecode; // 우편번호
+            document.getElementById('companyAddress').value = addr; // 도로명 또는 지번 주소
+            // 상세주소 입력란에 포커스
+            document.getElementById('companyDAddress').focus();
+        }
+    }).open();
     }
 
     // 이미지 미리보기 기능

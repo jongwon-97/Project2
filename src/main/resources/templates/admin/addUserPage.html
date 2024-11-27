@@ -39,7 +39,7 @@
         <!-- 기본 행 -->
         <tr>
             <td>1</td>
-            <td><input type="checkbox" name="checkRow"></td>
+            <td><input type="checkbox" name="checkRow" onchange="checkAllSelected()"></td>
             <td><input type="text" name="memberNum" maxlength="15"></td>
             <td><input type="text" name="memberId" maxlength="20"></td>
             <td><input type="text" name="memberName" maxlength="10"></td>
@@ -70,6 +70,9 @@
 </body>
 
 <script>
+    const selectAllCheckbox = document.getElementById("selectAll");
+    let checkboxes = document.querySelectorAll('input[name="checkRow"]');
+
     // CSV 파일을 읽어와서 테이블에 추가하는 함수
     function loadCSV() {
         const fileInput = document.getElementById("csvFileInput");
@@ -114,15 +117,17 @@
     // CSV 파일을 읽어와서 테이블에 추가하는 함수 (이미지 열 제거)
     function addRowFromCSV(rowData) {
         const table = document.getElementById("memberTable");
-        const firstRow = table.rows[1]; // 첫 번째 데이터 행 (헤더가 아닌 첫 번째 행)
+        let firstRow = table.rows[1]; // 첫 번째 데이터 행 (헤더가 아닌 첫 번째 행)
         let newRow;
 
-        // 첫 번째 행의 첫 번째 셀이 비어있으면 마지막 행 앞에 추가
-        if (firstRow && firstRow.cells[2].textContent.trim() === "") {
-            newRow = table.insertRow(table.rows.length - 1); // 마지막 행 앞에 추가
+        // 첫 번째 행의 3번째 셀이 비어있으면 마지막 행 앞에 추가
+        if (firstRow && firstRow.cells[2].querySelector('input').value.trim() == "") {
+            table.deleteRow(1); // 첫 번째 데이터 행 삭제
+            newRow = table.insertRow(1);
         } else {
             newRow = table.insertRow(table.rows.length); // 마지막 행 뒤에 추가
         }
+
 
         // CSV 열 이름 -> 실제 input name을 매핑
         const columnMapping = {
@@ -150,6 +155,7 @@
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.name = "checkRow";
+        checkbox.onchange = checkAllSelected;
         cellCheckbox.appendChild(checkbox);
 
         // 각 열에 맞는 데이터 입력
@@ -187,7 +193,6 @@
                 cell.appendChild(inputElement);
             }
         });
-
         updateRowNumbers();
     }
 
@@ -212,6 +217,7 @@
         var checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.name = "checkRow";
+        checkbox.onchange = checkAllSelected;
         cellCheckbox.appendChild(checkbox);
 
         columns.forEach(function(col, index) {
@@ -240,17 +246,18 @@
             }
 
             cell.appendChild(inputElement);
+            updateRowNumbers()
         });
     }
 
     // 모든 체크박스 선택/해제
     function toggleSelectAll() {
-        const isChecked = document.getElementById("selectAll").checked;
-        const checkboxes = document.querySelectorAll('input[name="checkRow"]');
+        let isChecked = document.getElementById("selectAll").checked;
         checkboxes.forEach(checkbox => {
             checkbox.checked = isChecked;
         });
     }
+
 
     // 선택된 행 삭제 함수
     function deleteSelectedRows() {
@@ -275,6 +282,8 @@
             var row = rows[i];
             row.cells[0].innerText = i; // 번호 재조정
         }
+        checkboxes = document.querySelectorAll('input[name="checkRow"]');
+        checkAllSelected();
     }
 
     const addMember = async () => {
@@ -383,5 +392,19 @@
             alert("선택된 행이 없습니다.");
         }
     };
+
+    function checkAllSelected(){
+        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+        // selectAll 체크박스의 상태를 업데이트
+        selectAllCheckbox.checked = allChecked;
+
+        // 하나라도 체크되지 않았다면 selectAll 체크박스 해제
+        if (!allChecked) {
+            selectAllCheckbox.indeterminate = Array.from(checkboxes).some(checkbox => checkbox.checked);
+        } else {
+            selectAllCheckbox.indeterminate = false;  // 모든 체크박스가 체크된 경우
+        }
+    }
 </script>
 </html>

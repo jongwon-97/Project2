@@ -57,6 +57,21 @@ public class AdminServiceImpl implements AdminService{
     }
 
     @Override
+    public int updateMemberDepartment(List<String> memberIds, String selDepartment, Long companyId) {
+        return memberMapper.updateMemberDepartment(memberIds, selDepartment, companyId);
+    }
+
+    @Override
+    public int updateMemberRank(List<String> memberIds, String selRank, Long companyId) {
+        return memberMapper.updateMemberRank(memberIds, selRank, companyId);
+    }
+
+    @Override
+    public int updateMemberStatus(List<String> memberIds, String selStatus, Long companyId) {
+        return memberMapper.updateMemberStatus(memberIds, selStatus, companyId);
+    }
+
+    @Override
     public List<String> findImgNamebyIdList(List<String> memberIds, Long companyId) {
         return memberMapper.findImgNamebyIdList(memberIds, companyId);
     }

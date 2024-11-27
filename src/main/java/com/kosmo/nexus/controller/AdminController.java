@@ -37,13 +37,26 @@ public class AdminController {
     @GetMapping("/memberList")
     public String findMemberList(HttpSession ses, Model model){
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
-        List<String> departments = adminService.findDepartmentByCompanyId(sesCompanyId);
-        List<String> ranks = adminService.findRankByCompanyId(sesCompanyId);
+        List<String> departmentsInCompany = adminService.findDepartmentByCompanyId(sesCompanyId);
+        List<String> ranksInCompany = adminService.findRankByCompanyId(sesCompanyId);
         List<MemberDTO> listMember= adminService.findMemberList(sesCompanyId);
+
+        List<String> departments = listMember.stream()
+                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> ranks = listMember.stream()
+                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
 
         model.addAttribute("listMember", listMember);
         model.addAttribute("departments", departments);
         model.addAttribute("ranks", ranks);
+        model.addAttribute("departmentsInCompany", departmentsInCompany);
+        model.addAttribute("ranksInCompany", ranksInCompany);
 
         log.info("MemberDTOList====={}", listMember);
         log.info("DepartmentList====={}", departments);
@@ -120,25 +133,30 @@ public class AdminController {
     @PostMapping("/search")
     public String searchMemberList(@RequestParam("simpleSearch") String search, @RequestParam("searchOption") String option,
                                    HttpSession ses, Model model){
-            Long sesCompanyId = getLoginUserCompanyId(ses, model);
-            log.info("search========={}, option========{}",search, option);
-            List<MemberDTO> listMember= adminService.searchMemberList(search, option, sesCompanyId);
-            List<String> departments = listMember.stream()
-                    .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
-                    .distinct() // 중복 제거
-                    .sorted() // 오름차순 정렬
-                    .collect(Collectors.toList()); // List<String>으로 수집
-            List<String> ranks = listMember.stream()
-                    .map(MemberDTO::getMemberRank) // 단일 값을 추출
-                    .distinct() // 중복 제거
-                    .sorted() // 오름차순 정렬
-                    .collect(Collectors.toList()); // List<String>으로 수집
-            model.addAttribute("listMember", listMember);
-            model.addAttribute("departments", departments);
-            model.addAttribute("ranks", ranks);
-            model.addAttribute("simpleSearch", search);
-            model.addAttribute("searchOption", option);
-            log.info("SearchMemberList====={}", listMember);
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        log.info("search========={}, option========{}",search, option);
+        List<MemberDTO> listMember= adminService.searchMemberList(search, option, sesCompanyId);
+        List<String> departments = listMember.stream()
+                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> ranks = listMember.stream()
+                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> departmentsInCompany = adminService.findDepartmentByCompanyId(sesCompanyId);
+        List<String> ranksInCompany = adminService.findRankByCompanyId(sesCompanyId);
+
+        model.addAttribute("departmentsInCompany", departmentsInCompany);
+        model.addAttribute("ranksInCompany", ranksInCompany);
+        model.addAttribute("listMember", listMember);
+        model.addAttribute("departments", departments);
+        model.addAttribute("ranks", ranks);
+        model.addAttribute("simpleSearch", search);
+        model.addAttribute("searchOption", option);
+        log.info("SearchMemberList====={}", listMember);
         return "/admin/memberList";
     }
 
@@ -173,6 +191,11 @@ public class AdminController {
                 .distinct() // 중복 제거
                 .sorted() // 오름차순 정렬
                 .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> departmentsInCompany = adminService.findDepartmentByCompanyId(sesCompanyId);
+        List<String> ranksInCompany = adminService.findRankByCompanyId(sesCompanyId);
+
+        model.addAttribute("departmentsInCompany", departmentsInCompany);
+        model.addAttribute("ranksInCompany", ranksInCompany);
         model.addAttribute("listMember", listMember);
         model.addAttribute("departments", departments);
         model.addAttribute("ranks", ranks);
@@ -182,10 +205,50 @@ public class AdminController {
         model.addAttribute("hireStart", hireStart);
         model.addAttribute("hireEnd", hireEnd);
         log.info("SearchMemberList====={}", listMember);
-
         return "/admin/memberList";
     }
 
+    @PostMapping("/moveDep")
+    public String moveDepartment(@RequestParam List<String> memberIds,
+                                 @RequestParam String selDepartment,
+                                 HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        log.info(memberIds.toString());
+        log.info(selDepartment);
+
+        int result = adminService.updateMemberDepartment(memberIds, selDepartment, sesCompanyId);
+
+        log.info("부서가 변경된 테이블 개수 =========={}", result);
+        return "redirect:/admin/memberList";
+    }
+
+    @PostMapping("/moveRank")
+    public String moveRank(@RequestParam List<String> memberIds,
+                                 @RequestParam String selRank,
+                                 HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        log.info(memberIds.toString());
+        log.info(selRank);
+
+        int result = adminService.updateMemberRank(memberIds, selRank, sesCompanyId);
+
+        log.info("직급이 변경된 테이블 개수 =========={}", result);
+        return "redirect:/admin/memberList";
+    }
+
+    @PostMapping("/moveStatus")
+    public String moveStatus(@RequestParam List<String> memberIds,
+                           @RequestParam String selStatus,
+                           HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        log.info(memberIds.toString());
+        log.info(selStatus);
+
+        int result = adminService.updateMemberStatus(memberIds, selStatus, sesCompanyId);
+
+        log.info("직급이 변경된 테이블 개수 =========={}", result);
+        return "redirect:/admin/memberList";
+    }
 
     public Long getLoginUserCompanyId(HttpSession ses, Model model){
         // 세션에서 loginUser 객체 가져오기

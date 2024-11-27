@@ -148,6 +148,7 @@
                         <!-- 파일 선택 버튼 -->
                         <div>
                             <input type="file" id="companyLogo" name="companyLogo" accept="image/*" onchange="previewImage(event)">
+                            <input type="hidden" id="companyLogoUrl" name="companyLogoUrl">
                         </div>
                     </div>
                 </td>
@@ -170,54 +171,97 @@
 
 <script>
     function searchBusiness() {
-       const companyNum = document.getElementById('companyNum').value.trim();
-       const resultSpan = document.getElementById('businessValidationResult');
-       const companyNameInput = document.getElementById('companyName');
+    const companyNum = document.getElementById('companyNum').value.trim();
+    const resultSpan = document.getElementById('businessValidationResult');
 
-       // 입력값 검증
-       resultSpan.textContent = ""; // 메시지 초기화
-       companyNameInput.value = ""; // 회사명 초기화
-       if (!companyNum || companyNum.length !== 10 || isNaN(companyNum)) {
-           resultSpan.textContent = "유효한 10자리 사업자등록번호를 입력하세요.";
-           return;
-       }
+    // 초기화
+    resultSpan.textContent = ""; // 메시지 초기화
+    if (!companyNum || companyNum.length !== 10 || isNaN(companyNum)) {
+        resultSpan.textContent = "유효한 10자리 사업자등록번호를 입력하세요.";
+        return;
+    }
 
-       // API 요청 데이터
-       const data = {
-           "b_no": [companyNum]
-       };
+    // API 요청 데이터
+    const data = {
+        "b_no": [companyNum]
+    };
+    console.log("요청 데이터:", data);
 
-       // API 호출
-       $.ajax({
-           url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=o9DpOMbewb3fubRDZNCs1OQS2DUicnW%2FsSvJcEe2f%2BXsXWZ0uXLNij2r7hOCwkqMRvc%2F1qYhohcbsDqGezjBzw%3D%3D", // 서비스 키를 입력
-           type: "POST",
-           data: JSON.stringify(data),
-           dataType: "JSON",
-           contentType: "application/json",
-           success: function (response) {
-               const businessData = response.data[0]; // 첫 번째 결과
-               const status = businessData?.b_stt; // 사업자 상태
-               const companyName = businessData?.b_nm; // 회사명
+    // API 호출
+    $.ajax({
+        url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=o9DpOMbewb3fubRDZNCs1OQS2DUicnW%2FsSvJcEe2f%2BXsXWZ0uXLNij2r7hOCwkqMRvc%2F1qYhohcbsDqGezjBzw%3D%3D", // 서비스 키를 입력
+        type: "POST",
+        data: JSON.stringify(data),
+        dataType: "JSON",
+        contentType: "application/json",
+        success: function (response) {
+            console.log("응답 데이터:", response); // 응답 확인
+            const businessData = response.data[0]; // 첫 번째 결과
 
-               if (status === "계속사업자" && companyName) {
-                   resultSpan.style.color = "green";
-                   resultSpan.textContent = "유효한 사업자 등록번호입니다.";
-                   companyNameInput.value = companyName; // 회사명 자동 입력
-               } else {
-                   resultSpan.style.color = "red";
-                   resultSpan.textContent = "유효하지 않은 사업자 등록번호입니다.";
-                   companyNameInput.value = ""; // 입력 초기화
-               }
-           },
-           error: function (xhr) {
-               console.error("API 호출 에러:", xhr.responseText);
-               resultSpan.style.color = "red";
-               resultSpan.textContent = "사업자 등록번호 검증 중 오류가 발생했습니다.";
-               companyNameInput.value = ""; // 입력 초기화
-           }
-       });
-   }
+            if (businessData?.b_stt === "계속사업자") {
+                resultSpan.style.color = "green";
+                resultSpan.textContent = "유효한 사업자 등록번호입니다.";
 
+                // 내부 API로 DB 조회
+                $.ajax({
+                    url: "/api/company/" + companyNum, // 내부 API: DB 조회
+                    type: "GET",
+                    success: function (companyResponse) {
+                        console.log("내부 DB 응답 데이터:", companyResponse);
+
+                        // 폼에 데이터 채우기
+                        document.getElementById('companyName').value = companyResponse.companyName || "";
+                        document.getElementById('companyEmail').value = companyResponse.companyEmail || "";
+                        document.getElementById('companyPhone').value = companyResponse.companyPhone || "";
+                        document.getElementById('companyPostcode').value = companyResponse.companyPostcode || "";
+                        document.getElementById('companyAddress').value = companyResponse.companyAddress || "";
+                        document.getElementById('companyDAddress').value = companyResponse.companyDAddress || "";
+
+                        // 로고 미리보기 설정
+                        if (companyResponse.companyLogoUrl) {
+                            console.log("로고 URL:", companyResponse.companyLogoUrl);
+                            const logoPreview = document.getElementById('logoPreview');
+                            const logoUrlField = document.getElementById('companyLogoUrl');
+                            logoPreview.src = ""; // 초기화
+                            setTimeout(() => {
+                                logoPreview.src = companyResponse.companyLogoUrl + "?t=" + new Date().getTime(); // 캐시 방지
+                                logoUrlField.value = companyResponse.companyLogoUrl;
+                            }, 100); // 강제 갱신
+                        } else {
+                            document.getElementById('logoPreview').src = "images/noimage.png"; // 기본 이미지
+                        }
+                        resultSpan.textContent = "기존 정보가 불러와졌습니다.";
+
+                    }, error: function (xhr) {
+                        console.error("내부 API 호출 에러:", xhr.responseText);
+                        resultSpan.style.color = "orange";
+                        resultSpan.textContent = "유효한 사업자번호입니다. 하지만 DB에 정보가 없습니다. 새로 입력하세요.";
+
+                        // 폼 초기화
+                        document.getElementById('companyName').value = "";
+                        document.getElementById('companyEmail').value = "";
+                        document.getElementById('companyPhone').value = "";
+                        document.getElementById('companyPostcode').value = "";
+                        document.getElementById('companyAddress').value = "";
+                        document.getElementById('companyDAddress').value = "";
+                        document.getElementById('logoPreview').src = "images/noimage.png"; // 기본 이미지
+                    }
+                });
+                // 사업자등록번호 입력 필드 수정 불가능하게 설정
+                const companyNumInput = document.getElementById('companyNum');
+                companyNumInput.readOnly = true;
+            } else {
+                resultSpan.style.color = "red";
+                resultSpan.textContent = "유효하지 않은 사업자 등록번호입니다.";
+            }
+        },
+        error: function (xhr) {
+            console.error("API 호출 에러:", xhr.responseText);
+            resultSpan.style.color = "red";
+            resultSpan.textContent = "사업자 등록번호 검증 중 오류가 발생했습니다.";
+        }
+    });
+}
 
 
     function searchPostcode() {

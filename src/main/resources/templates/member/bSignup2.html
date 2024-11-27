@@ -153,7 +153,7 @@
       <tr>
         <td><label for="companyLogo">회사 로고</label></td>
         <td colspan="2">
-          <img th:src="@{/uploads/company-logos/{fileName}(fileName=${companyInfo.companyLogoName})}" alt="로고 미리보기" style="width: 100px; height: 100px;">
+          <img th:src= "${companyInfo.companyLogoUrl}" alt="로고 미리보기" style="width: 100px; height: 100px;">
         </td>
       </tr>
     </table>
@@ -256,6 +256,7 @@
               <img src="images/noimage.png" alt="기본 이미지" id="previewImg" style="width: 100px; height: 100px;">
             </div>
             <input type="file" id="memberImg" name="memberImg" accept="image/*" onchange="previewImage(event)">
+
           </div>
         </td>
       </tr>

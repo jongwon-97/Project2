@@ -62,11 +62,12 @@
     <!-- 정보 찾기 -->
     <select id="findCompanyByCompanyNum" resultMap="CompanyResultMap" parameterType="string">
         SELECT company_id, company_num, company_name, company_email, company_phone,
-        company_postcode, company_address, company_logo
+        company_postcode, company_address, company_logo , company_d_address
         FROM c_company
         WHERE company_num = #{companyNum}
         LIMIT 1
     </select>
+
 
     <!-- 기업 회원가입 -->
     <insert id="insertCompanyUser" parameterType="Signup">

@@ -27,5 +27,6 @@ public class CompanyDTO {
 
     private MultipartFile companyLogo;      //회사 로고 이미지 파일
     private String companyLogoName;         //파일 이름을 저장할 필드
+    private String companyLogoUrl;          // 로고 이미지 경로 (URL)
     private Date companyStartDate;          //회사 가입일
 }

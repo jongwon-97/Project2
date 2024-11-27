@@ -38,7 +38,7 @@ public class SignupController {
                           @RequestParam("memberImg") MultipartFile memberImg,
                           HttpServletRequest req,
                           Model model){
-        log.info("signup====={}", signup);
+        //log.info("signup====={}", signup);
 
         // 업로드 디렉토리 경로 설정
         String upDir = req.getServletContext().getRealPath("/Signup_upload");
@@ -57,7 +57,7 @@ public class SignupController {
                 memberImg.transferTo(new File(upDir, newFileName)); // 저장
                 signup.setMemberImgName(newFileName); // DTO에 파일 이름 설정
             } catch (IOException e) {
-                log.error("파일 업로드 실패: {}", e.getMessage());
+                //log.error("파일 업로드 실패: {}", e.getMessage());
                 model.addAttribute("msg", "파일 업로드 중 오류가 발생했습니다.");
                 model.addAttribute("loc", "/pSignup");
                 return "message";
@@ -91,7 +91,7 @@ public class SignupController {
     @GetMapping("/checkId")
     @ResponseBody // JSON 반환
     public Map<String, Boolean> checkId(@RequestParam String memberId) {
-        log.info("아이디 중복 체크 요청: {}", memberId);
+        //log.info("아이디 중복 체크 요청: {}", memberId);
 
         // 서비스 계층을 호출하여 중복 여부 확인
         boolean isAvailable = !signupService.isIdExists(memberId); // 사용 가능한 아이디인지 확인
@@ -124,27 +124,35 @@ public class SignupController {
         }
 
         try {
-            // 2. 파일 업로드 처리
-            if (!signup.getCompanyLogo().isEmpty()) {
-                // 업로드 디렉토리 생성
-                String uploadDir = req.getServletContext().getRealPath("/uploads/company-logos/");
-                File dir = new File(uploadDir);
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
 
-                // 파일명 생성 및 업로드
+            // 업로드 디렉토리 설정
+            String uploadDir = req.getServletContext().getRealPath("/uploads/company-logos/");
+            File dir = new File(uploadDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            // 파일 업로드 처리
+            if (signup.getCompanyLogo() != null && !signup.getCompanyLogo().isEmpty()) {
                 String originalFilename = signup.getCompanyLogo().getOriginalFilename();
                 String uuid = UUID.randomUUID().toString();
                 String savedFilename = uuid + "_" + originalFilename;
 
                 signup.getCompanyLogo().transferTo(new File(uploadDir, savedFilename));
 
-                log.info("Uploaded file: {}", savedFilename);
-
-                // SignupDTO에 파일명 설정
-                signup.setCompanyLogoName(savedFilename);
+                // 파일명과 URL 설정
+                signup.setCompanyLogoName(savedFilename); // 파일명 저장
+                signup.setCompanyLogoUrl("/uploads/company-logos/" + savedFilename); // URL 생성
+            } else if (signup.getCompanyLogoUrl() != null && !signup.getCompanyLogoUrl().isEmpty()) {
+                // URL만 전달된 경우
+                signup.setCompanyLogoName(null); // 파일명 비워두기
+                signup.setCompanyLogoUrl(signup.getCompanyLogoUrl());
+            } else {
+                // 기본값 설정
+                signup.setCompanyLogoName("/images/noimage.png");
+                signup.setCompanyLogoUrl("/uploads/company-logos/default-logo.png");
             }
+
             ses.setAttribute("companySignup", signup);
 
             // 서비스 계층 호출
@@ -190,7 +198,7 @@ public class SignupController {
         // 모델에 기업 정보 전달
 
         model.addAttribute("companyInfo", companySignup);
-        log.info("compayInfo==={}",companySignup);
+        //log.info("compayInfo==={}",companySignup);
         return "member/bSignup2";
     }
 
@@ -200,7 +208,7 @@ public class SignupController {
                                   @RequestParam("memberImg") MultipartFile memberImg,
                                   HttpServletRequest req,
                                   Model model){
-        log.info("bsignup2====={}", signup);
+        //log.info("bsignup2====={}", signup);
 
         // 업로드 디렉토리 경로 설정
         String upDir = req.getServletContext().getRealPath("/bSignup_upload");
@@ -219,7 +227,7 @@ public class SignupController {
                 memberImg.transferTo(new File(upDir, newFileName)); // 저장
                 signup.setMemberImgName(newFileName); // DTO에 파일 이름 설정
             } catch (IOException e) {
-                log.error("파일 업로드 실패: {}", e.getMessage());
+                //log.error("파일 업로드 실패: {}", e.getMessage());
                 model.addAttribute("msg", "파일 업로드 중 오류가 발생했습니다.");
                 model.addAttribute("loc", "/bSignup2");
                 return "message";

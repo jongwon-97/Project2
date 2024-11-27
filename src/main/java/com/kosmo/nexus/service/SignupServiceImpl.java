@@ -55,7 +55,6 @@ public class SignupServiceImpl implements SignupService{
         // 최소 8자, 소문자, 숫자, 특수문자 포함
         return memberPw.matches(regex);
     }
-
     // 이메일 유효성 검증
     private boolean isValidEmail(String memberEmail) {
         String regex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";

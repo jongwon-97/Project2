@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "companyPhone",
                 "errorCompanyPhone",
                 (value) =>
-                    /^\d{2,3}-\d{3,4}-\d{4}$/.test(value),
+                    /^(\d{2,3}-\d{3,4}-\d{4}|15\d{2}-\d{4})$/.test(value),
                 "유효한 전화번호 형식을 입력해주세요."
             )
         ) {

@@ -182,7 +182,7 @@ function validateForm() {
     const isGenderValid = validateGender();
     const isNameValid = validateName();
 
-    if (!isPasswordValid || !isConfirmPasswordValid || !isEmailValid ||
+    if ( !isPasswordValid || !isConfirmPasswordValid || !isEmailValid ||
         !isPhoneValid || !isBirthDateValid || !isGenderValid || !isNameValid) {
         alert("입력 정보를 다시 확인하세요.");
         return false;

@@ -155,7 +155,7 @@
       </tr>
       <!-- 회사 로고 -->
       <tr>
-        <td><label for="companyLogo">회사 로고</label></td>
+        <td><label>회사 로고</label></td>
         <td colspan="2">
           <img th:src= "${companyInfo.companyLogoUrl}" alt="로고 미리보기" style="width: 100px; height: 100px;">
         </td>
@@ -218,6 +218,36 @@
       </tr>
       <tr>
         <td colspan="3"><span class="error-message" id="nameError"></span></td>
+      </tr>
+      <!-- 직급 입력 -->
+      <tr>
+        <td><label for="memberRank">직급</label></td>
+        <td colspan="2">
+          <input type="text" id="memberRank" name="memberRank" placeholder="직급을 입력하세요">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3"><span class="error-message" id="rankError"></span></td>
+      </tr>
+      <!-- 사번 입력 -->
+      <tr>
+        <td><label for="memberNum">사번</label></td>
+        <td colspan="2">
+          <input type="text" id="memberNum" name="memberNum" placeholder="사번을 입력하세요">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3"><span class="error-message" id="numError"></span></td>
+      </tr>
+      <!-- 부서 입력 -->
+      <tr>
+        <td><label for="memberDepartment">부서</label></td>
+        <td colspan="2">
+          <input type="text" id="memberDepartment" name="memberDepartment" placeholder="부서를 입력하세요">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3"><span class="error-message" id="departmentError"></span></td>
       </tr>
       <!-- 생년월일 입력 -->
       <tr>

@@ -31,7 +31,7 @@ public class CommentServiceImpl implements CommentService{
     }//---------------------------
 
     @Override
-    public List<CommentDTO> getCommentsByBoardId(Long boardId) {
+    public List<CommentDTO> getCommentsByBoardId(int boardId) {
         List<CommentDTO> comments = commentMapper.findCommentsByBoardId(boardId);
         // 대댓글을 각 댓글에 연관시킴
         for (CommentDTO comment : comments) {
@@ -68,7 +68,17 @@ public class CommentServiceImpl implements CommentService{
         commentMapper.updateComment(comment);
     }//---------------------------------------
 
+    //공지 삭제 시 댓글 모두 삭제 처리
+    @Override
+    public void deleteCommentsByBoardId(int boardId) {
+        try {
+            commentMapper.deleteCommentsByBoardId(boardId);
 
+        } catch (Exception e) {
+
+            throw new RuntimeException("댓글 삭제 중 오류 발생");
+        }
+    }
 
 
 }

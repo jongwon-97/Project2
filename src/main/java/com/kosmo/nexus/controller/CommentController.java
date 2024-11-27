@@ -23,7 +23,7 @@ public class CommentController {
     @GetMapping("/writeComment")
     public String showCommentForm(Model model) {
         // 전체 댓글 및 대댓글 목록 가져오기
-        List<CommentDTO> commentList = commentService.getCommentsByBoardId(1L); //게시판 ID 1
+        List<CommentDTO> commentList = commentService.getCommentsByBoardId(1); //게시판 ID 1
         model.addAttribute("commentList", commentList);
         return "comment/commentForm"; // commentForm.html 반환
     }//------------------------------

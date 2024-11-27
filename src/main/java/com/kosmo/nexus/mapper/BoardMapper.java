@@ -2,6 +2,7 @@ package com.kosmo.nexus.mapper;
 
 import com.kosmo.nexus.dto.BoardDTO;
 import com.kosmo.nexus.dto.NoticeDTO;
+import com.kosmo.nexus.dto.PagingDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,4 +17,12 @@ public interface BoardMapper {
     void updateNotification(NoticeDTO noticeDTO); // 업데이트 SQL 매핑
     void updateViewCount(@Param("num") int num); //조회수 증가
 
+    // 페이징 처리된 공지사항 목록 조회
+    List<BoardDTO> selectNotificationList(PagingDTO pagingDTO);
+    // 총 게시물 수 조회
+    int getTotalNotificationCount(PagingDTO pagingDTO);
+
+    int getTotalGeneralCount(PagingDTO pagingDTO);
+
+    void insertBoard(BoardDTO boardDTO);
 }

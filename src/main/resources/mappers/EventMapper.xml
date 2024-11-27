@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper
+3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.kosmo.nexus.mapper.EventMapper">
+
+    <insert id="insertEvent" parameterType="Event" useGeneratedKeys="true" keyProperty="eventId">
+        INSERT INTO c_event (event_title, member_id)
+        VALUES (#{eventTitle}, #{memberId})
+    </insert>
+
+    <insert id="insertSeason" parameterType="Season">
+        INSERT INTO c_season (season_title, season_info, season_limit, season_fee, season_views, season_start_date, season_end_date, event_id, season_state, board_id, round_number, season_thumbnail)
+        VALUES (#{seasonTitle}, #{seasonInfo}, #{seasonLimit}, #{seasonFee}, #{seasonViews}, #{seasonStartDate}, #{seasonEndDate}, #{eventId}, #{seasonState}, #{boardId}, #{roundNumber}, #{seasonThumbnail})
+    </insert>
+
+    <!-- 모든 회차를 조회하는 쿼리 -->
+    <select id="getAllSeasons" resultType="Season">
+        SELECT
+        season_id AS seasonId,
+        season_title AS seasonTitle,
+        season_info AS seasonInfo,
+        season_limit AS seasonLimit,
+        season_fee AS seasonFee,
+        season_views AS seasonViews,
+        season_start_date AS seasonStartDate,
+        season_end_date AS seasonEndDate,
+        event_id AS eventId,
+        season_state AS seasonState,
+        board_id AS boardId,
+        round_number AS roundNumber
+        FROM c_season
+    </select>
+
+    <select id="getSeasonCountByEventId" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM c_season WHERE event_id = #{eventId}
+    </select>
+
+    <select id="selectAllEvents" resultType="Event">
+        SELECT event_id AS eventId, event_title AS eventTitle, member_id AS memberId
+        FROM c_event
+    </select>
+
+    <select id="selectMaxEventId" resultType="int">
+        SELECT COALESCE(MAX(event_id), 0) FROM c_event
+    </select>
+</mapper>

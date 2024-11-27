@@ -60,4 +60,11 @@
         WHERE comment_id = #{commentId}
     </update>
 
+    <delete id="deleteCommentsByBoardId" parameterType="int">
+        DELETE FROM c_comment
+        WHERE board_id = #{boardId}
+    </delete>
+
+
+
 </mapper>

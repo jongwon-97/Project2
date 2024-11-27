@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>이벤트 목록</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      border: 1px solid #ddd;
+      border-bottom: none;
+      background-color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 5px;
+    }
+
+    .tab.active {
+      font-weight: bold;
+      border-top: 3px solid #ff4500;
+      color: #ff4500;
+    }
+
+    .tab-content {
+      display: none;
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #ddd;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 auto;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    thead {
+      background-color: #007bff;
+      color: #ffffff;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid #ddd;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .d-day {
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .status {
+      font-weight: bold;
+    }
+
+    .status.open {
+      color: green;
+    }
+
+    .status.closed {
+      color: red;
+    }
+
+    td[colspan="8"] {
+      font-style: italic;
+      color: #666;
+    }
+
+    .event-thumbnail {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+    }
+
+    .event-thumbnail img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+
+    .event-title {
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: bold;
+        color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<h1>이벤트 목록</h1>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" data-tab="ongoing">모집중 행사</div>
+  <div class="tab" data-tab="ended">마감된 행사</div>
+</div>
+
+<!-- 모집중 행사 -->
+<div id="ongoing" class="tab-content active">
+  <table>
+    <thead>
+    <tr>
+      <th>이벤트 제목</th>
+      <th>설명</th>
+      <th>제한 인원</th>
+      <th>참가비</th>
+      <th>시작 날짜</th>
+      <th>종료 날짜</th>
+      <th>상태</th>
+      <th>D-DAY</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${seasonList.size() == 0}">
+      <td colspan="8">모집중인 행사가 없습니다</td>
+    </tr>
+    <tr th:each="season : ${seasonList}" th:if="${season.seasonState == '모집중'}">
+      <td>
+        <div class="event-thumbnail">
+          <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}" alt="썸네일" />
+        </div>
+        <div class="event-title" th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></div>
+      </td>
+      <td th:text="${season.seasonInfo != null ? season.seasonInfo : '정보 없음'}"></td>
+      <td th:text="${season.seasonLimit}"></td>
+      <td th:text="${season.seasonFee != null ? season.seasonFee : '무료'}"></td>
+      <td th:text="${season.seasonStartDate}"></td>
+      <td th:text="${season.seasonEndDate}" class="season-end-date"></td>
+      <td class="status open" th:text="${season.seasonState}"></td>
+      <td class="d-day"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 마감된 행사 -->
+<div id="ended" class="tab-content">
+  <table>
+    <thead>
+    <tr>
+      <th>이벤트 제목</th>
+      <th>설명</th>
+      <th>제한 인원</th>
+      <th>참가비</th>
+      <th>시작 날짜</th>
+      <th>종료 날짜</th>
+      <th>상태</th>
+      <th>D-DAY</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${seasonList.size() == 0}">
+      <td colspan="8">마감된 행사가 없습니다</td>
+    </tr>
+    <tr th:each="season : ${seasonList}" th:if="${season.seasonState == '마감'}">
+      <td>
+        <div class="event-thumbnail">
+          <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}"
+               alt="썸네일" />
+        </div>
+        <div class="event-title" th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></div>
+      </td>
+      <td th:text="${season.seasonInfo != null ? season.seasonInfo : '정보 없음'}"></td>
+      <td th:text="${season.seasonLimit}"></td>
+      <td th:text="${season.seasonFee != null ? season.seasonFee : '무료'}"></td>
+      <td th:text="${season.seasonStartDate}"></td>
+      <td th:text="${season.seasonEndDate}" class="season-end-date"></td>
+      <td class="status closed" th:text="${season.seasonState}"></td>
+      <td class="d-day"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  // Tab functionality
+  const tabs = document.querySelectorAll(".tab");
+  const tabContents = document.querySelectorAll(".tab-content");
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      // Activate the clicked tab
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      // Show the corresponding tab content
+      const target = tab.dataset.tab;
+      tabContents.forEach(content => {
+        content.id === target
+          ? content.classList.add("active")
+          : content.classList.remove("active");
+      });
+    });
+  });
+
+  // Calculate D-DAY and update Status
+  const rows = document.querySelectorAll("tbody tr");
+
+  rows.forEach(row => {
+    const endDateCell = row.querySelector(".season-end-date");
+    const statusCell = row.querySelector(".status");
+    const dDayCell = row.querySelector(".d-day");
+
+    if (endDateCell && statusCell && dDayCell) {
+      const endDateStr = endDateCell.textContent.trim();
+
+      if (endDateStr) {
+        const endDate = new Date(endDateStr);
+        const today = new Date();
+
+        const diffTime = endDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // D-DAY 계산
+        if (diffDays > 0) {
+          dDayCell.textContent = `D-${diffDays}`;
+          statusCell.textContent = "모집중";
+          statusCell.classList.add("open");
+        } else {
+          dDayCell.textContent = "D-0";
+          statusCell.textContent = "마감";
+          statusCell.classList.add("closed");
+        }
+      } else {
+        dDayCell.textContent = "D-알 수 없음";
+        statusCell.textContent = "상태 없음";
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>

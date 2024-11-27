@@ -12,12 +12,15 @@ public interface CommentService {
     void saveComment(CommentDTO comment);  // 댓글을 DB에 저장하는 메서드
 
     // 특정 게시판의 댓글 및 대댓글 조회
-    List<CommentDTO> getCommentsByBoardId(Long boardId);
+    List<CommentDTO> getCommentsByBoardId(int boardId);
 
     void deleteCommentAndReplies(Long commentId, String memberId) throws IllegalAccessException;
 
-//    // 댓글 수정
+    //    // 댓글 수정
     void updateComment(CommentDTO comment, String memberId) throws IllegalAccessException;
 
+
+    //공지 삭제 시 댓글 모두 삭제 처리
+    void deleteCommentsByBoardId(int boardId);
 
 }

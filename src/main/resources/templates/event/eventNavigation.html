@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Button Navigation</title>
+  <style>
+    body {
+        background-color: #d3d3d3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .button-container {
+        display: flex;
+        gap: 20px;
+    }
+    .button {
+        background-color: #add8e6;
+        width: 200px;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border: 1px solid #000;
+        font-size: 18px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .button:hover {
+        transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+<div class="button-container">
+  <a href="/board/event" class="button">모집 공고 글쓰기</a>
+  <a href="/board/eventList" class="button">게시글 보러가기</a>
+</div>
+</body>
+</html>

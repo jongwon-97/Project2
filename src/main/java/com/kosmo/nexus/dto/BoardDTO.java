@@ -18,4 +18,6 @@ public class BoardDTO {
     private String answerStatus; // 게시글 답변 상태 (예: 답변 완료, 답변 대기 중)
     private String memberId; // 게시글 작성자 ID
     private boolean isNotice;
+
+    private int commentCount; // 댓글 수 필드
 }

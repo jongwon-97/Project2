@@ -1,5 +1,6 @@
 package com.kosmo.nexus.service;
 
+import com.kosmo.nexus.common.util.PasswordUtil;
 import com.kosmo.nexus.dto.LoginDTO;
 import com.kosmo.nexus.exception.NoMemberException;
 import com.kosmo.nexus.mapper.LoginMapper;
@@ -47,7 +48,7 @@ public class LoginServiceImpl implements LoginService{
         LoginDTO member = loginMapper.findMemberByUserId(tmpUser.getMemberId());
 
         // 2. 회원 정보 검증
-        if (member == null || !member.getMemberPw().equals(tmpUser.getMemberPw())) {
+        if (member == null || !PasswordUtil.checkPassword(tmpUser.getMemberPw(), member.getMemberPw())) {
             throw new NoMemberException("아이디 또는 비밀번호가 틀렸습니다.");
         }
 
@@ -72,7 +73,7 @@ public class LoginServiceImpl implements LoginService{
         LoginDTO member = loginMapper.findMemberByUserId(tmpUser.getMemberId());
 
         // 1. 회원 존재 및 비밀번호 확인
-        if (member == null || !member.getMemberPw().equals(tmpUser.getMemberPw())) {
+        if (member == null || !PasswordUtil.checkPassword(tmpUser.getMemberPw(), member.getMemberPw())) {
             throw new NoMemberException("아이디 또는 비밀번호가 틀렸습니다.");
         }
         log.info("role===={}", member.getMemberRole());

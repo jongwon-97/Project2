@@ -52,9 +52,9 @@ public class PagingDTO {
         }
     }
 
-    // 새 메서드: 총 게시글 수 설정과 초기화를 동시에 처리
-    public void setTotalCountAndInit(int totalCount) {
-        this.totalCount = totalCount; // 총 게시글 수 설정
-        this.init(); // 초기화 로직 호출
-    }
+//    // 새 메서드: 총 게시글 수 설정과 초기화를 동시에 처리
+//    public void setTotalCountAndInit(int totalCount) {
+//        this.totalCount = totalCount; // 총 게시글 수 설정
+//        this.init(); // 초기화 로직 호출
+//    }
 }

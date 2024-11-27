@@ -2,14 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공지사항 작성</title>
+    <title>공지사항 작성 (Admin)</title>
 </head>
 <body>
 <!-- 공지사항 작성 폼 -->
 <div>
     <h1>공지사항 작성</h1>
-    <form th:action="@{/board/notification}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/board/adminNotification}" method="post" enctype="multipart/form-data">
         <!-- 등록 및 임시저장 버튼 -->
         <div>
             <button type="submit">등록</button>
@@ -20,6 +19,7 @@
         <div>
             <label for="boardTitle">제목</label>
             <input type="text" id="boardTitle" name="boardTitle" placeholder="제목을 입력하세요" required>
+            <span style="color: blue;">&lt;기업&gt;</span> <!-- 푸른 글씨체로 "<기업>" 표시 -->
         </div>
 
         <!-- 공지 체크박스 -->
@@ -28,10 +28,10 @@
             <label for="isNotice">공지</label>
         </div>
 
-        <!-- 여러 파일 첨부 -->
+        <!-- 파일 첨부 -->
         <div>
-            <label for="files">파일 첨부</label>
-            <input type="file" id="files" name="files" multiple>
+            <label for="file">파일 첨부</label>
+            <input type="file" id="file" name="file">
         </div>
 
         <!-- 내용 작성 -->
@@ -39,9 +39,6 @@
             <label for="boardContent">내용</label>
             <textarea id="boardContent" name="boardContent" rows="10" placeholder="내용을 입력하세요"></textarea>
         </div>
-
-        <!-- 숨겨진 카테고리 필드 -->
-        <input type="hidden" name="boardCategory" value="공지사항">
 
         <!-- 목록 버튼 -->
         <div>

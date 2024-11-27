@@ -152,8 +152,10 @@
     <tr th:each="season : ${seasonList}" th:if="${season.seasonState == '모집중'}">
       <td>
         <div class="event-thumbnail">
-          <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}" alt="썸네일" />
+          <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}"
+               alt="썸네일" />
         </div>
+
         <div class="event-title" th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></div>
       </td>
       <td th:text="${season.seasonInfo != null ? season.seasonInfo : '정보 없음'}"></td>
@@ -265,6 +267,5 @@
   });
 });
 </script>
-
 </body>
 </html>

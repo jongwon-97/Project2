@@ -22,5 +22,5 @@ public class SeasonDTO {
     private int boardId;
     private int roundNumber; //회차 값(N회차)
 
-    private String seasonThumbnail; // 썸네일 경로 추가
+    private String seasonThumbnail; // 썸네일 경로
 }

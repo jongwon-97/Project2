@@ -57,10 +57,12 @@
 <!-- 첨부파일 표시 -->
 <div>
     <p><strong>첨부파일:</strong></p>
-    <p th:if="${attachedFile != null}">
-        <a th:href="@{${attachedFile.filePath}}" th:text="${attachedFile.fileOriginName}" download></a>
-    </p>
-    <p th:if="${attachedFile == null}">첨부된 파일이 없습니다.</p>
+    <ul>
+        <li th:each="file : ${attachedFiles}">
+            <a th:href="@{${file.filePath}}" th:text="${file.fileOriginName}" download></a>
+        </li>
+    </ul>
+    <p th:if="${#lists.isEmpty(attachedFiles)}">첨부된 파일이 없습니다.</p>
 </div>
 
 <div>

@@ -40,54 +40,54 @@
       padding: 10px 20px;
       font-size: 14px;
     }
- <!-- ------------------------------------ -->
+    <!-- ------------------------------------ -->
 
-  .pagination-container {
-    display: flex;
-    justify-content: center; /* 중앙 정렬 */
-    align-items: center;
-    margin-top: 20px;
-  }
+    .pagination-container {
+      display: flex;
+      justify-content: center; /* 중앙 정렬 */
+      align-items: center;
+      margin-top: 20px;
+    }
 
-  .pagination {
-    display: inline-flex; /* 가로 정렬 */
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+    .pagination {
+      display: inline-flex; /* 가로 정렬 */
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-  .page-item {
-    margin: 0 5px;
-  }
+    .page-item {
+      margin: 0 5px;
+    }
 
-  .page-link {
-    display: block;
-    padding: 10px 15px;
-    text-decoration: none;
-    color: #007bff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: white;
-  }
+    .page-link {
+      display: block;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #007bff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: white;
+    }
 
-  .page-link:hover {
-    color: #0056b3;
-    background-color: #f8f9fa;
-    border-color: #ddd;
-  }
+    .page-link:hover {
+      color: #0056b3;
+      background-color: #f8f9fa;
+      border-color: #ddd;
+    }
 
-  .page-item.active .page-link {
-    color: white;
-    background-color: #007bff;
-    border-color: #007bff;
-  }
+    .page-item.active .page-link {
+      color: white;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
 
-  .page-item.disabled .page-link {
-    color: #6c757d;
-    pointer-events: none; /* 클릭 비활성화 */
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-  }
+    .page-item.disabled .page-link {
+      color: #6c757d;
+      pointer-events: none; /* 클릭 비활성화 */
+      background-color: #e9ecef;
+      border-color: #dee2e6;
+    }
 
   </style>
 </head>
@@ -113,21 +113,19 @@
   </tr>
   </thead>
   <tbody>
-  <!-- 글이 없을 경우 표시 -->
-  <tr th:if="${notifications.isEmpty()}">
-    <td colspan="5" style="text-align: center; font-weight: bold; color: gray;">글이 없습니다.</td>
-  </tr>
-
-  <!-- 글 목록 출력 -->
   <tr th:each="notification : ${notifications}">
+    <!-- 공지 글번호 표시 -->
     <td>
       <span th:if="${notification.isNotice}" style="color: red;">[공지]</span>
       <span th:unless="${notification.isNotice}" th:text="${notification.boardId}"></span>
     </td>
+    <!-- 제목 -->
     <td>
       <a th:href="@{/board/notificationDetail(num=${notification.boardId})}" th:text="${notification.boardTitle}"></a>
+      <!-- 댓글 개수 표시 -->
       <span th:if="${notification.commentCount > 0}"
-            th:text="' (' + ${notification.commentCount} + ')'"></span>
+            th:text="' (' + ${notification.commentCount} + ')'"
+            style="color: red; font-size: 0.9em;"></span>
     </td>
     <td th:text="${notification.memberId}"></td>
     <td th:text="${notification.boardCreateDate}"></td>
@@ -139,7 +137,7 @@
 <div>
   <button onclick="location.href='/board/notification'">글쓰기</button>
 </div>
-<div class="pagination-container" th:if="${generalCount > 0}" style="text-align: center; margin-top: 20px;">
+<div class="pagination-container" style="text-align: center; margin-top: 20px;">
   <ul class="pagination">
     <!-- 처음으로 버튼 -->
     <li th:classappend="${paging.pageNum == 1} ? 'page-item disabled' : 'page-item'">
@@ -182,7 +180,6 @@
     </li>
   </ul>
 </div>
-
 
 </body>
 </html>

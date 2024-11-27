@@ -30,7 +30,8 @@
         event_id AS eventId,
         season_state AS seasonState,
         board_id AS boardId,
-        round_number AS roundNumber
+        round_number AS roundNumber,
+        season_thumbnail AS seasonThumbnail
         FROM c_season
     </select>
 

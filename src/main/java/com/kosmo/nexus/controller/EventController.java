@@ -92,8 +92,9 @@ public class EventController {
         // 썸네일 업로드 처리
         String thumbnailPath = null;
         if (thumbnail != null && !thumbnail.isEmpty()) {
-            String folderPath = "/thumbnails"; // webapp/thumbnails 디렉토리
-            Path path = Paths.get(servletContext.getRealPath(folderPath));
+            String folderPath = "/static/thumbnails";
+            Path path = Paths.get(new File("src/main/resources" + folderPath).getAbsolutePath());
+
 
             if (!Files.exists(path)) {
                 try {
@@ -112,7 +113,8 @@ public class EventController {
             Path destination = path.resolve(fileName);
             try {
                 Files.copy(thumbnail.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-                thumbnailPath = folderPath + "/" + fileName; // 저장된 파일 경로 설정
+                thumbnailPath = "/thumbnails/" + fileName; // 저장된 파일 경로 설정
+                log.info("Thumbnail successfully saved. Path: {}", thumbnailPath);
             } catch (IOException e) {
                 log.error("썸네일 저장 실패: {}", e.getMessage());
                 throw new RuntimeException("썸네일 저장에 실패했습니다.");
@@ -199,7 +201,7 @@ public class EventController {
         // 이벤트 목록을 JSON으로 반환
         return eventService.getAllEvents();
     }
-  //네비게이션 경로
+    //네비게이션 경로
     @GetMapping("/board/eventNavi")
     public String eventNavigation(){
         return "event/eventNavigation";

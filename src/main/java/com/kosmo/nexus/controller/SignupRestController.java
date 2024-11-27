@@ -28,12 +28,8 @@ public class SignupRestController {
             if (company != null) {
                 // 로고 경로 추가
                 if (company.getCompanyLogoName() != null && !company.getCompanyLogoName().isEmpty()) {
-                    // 로고 URL 생성
-                    String logoUrl = "/uploads/company-logos/" + company.getCompanyLogoName();
+                    String logoUrl = "/uploads/company-logos/" + company.getCompanyLogoName(); // URL 생성
                     company.setCompanyLogoUrl(logoUrl); // URL 설정
-                } else {
-                    // 로고가 없는 경우 기본 URL 설정
-                    company.setCompanyLogoUrl("/images/noimage.png");
                 }
                 return ResponseEntity.ok(company);
             } else {

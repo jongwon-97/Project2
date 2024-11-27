@@ -6,9 +6,7 @@
     <script>
         function deleteAttachedFile(fileId) {
             if (confirm("첨부파일을 삭제하시겠습니까?")) {
-                fetch(`/file/delete?fileId=${fileId}`, {
-                    method: 'DELETE'
-                })
+                fetch(`/file/delete?fileId=${fileId}`, { method: 'DELETE' })
                     .then(response => {
                         if (response.ok) {
                             alert("첨부파일이 삭제되었습니다.");
@@ -52,15 +50,19 @@
     <!-- 첨부파일 -->
     <div>
         <p><strong>첨부파일:</strong></p>
-        <p th:if="${attachedFile != null}">
-            <span th:text="${attachedFile.fileOriginName}"></span>
-            <button type="button" th:onclick="|deleteAttachedFile(${attachedFile.fileId})|">삭제</button>
-        </p>
-        <p th:if="${attachedFile == null}">첨부된 파일이 없습니다.</p>
+        <ul>
+            <li th:each="file : ${attachedFiles}">
+                <span th:text="${file.fileOriginName}"></span>
+                <button type="button" th:onclick="|deleteAttachedFile(${file.fileId})|">삭제</button>
+            </li>
+        </ul>
+        <p th:if="${#lists.isEmpty(attachedFiles)}">첨부된 파일이 없습니다.</p>
+    </div>
 
-        <!-- 새로운 파일 첨부 -->
-        <label for="newFile">새 파일 첨부:</label>
-        <input type="file" id="newFile" name="newFile">
+    <!-- 새로운 파일 첨부 -->
+    <div>
+        <label for="newFiles">새 파일 첨부:</label>
+        <input type="file" id="newFiles" name="newFiles" multiple>
     </div>
 
     <!-- 버튼 -->

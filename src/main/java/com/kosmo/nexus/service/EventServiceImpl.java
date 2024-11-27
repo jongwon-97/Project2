@@ -28,7 +28,10 @@ public class EventServiceImpl implements EventService{
 
     @Override
     public List<SeasonDTO> getAllSeasons() {
-        return eventMapper.getAllSeasons();
+        List<SeasonDTO> seasonList = eventMapper.getAllSeasons();
+        // 로그로 결과 확인
+        System.out.println("Retrieved seasonList: " + seasonList);
+        return seasonList;
     }
 
 

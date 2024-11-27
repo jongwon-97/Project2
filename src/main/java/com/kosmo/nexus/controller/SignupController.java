@@ -38,7 +38,7 @@ public class SignupController {
                           @RequestParam("memberImg") MultipartFile memberImg,
                           HttpServletRequest req,
                           Model model){
-        log.info("signup====={}", signup);
+        //log.info("signup====={}", signup);
 
         // 업로드 디렉토리 경로 설정
         String upDir = req.getServletContext().getRealPath("/Signup_upload");
@@ -118,32 +118,11 @@ public class SignupController {
         }
 
         try {
-            // 중복 확인
-            boolean isExists = signupService.isCompanyExists(signup.getCompanyNum());
-
-            if (isExists) {
-                // 중복된 경우 기존 데이터 사용
-                CompanyDTO existingCompany = signupService.findCompanyByCompanyNum(signup.getCompanyNum());
-                if (existingCompany != null) {
-                    if (existingCompany.getCompanyLogoName() != null && !existingCompany.getCompanyLogoName().isEmpty()) {
-                        existingCompany.setCompanyLogoUrl("/uploads/company-logos/" + existingCompany.getCompanyLogoName());
-                    } else {
-                        existingCompany.setCompanyLogoUrl("/images/noimage.png"); // 기본 이미지 설정
-                    }
-                }
-
-                // 세션에 기존 데이터 저장
-                ses.setAttribute("companySignup", existingCompany);
-                model.addAttribute("msg", "이미 등록된 사업자 번호입니다. 기존 정보를 사용하여 다음 단계로 이동합니다.");
-                model.addAttribute("loc", "/bSignup2");
-                return "message";
-            }
-
-            // 신규 데이터 저장 로직
-            String uploadDir = new File("src/main/webapp/uploads/company-logos").getAbsolutePath();
+            // 업로드 디렉토리 설정
+            String uploadDir = req.getServletContext().getRealPath("/uploads/company-logos/");
             File dir = new File(uploadDir);
-            if (!dir.exists() && !dir.mkdirs()) {
-                throw new IOException("업로드 디렉토리 생성 실패: " + uploadDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
             }
 
             // 파일 업로드 처리
@@ -155,17 +134,20 @@ public class SignupController {
                 File file = new File(uploadDir, savedFilename);
                 signup.getCompanyLogo().transferTo(file);
 
-                if (!file.exists()) {
-                    throw new IOException("파일 저장 실패: " + file.getAbsolutePath());
-                }
-
-                signup.setCompanyLogoName(savedFilename);
-                signup.setCompanyLogoUrl("/uploads/company-logos/" + savedFilename);
+                // 파일명과 URL 설정
+                signup.setCompanyLogoName(savedFilename); // 파일명 저장
+                signup.setCompanyLogoUrl("/uploads/company-logos/" + savedFilename); // URL 생성
+            } else if (signup.getCompanyLogoUrl() != null && !signup.getCompanyLogoUrl().isEmpty()) {
+                // URL만 전달된 경우
+                signup.setCompanyLogoName(null); // 파일명 비워두기
+                signup.setCompanyLogoUrl(signup.getCompanyLogoUrl());
             } else {
-                signup.setCompanyLogoName("noimage.png");
-                signup.setCompanyLogoUrl("/images/noimage.png");
+                // 기본값 설정
+                signup.setCompanyLogoName("/images/noimage.png");
+                signup.setCompanyLogoUrl("/uploads/company-logos/default-logo.png");
             }
 
+            ses.setAttribute("companySignup", signup);
             // 데이터베이스 저장
             int result = signupService.insertCompany(signup);
             if (result > 0) {

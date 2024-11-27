@@ -4,24 +4,36 @@
 <mapper namespace="com.kosmo.nexus.mapper.FileMapper">
 
     <!-- 파일 삽입 -->
-    <insert id="insertFile" parameterType="File">
+    <insert id="insertFile" parameterType="com.kosmo.nexus.dto.FileDTO">
         INSERT INTO c_file (file_path, board_id, file_size, file_date, file_origin_name)
         VALUES (#{filePath}, #{boardId}, #{fileSize}, NOW(), #{fileOriginName})
     </insert>
 
-    <select id="selectFileByBoardId" resultType="File">
+    <select id="selectFileByBoardId" resultType="com.kosmo.nexus.dto.FileDTO">
         SELECT file_id AS fileId,
-               file_path AS filePath,
-               board_id AS boardId,
-               file_size AS fileSize,
-               file_date AS fileDate,
-               file_origin_name AS fileOriginName
+        file_path AS filePath,
+        board_id AS boardId,
+        file_size AS fileSize,
+        file_date AS fileDate,
+        file_origin_name AS fileOriginName
         FROM c_file
         WHERE board_id = #{boardId}
     </select>
 
+
     <delete id="deleteFile">
         DELETE FROM c_file WHERE file_id = #{fileId}
     </delete>
+
+    <select id="selectFilesByBoardId" resultType="com.kosmo.nexus.dto.FileDTO">
+        SELECT file_id AS fileId,
+        file_path AS filePath,
+        board_id AS boardId,
+        file_size AS fileSize,
+        file_date AS fileDate,
+        file_origin_name AS fileOriginName
+        FROM c_file
+        WHERE board_id = #{boardId}
+    </select>
 
 </mapper>

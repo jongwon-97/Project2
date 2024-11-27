@@ -6,13 +6,11 @@ import com.kosmo.nexus.dto.PagingDTO;
 import com.kosmo.nexus.mapper.BoardMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @Slf4j
-@Transactional
 public class BoardServiceImpl implements BoardService {
 
     private final BoardMapper boardMapper;
@@ -21,6 +19,7 @@ public class BoardServiceImpl implements BoardService {
         this.boardMapper = boardMapper;
     }
 
+    // 공지사항 관련 메서드
     @Override
     public List<BoardDTO> selectNotificationList() {
         return boardMapper.selectNotificationList();
@@ -29,12 +28,10 @@ public class BoardServiceImpl implements BoardService {
     public BoardDTO findNotificationById(int num) {
         return boardMapper.selectNotificationById(num);
     }
-
-
-    // 공지사항 작성 메서드에 NoticeDTO 사용
+    @Override
     public void insertNotification(NoticeDTO noticeDTO) {
         log.info("공지사항 추가: {}", noticeDTO);
-        boardMapper.insertNotification(noticeDTO); // NoticeDTO 전달
+        boardMapper.insertNotification(noticeDTO);
     }
     @Override
     public void deleteNotification(int num) {
@@ -44,22 +41,19 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void updateNotification(NoticeDTO noticeDTO) {
         log.info("공지사항 수정: {}", noticeDTO);
-        boardMapper.updateNotification(noticeDTO); // 매퍼 호출
+        boardMapper.updateNotification(noticeDTO);
     }
-
     @Override
     public void increaseViewCount(int num) {
         log.info("조회수 증가 요청: {}", num);
         boardMapper.updateViewCount(num);
     }
 
-    // 페이징된 공지사항 목록 조회
+
     @Override
     public List<BoardDTO> selectNotificationList(PagingDTO pagingDTO) {
-        return boardMapper.selectNotificationList(pagingDTO); // 모든 게시물 반환
+        return boardMapper.selectNotificationList(pagingDTO);
     }
-
-    // 총 게시물 수 조회
     @Override
     public int getTotalNotificationCount(PagingDTO pagingDTO) {
         return boardMapper.getTotalNotificationCount(pagingDTO);
@@ -77,4 +71,48 @@ public class BoardServiceImpl implements BoardService {
     }
 
 
+
+    @Override
+    public List<BoardDTO> selectQnaList(PagingDTO pagingDTO) {
+        return boardMapper.selectQnaList(pagingDTO);
+    }
+
+    @Override
+    public int getTotalQnaCount(PagingDTO pagingDTO) {
+        return boardMapper.getTotalQnaCount(pagingDTO);
+    }
+
+    @Override
+    public BoardDTO findQnaById(int num) {
+        return boardMapper.selectQnaById(num);
+    }
+
+    @Override
+    public void insertQna(BoardDTO boardDTO) {
+        log.info("QnA 추가: {}", boardDTO);
+        boardMapper.insertQna(boardDTO);
+    }
+
+    @Override
+    public void updateQna(BoardDTO boardDTO) {
+        log.info("QnA 수정: {}", boardDTO);
+        boardMapper.updateQna(boardDTO);
+    }
+
+    @Override
+    public void deleteQna(int num) {
+        log.info("QnA 삭제 요청: {}", num);
+        boardMapper.deleteQna(num);
+    }
+
+    @Override
+    public void increaseQnaViewCount(int num) {
+        log.info("QnA 조회수 증가 요청: {}", num);
+        boardMapper.updateQnaViewCount(num);
+    }
+
+    @Override
+    public void updateAnswerStatus(int boardId, String answerStatus) {
+        boardMapper.updateAnswerStatus(boardId, answerStatus);
+    }
 }

@@ -1,0 +1,82 @@
+
+Project2-develop MK5/
+├── .gradle/
+├── .idea/
+├── build/
+├── gradle/
+├── out/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com.kosmo.nexus/
+│   │   │       ├── controller/
+│   │   │       │   ├── BoardController
+│   │   │       │   ├── LoginController
+│   │   │       ├── dto/
+│   │   │       │   ├── BoardDTO
+│   │   │       │   ├── MemberDTO
+│   │   │       │   ├── NoticeDTO
+│   │   │       ├── mapper/
+│   │   │       │   ├── BoardMapper
+│   │   │       ├── service/
+│   │   │       │   ├── BoardService
+│   │   │       │   ├── BoardServiceImpl
+│   │   │       ├── SpringMybatisDemoApplication
+│   │   │       ├── ServletInitializer
+│   │   ├── resources/
+│   │   │   ├── config/
+│   │   │   │   ├── mybatis-config.xml
+│   │   │   ├── mappers/
+│   │   │   │   ├── BoardMapper.xml
+│   │   │   │   ├── SampleMapper.xml
+│   │   │   ├── static/
+│   │   │   │   ├── ckeditor/
+│   │   │   │   ├── css/
+│   │   │   │   ├── images/
+│   │   │   │   ├── js/
+│   │   │   │   ├── member/
+│   │   │   │   ├── index.html
+│   │   │   │   ├── test.html
+│   │   │   ├── templates/
+│   │   │   │   ├── notice/
+│   │   │   │   │   ├── notification.html
+│   │   │   │   │   ├── notificationDetail.html
+│   │   │   │   │   ├── notificationEdit.html
+│   │   │   │   │   ├── notificationList.html
+│   │   │   ├── application.properties
+│   │   ├── webapp/
+└── test/
+
+### File Contents ###
+1. BoardController.java:
+<BoardController content from bio>
+
+2. BoardDTO.java:
+<BoardDTO content from bio>
+
+3. NoticeDTO.java:
+<NoticeDTO content from bio>
+
+4. BoardMapper.java:
+<BoardMapper content from bio>
+
+5. BoardService.java:
+<BoardService content from bio>
+
+6. BoardServiceImpl.java:
+<BoardServiceImpl content from bio>
+
+7. BoardMapper.xml:
+<BoardMapper.xml content from bio>
+
+8. notification.html:
+<notification.html content from bio>
+
+9. notificationDetail.html:
+<notificationDetail.html content from bio>
+
+10. notificationEdit.html:
+<notificationEdit.html content from bio>
+
+11. notificationList.html:
+<notificationList.html content from bio>

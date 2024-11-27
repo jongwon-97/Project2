@@ -28,11 +28,20 @@
             <label for="isNotice">공지</label>
         </div>
 
+        <!-- 여러 파일 첨부 -->
+        <div>
+            <label for="files">파일 첨부</label>
+            <input type="file" id="files" name="files" multiple>
+        </div>
+
         <!-- 내용 작성 -->
         <div>
             <label for="boardContent">내용</label>
             <textarea id="boardContent" name="boardContent" rows="10" placeholder="내용을 입력하세요"></textarea>
         </div>
+
+        <!-- 숨겨진 카테고리 필드 -->
+        <input type="hidden" name="boardCategory" value="공지사항">
 
         <!-- 목록 버튼 -->
         <div>

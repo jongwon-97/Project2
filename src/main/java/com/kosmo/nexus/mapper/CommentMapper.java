@@ -13,7 +13,7 @@ public interface CommentMapper {
     void insertComment(CommentDTO comment);
 
     // 특정 게시판의 최상위 댓글 조회
-    List<CommentDTO> findCommentsByBoardId(Long boardId);
+    List<CommentDTO> findCommentsByBoardId(int boardId);
     // 특정 댓글의 대댓글 조회
     List<CommentDTO> findRepliesByParentId(Long parentId);
 
@@ -23,5 +23,7 @@ public interface CommentMapper {
     void deleteComment(Long commentId); //댓글 삭제
 
     void updateComment(CommentDTO comment); // 댓글 수정
+
+    void deleteCommentsByBoardId(int boardId);
 
 }

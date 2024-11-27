@@ -6,10 +6,17 @@
 
 	<typeAliases>
 		<typeAlias type="com.kosmo.nexus.dto.TestDTO" alias="Test"/>
+
 		<typeAlias type="com.kosmo.nexus.dto.LoginDTO" alias="Login"/>
 		<typeAlias type="com.kosmo.nexus.dto.MemberDTO" alias="Member"/>
+
 		<typeAlias type="com.kosmo.nexus.dto.BoardDTO" alias="Board"/>
 		<typeAlias type="com.kosmo.nexus.dto.CommentDTO" alias="Comment"/>
+		<typeAlias type="com.kosmo.nexus.dto.FileDTO" alias="File"/>
+		<typeAlias type="com.kosmo.nexus.dto.PagingDTO" alias="Paging"/>
+		<typeAlias type="com.kosmo.nexus.dto.SeasonDTO" alias="Season"/>
+		<typeAlias type="com.kosmo.nexus.dto.EventDTO" alias="Event"/>
+
 		<typeAlias type="com.kosmo.nexus.dto.SignupDTO" alias="Signup"/>
 		<typeAlias type="com.kosmo.nexus.dto.CompanyDTO" alias="Company"/>
 	</typeAliases>

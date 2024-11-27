@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="/js/company.js"></script>
     <title>기업 회원가입</title>
-    <style>body {
+    <style>
+        body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
@@ -66,6 +70,12 @@
         .notice a:hover {
             text-decoration: underline;
         }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -91,25 +101,31 @@
                     <button type="button" class="btn-search" onclick="searchBusiness()">검색</button>
                 </td>
             </tr>
+            <tr>
+                <td colspan="3"><span id="businessValidationResult" class="error-message"></span></td>
+            </tr>
             <!-- 회사명 -->
             <tr>
                 <td><label for="companyName">회사명</label></td>
                 <td colspan="2">
-                    <input type="text" id="companyName" name="companyName" placeholder="회사명을 입력하세요" required>
+                    <input type="text" id="companyName" name="companyName" placeholder="회사명을 입력하세요">
+                    <div id="errorCompanyName" class="error-message"></div>
                 </td>
             </tr>
             <!-- 대표 이메일 -->
             <tr>
                 <td><label for="companyEmail">대표 이메일</label></td>
                 <td colspan="2">
-                    <input type="email" id="companyEmail" name="companyEmail" placeholder="대표 이메일을 입력하세요" required>
+                    <input type="text" id="companyEmail" name="companyEmail" placeholder="대표 이메일을 입력하세요">
+                    <div id="errorCompanyEmail" class="error-message"></div>
                 </td>
             </tr>
             <!-- 대표 전화번호 -->
             <tr>
                 <td><label for="companyPhone">대표 전화번호</label></td>
                 <td colspan="2">
-                    <input type="tel" id="companyPhone" name="companyPhone" placeholder="대표 전화번호를 입력하세요 (예: 02-1234-5678)" required>
+                    <input type="tel" id="companyPhone" name="companyPhone" placeholder="대표 전화번호를 입력하세요">
+                    <div id="errorCompanyPhone" class="error-message"></div>
                 </td>
             </tr>
             <!-- 우편번호 -->
@@ -135,13 +151,12 @@
                 <td><label for="companyLogo">회사 로고</label></td>
                 <td colspan="2">
                     <div class="file-input-container" style="display: flex; align-items: center;">
-                        <!-- 미리보기 이미지 출력 -->
                         <div class="preview-container" style="margin-right: 10px;">
                             <img src="images/noimage.png" id="logoPreview" alt="로고 미리보기" style="width: 100px; height: 100px; border: 1px solid #ddd; border-radius: 5px; object-fit: cover;">
                         </div>
-                        <!-- 파일 선택 버튼 -->
                         <div>
                             <input type="file" id="companyLogo" name="companyLogo" accept="image/*" onchange="previewImage(event)">
+                            <input type="hidden" id="companyLogoUrl" name="companyLogoUrl">
                         </div>
                     </div>
                 </td>
@@ -161,13 +176,7 @@
         </table>
     </form>
 </div>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-    function searchBusiness() {
-        alert("사업자 등록번호 API 호출 예정입니다.");
-        // 여기에 사업자 등록번호 검색 API 호출 로직 작성
-    }
-
     function searchPostcode() {
         new daum.Postcode({
         oncomplete: function (data) {
@@ -215,8 +224,11 @@
     } else {
         // 파일이 없을 경우 기본 이미지로 복원
         logoPreview.src = "images/noimage.png";
-    }
-}
+       }
+   }
+
+
 </script>
+
 </body>
 </html>

@@ -11,16 +11,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
+@RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
@@ -29,25 +34,31 @@ public class AdminController {
     @Autowired
     private ServletContext servletContext;
 
-    @GetMapping("/admin/memberList")
+    @GetMapping("/memberList")
     public String findMemberList(HttpSession ses, Model model){
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
-
+        List<String> departments = adminService.findDepartmentByCompanyId(sesCompanyId);
+        List<String> ranks = adminService.findRankByCompanyId(sesCompanyId);
         List<MemberDTO> listMember= adminService.findMemberList(sesCompanyId);
 
         model.addAttribute("listMember", listMember);
+        model.addAttribute("departments", departments);
+        model.addAttribute("ranks", ranks);
+
         log.info("MemberDTOList====={}", listMember);
+        log.info("DepartmentList====={}", departments);
+        log.info("RankList====={}", ranks);
 
         return "/admin/memberList";
     }
 
-    @GetMapping("/admin/addMember")
+    @GetMapping("/addMember")
     public String addUserPage(){
         return "admin/addUserPage";
     }
 
 
-    @GetMapping("/admin/userPage")
+    @GetMapping("/userPage")
     public String findUserPage(@RequestParam("id") String memberId, Model model, HttpSession ses){
         Long memberCompanyId = adminService.findCompanyIdByMemberId(memberId);
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
@@ -64,7 +75,7 @@ public class AdminController {
         return "admin/userPage";
     }
 
-    @PostMapping("/admin/userPage")
+    @PostMapping("/userPage")
     public String UpdateUserPage(HttpSession ses, Model model, MemberDTO member){
         String memberId = member.getMemberId();
         Long memberCompanyId = adminService.findCompanyIdByMemberId(memberId);
@@ -88,7 +99,7 @@ public class AdminController {
     }
 
 
-    @PostMapping("/admin/memberDel")
+    @PostMapping("/memberDel")
     public String DeleteMemberList(@RequestParam List<String> membersDel, HttpSession ses, Model model) throws IOException {
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
 
@@ -106,15 +117,72 @@ public class AdminController {
     }
 
 
-    @PostMapping("/admin/search")
+    @PostMapping("/search")
     public String searchMemberList(@RequestParam("simpleSearch") String search, @RequestParam("searchOption") String option,
                                    HttpSession ses, Model model){
             Long sesCompanyId = getLoginUserCompanyId(ses, model);
             log.info("search========={}, option========{}",search, option);
             List<MemberDTO> listMember= adminService.searchMemberList(search, option, sesCompanyId);
-
+            List<String> departments = listMember.stream()
+                    .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                    .distinct() // 중복 제거
+                    .sorted() // 오름차순 정렬
+                    .collect(Collectors.toList()); // List<String>으로 수집
+            List<String> ranks = listMember.stream()
+                    .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                    .distinct() // 중복 제거
+                    .sorted() // 오름차순 정렬
+                    .collect(Collectors.toList()); // List<String>으로 수집
             model.addAttribute("listMember", listMember);
+            model.addAttribute("departments", departments);
+            model.addAttribute("ranks", ranks);
+            model.addAttribute("simpleSearch", search);
+            model.addAttribute("searchOption", option);
             log.info("SearchMemberList====={}", listMember);
+        return "/admin/memberList";
+    }
+
+    @PostMapping("/adSearch")
+    public String adSearchMemberList(@RequestParam("birthStart") String birthStart,
+                                     @RequestParam("birthEnd") String birthEnd,
+                                     @RequestParam("hireStart") String hireStart,
+                                     @RequestParam("hireEnd") String hireEnd,
+                                     HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+
+        if (birthStart.isEmpty()) birthStart = null;
+        if (birthEnd.isEmpty()) birthEnd = null;
+        if (hireStart.isEmpty()) hireStart = null;
+        if (hireEnd.isEmpty())hireEnd = null;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("companyId", sesCompanyId);
+        params.put("birthStart", birthStart);
+        params.put("birthEnd", birthEnd);
+        params.put("hireStart", hireStart);
+        params.put("hireEnd", hireEnd);
+        List<MemberDTO> listMember = adminService.searchMemberListByDate(params);
+        // List<MemberDTO>에서 memberDepartment 추출하여 List<String>으로 변환
+        List<String> departments = listMember.stream()
+                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> ranks = listMember.stream()
+                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        model.addAttribute("listMember", listMember);
+        model.addAttribute("departments", departments);
+        model.addAttribute("ranks", ranks);
+        model.addAttribute("companyId", sesCompanyId);
+        model.addAttribute("birthStart", birthStart);
+        model.addAttribute("birthEnd", birthEnd);
+        model.addAttribute("hireStart", hireStart);
+        model.addAttribute("hireEnd", hireEnd);
+        log.info("SearchMemberList====={}", listMember);
+
         return "/admin/memberList";
     }
 
@@ -155,7 +223,4 @@ public class AdminController {
         model.addAttribute("loc", loc);
         return "message";
     }
-
-
-
 }

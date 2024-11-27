@@ -147,6 +147,43 @@
         ORDER BY member_num
     </select>
 
+    <select id="searchMemberListByDate" resultMap="MemberResultMap">
+        SELECT
+        member_id,            -- 아이디
+        member_name,          -- 이름
+        member_role,          -- 권한
+        member_img,           -- 이미지
+        member_sns,           -- sns 번호
+        member_email,         -- 이메일
+        member_phone,         -- 전화번호
+        member_gender,        -- 성별
+        member_birth,         -- 생년월일
+        member_postcode,      -- 우편번호
+        member_address,       -- 주소
+        member_d_address,     -- 상세 주소
+        member_num,                  -- 사번
+        member_rank,          -- 직급
+        member_department,    -- 부서
+        company_id,           -- 회사 ID
+        member_status,        -- 상태
+        member_start_date,    -- 회원 생성일
+        member_last_date      -- 마지막 접속일
+        FROM c_member
+        WHERE company_id = #{companyId}
+        <if test="birthStart != null and birthStart != ''">
+            AND member_birth >= #{birthStart}
+        </if>
+        <if test="birthEnd != null and birthEnd != ''">
+            AND #{birthEnd} >= member_birth
+        </if>
+        <if test="hireStart != null and hireStart != ''">
+            AND member_start_date >= #{hireStart}
+        </if>
+        <if test="hireEnd != null and hireEnd != ''">
+            AND #{hireEnd} >= member_start_date
+        </if>
+    </select>
+
     <update id="updateMember" parameterType="Member">
         UPDATE c_member set
         member_img = #{memberImgName},           -- 이미지
@@ -196,6 +233,21 @@
     <select id="findCompanyIdByMemberId" resultType="Long">
         SELECT company_id FROM c_member
         WHERE member_id = #{memberId}
+    </select>
+
+
+    <select id="findDepartmentByCompanyId" resultType="String">
+        SELECT DISTINCT `member_department`
+        FROM `c_member`
+        WHERE `company_id` = #{companyId}
+        ORDER BY `member_department` ASC;
+    </select>
+
+    <select id="findRankByCompanyId" resultType="String">
+        SELECT DISTINCT `member_rank`
+        FROM `c_member`
+        WHERE `company_id` = #{companyId}
+        ORDER BY `member_rank` ASC;
     </select>
 
     <insert id="insertMemberList">

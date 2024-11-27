@@ -6,6 +6,7 @@ import com.kosmo.nexus.mapper.MemberMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminServiceImpl implements AdminService{
@@ -26,8 +27,23 @@ public class AdminServiceImpl implements AdminService{
     }
 
     @Override
+    public List<String> findDepartmentByCompanyId(Long companyId) {
+        return memberMapper.findDepartmentByCompanyId(companyId);
+    }
+
+    @Override
+    public List<String> findRankByCompanyId(Long companyId) {
+        return memberMapper.findRankByCompanyId(companyId);
+    }
+
+    @Override
     public List<MemberDTO> searchMemberList(String search, String option, Long companyId) {
         return memberMapper.searchMemberList(search, option, companyId);
+    }
+
+    @Override
+    public List<MemberDTO> searchMemberListByDate(Map<String, Object> params) {
+        return memberMapper.searchMemberListByDate(params);
     }
 
     @Override

@@ -13,5 +13,6 @@
 		<typeAlias type="com.kosmo.nexus.dto.PagingDTO" alias="Paging"/>
 		<typeAlias type="com.kosmo.nexus.dto.SeasonDTO" alias="Season"/>
 		<typeAlias type="com.kosmo.nexus.dto.EventDTO" alias="Event"/>
+		<typeAlias type="com.kosmo.nexus.dto.CompanyDTO" alias="Company"/>
 	</typeAliases>
 </configuration>

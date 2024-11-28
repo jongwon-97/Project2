@@ -186,7 +186,6 @@
 
     <update id="updateMember" parameterType="Member">
         UPDATE c_member set
-        member_img = #{memberImgName},           -- 이미지
         member_email = #{memberEmail},         -- 이메일
         member_phone = #{memberPhone},         -- 전화번호
         member_gender = #{memberGender},        -- 성별

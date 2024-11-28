@@ -9,6 +9,7 @@ import com.kosmo.nexus.service.AdminService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,14 +55,17 @@ public class AdminRestController {
 
                 // memberPhone이 null이 아니고 길이가 4 이상일 경우, 마지막 4글자를 비밀번호로 설정
                 String memberPhone = member.getMemberPhone();  // 전화번호 가져오기
+                String memberPw = "";
                 if (memberPhone != null && memberPhone.length() >= 4) {
                     // 전화번호의 마지막 4글자를 비밀번호로 설정
-                    String memberPw = memberPhone.substring(memberPhone.length() - 4);
-                    member.setMemberPw(memberPw);  // 비밀번호 설정
+                    memberPw = memberPhone.substring(memberPhone.length() - 4);
                 } else {
                     // 전화번호가 유효하지 않은 경우 기본값 설정 (선택 사항)
-                    member.setMemberPw("0000");  // 기본값 "0000"으로 설정
+                    memberPw ="0000";  // 기본값 "0000"으로 설정
                 }
+                memberPw = hashPassword(memberPw);
+                member.setMemberPw(memberPw);  // 비밀번호 설정
+
                 // imageFiles에서 멤버 ID에 해당하는 파일 찾기
                 String key = "imageFiles[" + member.getMemberId() + "]";  // 멤버 ID에 맞는 key 생성
                 MultipartFile imageFile = imageFiles != null ? imageFiles.get(key) : null;  // 해당 key로 이미지 찾기
@@ -156,6 +160,10 @@ public class AdminRestController {
         model.addAttribute("msg", msg);
         model.addAttribute("loc", loc);
         return "message";
+    }
+
+    public static String hashPassword(String rawPassword) {
+        return BCrypt.hashpw(rawPassword, BCrypt.gensalt());
     }
 
 }

@@ -267,14 +267,14 @@
         SELECT DISTINCT `member_department`
         FROM `c_member`
         WHERE `company_id` = #{companyId}
-        ORDER BY `member_department` ASC;
+        ORDER BY `member_department` ASC
     </select>
 
     <select id="findRankByCompanyId" resultType="String">
         SELECT DISTINCT `member_rank`
         FROM `c_member`
         WHERE `company_id` = #{companyId}
-        ORDER BY `member_rank` ASC;
+        ORDER BY `member_rank` ASC
     </select>
 
     <insert id="insertMemberList">

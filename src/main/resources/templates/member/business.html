@@ -110,8 +110,9 @@
         아이디 저장<input type="checkbox" name="saveId" value="true">
     </label>
     <div class="links">
-        <a onclick="navigateToSignup('/bSignup')">회원가입</a> |
-        <a onclick="navigateToFindAccount('/findAccount')">아이디/비밀번호 찾기</a>
+        <a onclick="navigateToFindAccount('/findAccount')">아이디 찾기</a> |
+        <a onclick="navigateToFindAccount('/findPassword')">비밀번호 찾기</a> |
+        <a onclick="navigateToSignup('/bSignup')">회원가입</a>
     </div>
 </div>
 <script>
@@ -122,7 +123,11 @@
     function navigateToFindAccount(findAccountUrl) {
       parent.document.getElementById('iframeContainer').style.display = 'none';
       window.parent.location.href = findAccountUrl;
-  }
+    }
+    function navigateToFindPassword(findPasswordUrl) {
+      parent.document.getElementById('iframeContainer').style.display = 'none';
+      window.parent.location.href = findPasswordUrl;
+    }
     // 페이지 로드 시 실행
     document.addEventListener('DOMContentLoaded', function () {
         const memberIdInput = document.querySelector('input[name="memberId"]');

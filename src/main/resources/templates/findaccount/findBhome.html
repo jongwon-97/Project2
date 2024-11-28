@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>개인 회원 찾기</title>
+  <title>기업 회원 찾기</title>
 </head>
 <body>
-<h2>개인 회원 찾기</h2>
+<h2>기업 회원 찾기</h2>
 
 <!-- 라디오 버튼 -->
-<form id="findAccountForm" method="post" th:action="@{/processPAccount}">
+<form id="findBusinessAccountForm" method="post" th:action="@{/processBAccount}">
+  <label>
+    <input type="radio" name="findMethod" value="company" onclick="showForm('company')" required>
+    사업자등록번호 + 사원번호로 찾기
+  </label>
+  <br>
   <label>
     <input type="radio" name="findMethod" value="email" onclick="showForm('email')" required>
     이름 + 이메일로 찾기
@@ -17,7 +22,17 @@
     <input type="radio" name="findMethod" value="phone" onclick="showForm('phone')" required>
     이름 + 휴대전화번호로 찾기
   </label>
-  <br><br>
+  <br>
+
+  <!-- 사업자등록번호 양식 -->
+  <div id="companyForm" style="display:none;">
+    <label for="companyNum">사업자 등록번호:</label>
+    <input type="text" id="companyNum" name="companyNum" placeholder="ex: 123-45-67890">
+    <br>
+    <label for="memberNum">사원번호:</label>
+    <input type="text" id="memberNum" name="memberNum" placeholder="ex: 1001">
+    <br>
+  </div>
 
   <!-- 이메일 양식 -->
   <div id="emailForm" style="display:none; border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
@@ -41,44 +56,41 @@
     <br>
   </div>
 
-  <button type="submit" style="margin-top: 20px;">다음</button>
+  <button type="submit">다음</button>
 </form>
 
 <script>
   function showForm(method) {
+    // 모든 폼 숨기기
+    document.getElementById('companyForm').style.display = 'none';
     document.getElementById('emailForm').style.display = 'none';
     document.getElementById('phoneForm').style.display = 'none';
 
-    if (method === 'email') {
+    // 선택된 폼만 보이기
+    if (method === 'company') {
+      document.getElementById('companyForm').style.display = 'block';
+    } else if (method === 'email') {
       document.getElementById('emailForm').style.display = 'block';
-      document.getElementById('memberNameEmail').setAttribute('required', 'true');
-      document.getElementById('memberEmail').setAttribute('required', 'true');
-      document.getElementById('memberNamePhone').removeAttribute('required');
-      document.getElementById('memberPhone').removeAttribute('required');
     } else if (method === 'phone') {
       document.getElementById('phoneForm').style.display = 'block';
-      document.getElementById('memberNamePhone').setAttribute('required', 'true');
-      document.getElementById('memberPhone').setAttribute('required', 'true');
-      document.getElementById('memberNameEmail').removeAttribute('required');
-      document.getElementById('memberEmail').removeAttribute('required');
     }
   }
 
-  document.getElementById('findAccountForm').addEventListener('submit', function () {
-    const emailFormVisible = document.getElementById('emailForm').style.display !== 'none';
-    const phoneFormVisible = document.getElementById('phoneForm').style.display !== 'none';
-
-    if (!emailFormVisible) {
+  // 제출 시 숨겨진 폼의 입력 필드 초기화
+  document.getElementById('findBusinessAccountForm').addEventListener('submit', function () {
+    if (document.getElementById('companyForm').style.display === 'none') {
+      document.getElementById('companyNum').value = '';
+      document.getElementById('memberNum').value = '';
+    }
+    if (document.getElementById('emailForm').style.display === 'none') {
       document.getElementById('memberNameEmail').value = '';
       document.getElementById('memberEmail').value = '';
     }
-    if (!phoneFormVisible) {
+    if (document.getElementById('phoneForm').style.display === 'none') {
       document.getElementById('memberNamePhone').value = '';
       document.getElementById('memberPhone').value = '';
     }
   });
-</script>
-
 </script>
 </body>
 </html>

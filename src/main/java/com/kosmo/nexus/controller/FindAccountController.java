@@ -1,5 +1,8 @@
 package com.kosmo.nexus.controller;
 
+import com.kosmo.nexus.dto.FindAccountDTO;
+import com.kosmo.nexus.service.FindAccountService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class FindAccountController {
+
+    private final FindAccountService findAccountService;
 
     @GetMapping("/findAccount")
     public String findAccountForm(){
@@ -23,27 +29,38 @@ public class FindAccountController {
         return "findaccount/findPhome";
     }
     @PostMapping("/processPAccount")
-    public String processPAccount(@RequestParam(required = false) String name,
-                                  @RequestParam(required = false) String email,
-                                  @RequestParam(required = false) String namePhone,
-                                  @RequestParam(required = false) String phone,
-                                  Model model) {
+    public String processPAccount(
+            @RequestParam(required = false) String memberNameEmail,
+            @RequestParam(required = false) String memberNamePhone,
+            @RequestParam(required = false) String memberEmail,
+            @RequestParam(required = false) String memberPhone,
+            Model model) {
 
-        // 이름+이메일 처리
-        if (email != null) {
-            model.addAttribute("result", "이름: " + name + ", 이메일: " + email + "로 찾기");
-            // 실제 로직: 서비스 호출 등을 통해 DB에서 계정 검색
+        // 입력값 처리
+        String memberName = (memberNameEmail != null && !memberNameEmail.isEmpty())
+                ? memberNameEmail
+                : memberNamePhone;
+        FindAccountDTO result = null;
+
+        // 분기 처리
+        if (memberEmail != null && !memberEmail.isEmpty()) {
+            result = findAccountService.findPersonalAccountByEmail(memberName, memberEmail);
+        } else if (memberPhone != null && !memberPhone.isEmpty()) {
+            result = findAccountService.findPersonalAccountByPhone(memberName, memberPhone);
         }
 
-        // 이름+휴대전화번호 처리
-        if (phone != null) {
-            model.addAttribute("result", "이름: " + namePhone + ", 전화번호: " + phone + "로 찾기");
-            // 실제 로직: 서비스 호출 등을 통해 DB에서 계정 검색
+        if (result == null) {
+            log.warn("No result found for memberName={}, memberEmail={}, memberPhone={}",
+                    memberName, memberEmail, memberPhone);
+            model.addAttribute("result", null);
+        } else {
+            log.info("Found account: memberId={}", result.getMemberId());
+            model.addAttribute("result", result);
         }
 
-        // 결과 페이지로 이동
         return "findaccount/result";
     }
+
 
     @GetMapping("/findBAccount")
     public String findBAccountForm() {
@@ -51,5 +68,49 @@ public class FindAccountController {
         return "findaccount/findBhome";
     }
 
+    @PostMapping("/processBAccount")
+    public String processBAccount(@RequestParam(required = false) String companyNum,
+                                  @RequestParam(required = false) String memberNum,
+                                  @RequestParam(required = false) String memberNameEmail,
+                                  @RequestParam(required = false) String memberEmail,
+                                  @RequestParam(required = false) String memberNamePhone,
+                                  @RequestParam(required = false) String memberPhone,
+                                  Model model) {
+
+        // 입력값 처리: 이름 우선 처리
+        String memberName = (memberNameEmail != null && !memberNameEmail.isEmpty())
+                ? memberNameEmail
+                : memberNamePhone;
+
+        FindAccountDTO result = null;
+
+        // 분기 처리
+        if (companyNum != null && !companyNum.isEmpty() && memberNum != null && !memberNum.isEmpty()) {
+            // 사업자등록번호 + 사원번호로 찾기
+            result = findAccountService.findBusinessAccountByCompanyNum(companyNum, memberNum);
+        } else if (memberEmail != null && !memberEmail.isEmpty()) {
+            // 이름 + 이메일로 찾기
+            result = findAccountService.findBusinessAccountByEmail(memberName, memberEmail);
+        } else if (memberPhone != null && !memberPhone.isEmpty()) {
+            // 이름 + 전화번호로 찾기
+            result = findAccountService.findBusinessAccountByPhone(memberName, memberPhone);
+        }
+
+        // 결과 처리
+        if (result == null) {
+            log.warn("No result found for companyNum={}, memberNum={}, memberName={}, memberEmail={}, memberPhone={}",
+                    companyNum, memberNum, memberName, memberEmail, memberPhone);
+            model.addAttribute("result", null);
+        } else {
+            log.info("Found account: memberId={}", result.getMemberId());
+            model.addAttribute("result", result);
+        }
+
+        return "findaccount/result";
+    }
+    @GetMapping("/findPassword")
+    public String findPassword(){
+        return"findaccount/findPassword";
+    }
 
 }

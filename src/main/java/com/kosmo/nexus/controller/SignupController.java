@@ -47,7 +47,6 @@ public class SignupController {
             dir.mkdirs(); // 디렉토리 생성
         }
 
-
         // 파일 처리
         if (!memberImg.isEmpty() && memberImg.getOriginalFilename() != null) {
             try {
@@ -217,7 +216,6 @@ public class SignupController {
         return "member/bSignup2";
     }
 
-
     @PostMapping("/bSignup2")
     public String bSignupProcess2(SignupDTO signup,
                                   @RequestParam("memberImg") MultipartFile memberImg,
@@ -241,7 +239,6 @@ public class SignupController {
             dir.mkdirs(); // 디렉토리 생성
         }
 
-
         // 파일 처리
         if (!memberImg.isEmpty() && memberImg.getOriginalFilename() != null) {
             try {
@@ -259,7 +256,6 @@ public class SignupController {
         } else {
             signup.setMemberImgName("images/noIdp.png"); // 기본 이미지 설정
         }
-
 
         boolean isValid = signupService.validateSignup(signup);
 

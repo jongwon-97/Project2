@@ -4,36 +4,64 @@
 <mapper namespace="com.kosmo.nexus.mapper.FileMapper">
 
     <!-- 파일 삽입 -->
-    <insert id="insertFile" parameterType="com.kosmo.nexus.dto.FileDTO">
+    <insert id="insertFile" parameterType="File">
         INSERT INTO c_file (file_path, board_id, file_size, file_date, file_origin_name)
         VALUES (#{filePath}, #{boardId}, #{fileSize}, NOW(), #{fileOriginName})
     </insert>
 
-    <select id="selectFileByBoardId" resultType="com.kosmo.nexus.dto.FileDTO">
+    <!-- 특정 게시판 ID로 파일 조회 -->
+    <select id="selectFileByBoardId" resultType="File">
         SELECT file_id AS fileId,
-        file_path AS filePath,
-        board_id AS boardId,
-        file_size AS fileSize,
-        file_date AS fileDate,
-        file_origin_name AS fileOriginName
+               file_path AS filePath,
+               board_id AS boardId,
+               file_size AS fileSize,
+               file_date AS fileDate,
+               file_origin_name AS fileOriginName
         FROM c_file
         WHERE board_id = #{boardId}
     </select>
 
-
-    <delete id="deleteFile">
-        DELETE FROM c_file WHERE file_id = #{fileId}
+    <!-- 특정 게시판 ID로 파일 삭제 -->
+    <delete id="deleteFilesByBoardId" parameterType="int">
+        DELETE FROM c_file WHERE board_id = #{boardId}
     </delete>
 
-    <select id="selectFilesByBoardId" resultType="com.kosmo.nexus.dto.FileDTO">
+    <!-- 특정 게시판 ID로 모든 파일 조회 -->
+    <select id="selectFilesByBoardId" resultType="File">
         SELECT file_id AS fileId,
-        file_path AS filePath,
-        board_id AS boardId,
-        file_size AS fileSize,
-        file_date AS fileDate,
-        file_origin_name AS fileOriginName
+               file_path AS filePath,
+               board_id AS boardId,
+               file_size AS fileSize,
+               file_date AS fileDate,
+               file_origin_name AS fileOriginName
         FROM c_file
         WHERE board_id = #{boardId}
     </select>
+
+    <!-- 특정 시즌 ID로 파일 조회 -->
+    <select id="selectFilesBySeasonId" resultType="File">
+        SELECT file_id AS fileId,
+           file_path AS filePath,
+           board_id AS boardId,
+           file_size AS fileSize,
+           file_date AS fileDate,
+           file_origin_name AS fileOriginName
+        FROM c_file
+        WHERE board_id IN (
+            SELECT board_id
+            FROM c_season
+            WHERE season_id = #{seasonId}
+        )
+    </select>
+
+    <!-- 특정 시즌 ID로 파일 삭제 -->
+    <delete id="deleteFilesBySeasonId" parameterType="int">
+        DELETE FROM c_file
+        WHERE board_id IN (
+            SELECT board_id
+            FROM c_season
+            WHERE season_id = #{seasonId}
+        )
+    </delete>
 
 </mapper>

@@ -1,5 +1,6 @@
 package com.kosmo.nexus.service;
 
+import com.kosmo.nexus.dto.BoardDTO;
 import com.kosmo.nexus.dto.EventDTO;
 import com.kosmo.nexus.dto.SeasonDTO;
 
@@ -17,5 +18,25 @@ public interface EventService {
     List<EventDTO> getAllEvents();
 
     int getMaxEventId();
+
+    int getBoardIdBySeasonId(int seasonId);
+
+    void deleteBoardById(int boardId);
+
+    void deleteSeason(int seasonId);       // c_season 삭제
+
+    SeasonDTO getSeasonById(int seasonId);
+
+    void updateSeason(SeasonDTO seasonDTO); // 시즌 수정
+
+    void updateBoard(BoardDTO boardDTO);
+    int getRoundNumberBySeasonId(int seasonId);
+
+
+    List<SeasonDTO> searchSeasons(String findKeyword, String status);
+
+    List<SeasonDTO> searchSeasonsByTitle(String findKeyword);
+
+    void increaseSeasonViews(int seasonId);
 }
 

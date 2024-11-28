@@ -118,10 +118,12 @@
         SET board_views = board_views + 1
         WHERE board_id = #{num}
     </update>
+
     <insert id="insertBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="boardId">
         INSERT INTO c_board (board_title, board_content, board_category, member_id, board_create_date)
         VALUES (#{boardTitle}, #{boardContent}, #{boardCategory}, #{memberId}, NOW())
     </insert>
+
 
     <!-- QnA xml문-->
     <!-- QnA 목록 조회 -->
@@ -192,9 +194,9 @@
     <update id="updateQna" parameterType="com.kosmo.nexus.dto.BoardDTO">
         UPDATE c_board
         SET
-        board_title = #{boardTitle},
-        board_content = #{boardContent},
-        disclosure_status = #{disclosureStatus}
+            board_title = #{boardTitle},
+            board_content = #{boardContent},
+            disclosure_status = #{disclosureStatus}
         WHERE board_id = #{boardId};
     </update>
 
@@ -214,6 +216,22 @@
         UPDATE c_board
         SET answer_status = #{answerStatus}
         WHERE board_id = #{boardId};
+    </update>
+
+    <!-- 게시판 ID로 데이터 삭제 -->
+    <delete id="deleteBoardById" parameterType="int">
+        DELETE FROM c_board WHERE board_id = #{boardId}
+    </delete>
+
+    <update id="updateBoard" parameterType="Board">
+        UPDATE c_board
+        SET
+            board_title = #{boardTitle},
+            board_content = #{boardContent},
+            board_category = #{boardCategory},
+            board_create_date = #{boardCreateDate},
+            disclosure_status = #{disclosureStatus}
+        WHERE board_id = #{boardId}
     </update>
 
 </mapper>

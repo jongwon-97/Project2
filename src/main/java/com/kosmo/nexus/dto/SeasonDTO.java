@@ -21,6 +21,6 @@ public class SeasonDTO {
     private String seasonState; //시즌
     private int boardId;
     private int roundNumber; //회차 값(N회차)
-
     private String seasonThumbnail; // 썸네일 경로
+    private String DDay; // D-Day 문자열
 }

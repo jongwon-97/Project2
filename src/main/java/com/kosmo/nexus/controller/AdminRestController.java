@@ -105,7 +105,7 @@ public class AdminRestController {
 
     public String saveImage(MultipartFile imageFile) throws IOException {
         // 스프링의 Resource로 파일 경로 지정
-        String foldPath="/bSignup_upload";
+        String foldPath="/member_img";
         Path path = Paths.get(servletContext.getRealPath(foldPath));
         if (!Files.exists(path)) {
             Files.createDirectories(path);  // 경로가 없으면 디렉토리 생성

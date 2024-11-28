@@ -17,5 +17,8 @@ public interface AdminService {
     MemberDTO findMemberWithCompanyId(String memberId, Long companyId);
     int updateMemberByAdmin(MemberDTO member, Long companyId);
     int insertMemberList(List<SignupDTO> members);
+    int updateMemberDepartment(List<String> memberIds, String selDepartment, Long companyId);
+    int updateMemberRank(List<String> memberIds, String selRank, Long companyId);
+    int updateMemberStatus(List<String> memberIds, String selStatus, Long companyId);
     List<String> findImgNamebyIdList(List<String> memberIds, Long companyId);
 }

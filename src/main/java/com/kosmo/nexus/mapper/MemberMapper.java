@@ -19,6 +19,9 @@ public interface MemberMapper {
     int updateMember(MemberDTO member);
     int updateMemberByAdmin(MemberDTO member, Long companyId);
     int deleteMemberList(List<String> memberIds, Long companyId);
+    int updateMemberDepartment(List<String> memberIds, String selDepartment, Long companyId);
+    int updateMemberRank(List<String> memberIds, String selRank, Long companyId);
+    int updateMemberStatus(List<String> memberIds, String selStatus, Long companyId);
     Long findCompanyIdByMemberId(String memberId);
     int insertMemberList(List<SignupDTO> members);
     List<String> findImgNamebyIdList(List<String> memberIds, Long companyId);

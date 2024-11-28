@@ -222,6 +222,34 @@
         </foreach>
     </delete>
 
+    <update id="updateMemberDepartment">
+        UPDATE c_member set
+        member_department = #{selDepartment}
+        WHERE company_id =#{companyId} and member_id IN
+        <foreach collection="memberIds" item="member" open="(" close=")" separator=",">
+            #{member}
+        </foreach>
+    </update>
+
+    <update id="updateMemberRank">
+        UPDATE c_member set
+        member_rank = #{selRank}
+        WHERE company_id =#{companyId} and member_id IN
+        <foreach collection="memberIds" item="member" open="(" close=")" separator=",">
+            #{member}
+        </foreach>
+    </update>
+
+    <update id="updateMemberStatus">
+        UPDATE c_member set
+        member_status = #{selStatus}
+        WHERE company_id =#{companyId} and member_id IN
+        <foreach collection="memberIds" item="member" open="(" close=")" separator=",">
+            #{member}
+        </foreach>
+    </update>
+
+
     <select id ="findImgNamebyIdList" resultType="String">
         SELECT member_img FROM c_member
         WHERE company_id =#{companyId} and member_id IN

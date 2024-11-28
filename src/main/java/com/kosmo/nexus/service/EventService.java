@@ -1,6 +1,5 @@
 package com.kosmo.nexus.service;
 
-
 import com.kosmo.nexus.dto.BoardDTO;
 import com.kosmo.nexus.dto.EventDTO;
 import com.kosmo.nexus.dto.SeasonDTO;
@@ -37,5 +36,7 @@ public interface EventService {
     List<SeasonDTO> searchSeasons(String findKeyword, String status);
 
     List<SeasonDTO> searchSeasonsByTitle(String findKeyword);
+
+    void increaseSeasonViews(int seasonId);
 }
 

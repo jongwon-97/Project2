@@ -160,4 +160,10 @@
         ORDER BY season_start_date DESC
     </select>
 
+    <update id="updateSeasonViews">
+        UPDATE c_season
+        SET season_views = season_views + 1
+        WHERE season_id = #{seasonId}
+    </update>
+
 </mapper>

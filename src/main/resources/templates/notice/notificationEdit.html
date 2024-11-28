@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>공지사항 수정</title>
     <script>
+        // 기존 첨부파일 삭제 요청
         function deleteAttachedFile(fileId) {
             if (confirm("첨부파일을 삭제하시겠습니까?")) {
                 fetch(`/file/delete?fileId=${fileId}`, { method: 'DELETE' })
@@ -20,56 +21,186 @@
                     });
             }
         }
+
+        // 새 파일 리스트 추가
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileInput = document.getElementById("newFiles");
+            const fileListContainer = document.getElementById("new-file-list");
+            const addedFiles = []; // 추가된 파일 저장 배열
+
+            fileInput.addEventListener("change", (event) => {
+                Array.from(event.target.files).forEach(file => {
+                    // 파일 리스트에 추가
+                    const fileId = Date.now() + Math.random(); // 고유 ID 생성
+                    addedFiles.push({ id: fileId, file });
+
+                    // 파일 항목 표시
+                    const fileItem = document.createElement("div");
+                    fileItem.className = "file-item";
+                    fileItem.setAttribute("data-id", fileId);
+
+                    fileItem.innerHTML = `
+                        <span>${file.name}</span>
+                        <button type="button" class="remove-btn" data-id="${fileId}">삭제</button>
+                    `;
+                    fileListContainer.appendChild(fileItem);
+                });
+
+                // 파일 입력 필드 초기화
+                fileInput.value = "";
+            });
+
+            // 파일 삭제
+            fileListContainer.addEventListener("click", (event) => {
+                if (event.target.classList.contains("remove-btn")) {
+                    const fileId = event.target.getAttribute("data-id");
+                    // 메모리에서 파일 삭제
+                    addedFiles.splice(addedFiles.findIndex(f => f.id === fileId), 1);
+
+                    // 화면에서 항목 삭제
+                    const fileItem = document.querySelector(`.file-item[data-id="${fileId}"]`);
+                    if (fileItem) fileItem.remove();
+                }
+            });
+        });
     </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .file-list {
+            margin-top: 10px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f4f4f4;
+            padding: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .file-item button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        .file-item button:hover {
+            background-color: #ff1a1a;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a button {
+            background-color: #6c757d;
+        }
+
+        a button:hover {
+            background-color: #5a6268;
+        }
+    </style>
 </head>
 <body>
-<h1>공지사항 수정</h1>
-<form th:action="@{/board/editNotification}" th:method="post" enctype="multipart/form-data">
-    <!-- 게시글 ID -->
-    <input type="hidden" name="boardId" th:value="${notification.boardId}">
+<div class="container">
+    <h1>공지사항 수정</h1>
+    <form th:action="@{/board/editNotification}" th:method="post" enctype="multipart/form-data">
+        <!-- 게시글 ID -->
+        <input type="hidden" name="boardId" th:value="${notification.boardId}">
 
-    <!-- 제목 -->
-    <div>
-        <label for="title">제목:</label>
-        <input type="text" id="title" name="boardTitle" th:value="${notification.boardTitle}" required>
-    </div>
+        <!-- 제목 -->
+        <div>
+            <label for="title">제목:</label>
+            <input type="text" id="title" name="boardTitle" th:value="${notification.boardTitle}" required>
+        </div>
 
-    <!-- 공지 여부 체크박스 -->
-    <div>
-        <input type="checkbox" id="isNotice" name="isNotice" value="true"
-               th:checked="${notification.isNotice}">
-        <label for="isNotice">공지</label>
-    </div>
+        <!-- 공지 여부 체크박스 -->
+        <div>
+            <input type="checkbox" id="isNotice" name="isNotice" value="true"
+                   th:checked="${notification.isNotice}">
+            <label for="isNotice">공지</label>
+        </div>
 
-    <!-- 내용 -->
-    <div>
-        <label for="content">내용:</label>
-        <textarea id="content" name="boardContent" required th:text="${notification.boardContent}"></textarea>
-    </div>
+        <!-- 내용 -->
+        <div>
+            <label for="content">내용:</label>
+            <textarea id="content" name="boardContent" required th:text="${notification.boardContent}"></textarea>
+        </div>
 
-    <!-- 첨부파일 -->
-    <div>
-        <p><strong>첨부파일:</strong></p>
-        <ul>
-            <li th:each="file : ${attachedFiles}">
-                <span th:text="${file.fileOriginName}"></span>
-                <button type="button" th:onclick="|deleteAttachedFile(${file.fileId})|">삭제</button>
-            </li>
-        </ul>
-        <p th:if="${#lists.isEmpty(attachedFiles)}">첨부된 파일이 없습니다.</p>
-    </div>
+        <!-- 기존 첨부파일 -->
+        <div>
+            <p><strong>기존 첨부파일:</strong></p>
+            <ul class="file-list">
+                <li th:each="file : ${attachedFiles}">
+                    <span th:text="${file.fileOriginName}"></span>
+                    <button type="button" th:onclick="|deleteAttachedFile(${file.fileId})|">삭제</button>
+                </li>
+            </ul>
+        </div>
 
-    <!-- 새로운 파일 첨부 -->
-    <div>
-        <label for="newFiles">새 파일 첨부:</label>
-        <input type="file" id="newFiles" name="newFiles" multiple>
-    </div>
+        <!-- 새로 첨부할 파일 -->
+        <div>
+            <label for="newFiles">새 파일 첨부:</label>
+            <input type="file" id="newFiles" name="newFiles" multiple>
+            <div id="new-file-list" class="file-list">
+                <!-- 새로운 첨부파일 리스트 -->
+            </div>
+        </div>
 
-    <!-- 버튼 -->
-    <div>
-        <button type="submit">수정하기</button>
-        <a th:href="@{/board/notificationList}">취소</a>
-    </div>
-</form>
+        <!-- 버튼 -->
+        <div class="actions">
+            <button type="submit">수정하기</button>
+            <a th:href="@{/board/notificationList}"><button type="button">취소</button></a>
+        </div>
+    </form>
+</div>
 </body>
 </html>

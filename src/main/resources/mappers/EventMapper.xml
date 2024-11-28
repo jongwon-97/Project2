@@ -19,19 +19,19 @@
     <!-- 모든 회차를 조회하는 쿼리 -->
     <select id="getAllSeasons" resultType="Season">
         SELECT
-        season_id AS seasonId,
-        season_title AS seasonTitle,
-        season_info AS seasonInfo,
-        season_limit AS seasonLimit,
-        season_fee AS seasonFee,
-        season_views AS seasonViews,
-        season_start_date AS seasonStartDate,
-        season_end_date AS seasonEndDate,
-        event_id AS eventId,
-        season_state AS seasonState,
-        board_id AS boardId,
-        round_number AS roundNumber,
-        season_thumbnail AS seasonThumbnail
+            season_id AS seasonId,
+            season_title AS seasonTitle,
+            season_info AS seasonInfo,
+            season_limit AS seasonLimit,
+            season_fee AS seasonFee,
+            season_views AS seasonViews,
+            season_start_date AS seasonStartDate,
+            season_end_date AS seasonEndDate,
+            event_id AS eventId,
+            season_state AS seasonState,
+            board_id AS boardId,
+            round_number AS roundNumber,
+            season_thumbnail AS seasonThumbnail
         FROM c_season
     </select>
 
@@ -60,19 +60,19 @@
     <!-- 업데이트 -->
     <select id="getSeasonById" parameterType="int" resultType="Season">
         SELECT
-        season_id AS seasonId,
-        season_title AS seasonTitle,
-        season_info AS seasonInfo,
-        season_limit AS seasonLimit,
-        season_fee AS seasonFee,
-        season_views AS seasonViews,
-        season_start_date AS seasonStartDate,
-        season_end_date AS seasonEndDate,
-        event_id AS eventId,
-        season_state AS seasonState,
-        board_id AS boardId,
-        round_number AS roundNumber,
-        season_thumbnail AS seasonThumbnail
+            season_id AS seasonId,
+            season_title AS seasonTitle,
+            season_info AS seasonInfo,
+            season_limit AS seasonLimit,
+            season_fee AS seasonFee,
+            season_views AS seasonViews,
+            season_start_date AS seasonStartDate,
+            season_end_date AS seasonEndDate,
+            event_id AS eventId,
+            season_state AS seasonState,
+            board_id AS boardId,
+            round_number AS roundNumber,
+            season_thumbnail AS seasonThumbnail
         FROM c_season
         WHERE season_id = #{seasonId}
     </select>
@@ -92,19 +92,19 @@
 
     <select id="selectSeasonList" resultType="Season">
         SELECT
-        season_id AS seasonId,
-        season_title AS seasonTitle,
-        season_info AS seasonInfo,
-        season_limit AS seasonLimit,
-        season_fee AS seasonFee,
-        season_views AS seasonViews,
-        season_start_date AS seasonStartDate,
-        season_end_date AS seasonEndDate,
-        event_id AS eventId,
-        season_state AS seasonState,
-        board_id AS boardId,
-        round_number AS roundNumber,
-        season_thumbnail AS seasonThumbnail
+            season_id AS seasonId,
+            season_title AS seasonTitle,
+            season_info AS seasonInfo,
+            season_limit AS seasonLimit,
+            season_fee AS seasonFee,
+            season_views AS seasonViews,
+            season_start_date AS seasonStartDate,
+            season_end_date AS seasonEndDate,
+            event_id AS eventId,
+            season_state AS seasonState,
+            board_id AS boardId,
+            round_number AS roundNumber,
+            season_thumbnail AS seasonThumbnail
         FROM c_season
         ORDER BY season_start_date DESC
     </select>

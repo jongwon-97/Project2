@@ -133,71 +133,16 @@
     .apply-btn:hover {
       background-color: #218838;
     }
-
-    /* 검색 폼 스타일 */
-#searchForm {
-  display: flex; /* 가로 정렬 */
-  justify-content: center; /* 중앙 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  gap: 10px; /* 입력 필드와 버튼 간격 */
-  margin-bottom: 20px; /* 폼 아래 여백 */
-}
-
-/* 검색 입력 필드 스타일 */
-#searchForm input[type="text"] {
-  width: 300px; /* 입력 필드 너비 */
-  padding: 10px; /* 내부 여백 */
-  border: 1px solid #ccc; /* 테두리 */
-  border-radius: 5px; /* 모서리 둥글게 */
-  font-size: 16px; /* 폰트 크기 */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 미세한 그림자 */
-  outline: none; /* 포커스 시 외곽선 제거 */
-  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 포커스 시 부드러운 전환 */
-}
-
-#searchForm input[type="text"]:focus {
-  border-color: #007bff; /* 포커스 시 테두리 색상 */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 포커스 시 그림자 */
-}
-
-/* 숨겨진 input 스타일 */
-#searchForm input[type="hidden"] {
-  display: none; /* 숨김 */
-}
-
-/* 검색 버튼 스타일 */
-#searchForm button[type="submit"] {
-  padding: 10px 20px; /* 버튼 크기 */
-  background-color: #007bff; /* 버튼 배경색 */
-  color: #fff; /* 텍스트 색상 */
-  border: none; /* 테두리 제거 */
-  border-radius: 5px; /* 모서리 둥글게 */
-  font-size: 16px; /* 폰트 크기 */
-  cursor: pointer; /* 클릭 커서 */
-  transition: background-color 0.3s ease; /* 호버 시 부드러운 전환 */
-}
-
-#searchForm button[type="submit"]:hover {
-  background-color: #0056b3; /* 호버 시 배경색 */
-}
-
   </style>
 </head>
 <body>
 
 <h1>이벤트 목록</h1>
 
-<form method="get" action="/board/eventList" id="searchForm">
-  <input type="text" name="findKeyword" placeholder="제목 검색"
-         th:value="${findKeyword != null ? findKeyword : ''}">
-  <input type="hidden" name="status" id="statusInput"
-         th:value="${status != null ? status : '모집중'}">
-  <button type="submit">검색</button>
-</form>
-
+<!-- Tabs -->
 <div class="tabs">
-  <div class="tab ${status == '모집중' ? 'active' : ''}" data-tab="ongoing" onclick="setStatus('모집중')">모집중 행사</div>
-  <div class="tab ${status == '마감' ? 'active' : ''}" data-tab="ended" onclick="setStatus('마감')">마감된 행사</div>
+  <div class="tab active" data-tab="ongoing">모집중 행사</div>
+  <div class="tab" data-tab="ended">마감된 행사</div>
 </div>
 
 <!-- 모집중 행사 -->
@@ -247,6 +192,7 @@
 </div>
 
 <!-- 마감된 행사 -->
+<!-- 마감된 행사 -->
 <div id="ended" class="tab-content">
   <table>
     <thead>
@@ -265,14 +211,15 @@
     <tr th:if="${seasonList.size() == 0}">
       <td colspan="9">마감된 행사가 없습니다</td>
     </tr>
-    <tr th:each="season : ${seasonList}" th:if="${season.seasonState.trim() == '마감'}">
-    <td>
+    <tr th:each="season : ${seasonList}" th:if="${season.seasonState == '마감'}">
+      <td>
         <div class="event-thumbnail">
           <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}"
                alt="썸네일" />
         </div>
         <div class="event-title">
-          <a th:href="@{'/board/endevent/detail/' + ${season.seasonId}}" th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></a>
+          <a th:href="@{'/board/endevent/detail/' + ${season.seasonId}}"
+             th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></a>
         </div>
       </td>
       <td th:text="${season.seasonInfo != null ? season.seasonInfo : '정보 없음'}"></td>
@@ -288,46 +235,27 @@
 </div>
 
 <script>
-  function setStatus(status) {
-    // 상태를 hidden input에 설정
-    const form = document.getElementById('searchForm');
-    const statusInput = document.getElementById('statusInput');
-    statusInput.value = status; // 상태 업데이트
-    form.submit(); // 폼 제출
-  }
-
   document.addEventListener("DOMContentLoaded", function () {
     const tabs = document.querySelectorAll(".tab");
     const tabContents = document.querySelectorAll(".tab-content");
-    const currentStatus = document.getElementById('statusInput').value;
 
-    // 탭 상태 설정
     tabs.forEach(tab => {
-      const targetTab = tab.dataset.tab;
-      if (
-        (currentStatus === "모집중" && targetTab === "ongoing") ||
-        (currentStatus === "마감" && targetTab === "ended")
-      ) {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
         tab.classList.add("active");
-      } else {
-        tab.classList.remove("active");
-      }
+
+        const target = tab.dataset.tab;
+        tabContents.forEach(content => {
+          content.id === target
+                  ? content.classList.add("active")
+                  : content.classList.remove("active");
+        });
+      });
     });
 
-    // 탭 콘텐츠 활성화
-    tabContents.forEach(content => {
-      if (
-        (currentStatus === "모집중" && content.id === "ongoing") ||
-        (currentStatus === "마감" && content.id === "ended")
-      ) {
-        content.classList.add("active");
-      } else {
-        content.classList.remove("active");
-      }
-    });
-
-    // D-DAY 계산 및 상태 업데이트
+    // Calculate D-DAY and update Status
     const rows = document.querySelectorAll("tbody tr");
+
     rows.forEach(row => {
       const endDateCell = row.querySelector(".season-end-date");
       const statusCell = row.querySelector(".status");
@@ -335,22 +263,23 @@
 
       if (endDateCell && statusCell && dDayCell) {
         const endDateStr = endDateCell.textContent.trim();
+
         if (endDateStr) {
           const endDate = new Date(endDateStr);
           const today = new Date();
+
           const diffTime = endDate - today;
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
+          // D-DAY 계산
           if (diffDays > 0) {
             dDayCell.textContent = `D-${diffDays}`;
             statusCell.textContent = "모집중";
             statusCell.classList.add("open");
-            statusCell.classList.remove("closed");
           } else {
-            dDayCell.textContent = `D-${Math.abs(diffDays)}`;
+            dDayCell.textContent = "D-0";
             statusCell.textContent = "마감";
             statusCell.classList.add("closed");
-            statusCell.classList.remove("open");
           }
         } else {
           dDayCell.textContent = "D-알 수 없음";
@@ -360,6 +289,5 @@
     });
   });
 </script>
-
 </body>
 </html>

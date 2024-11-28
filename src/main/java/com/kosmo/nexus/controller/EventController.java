@@ -127,7 +127,6 @@ public class EventController {
     }
 
     // 이벤트 목록
-    // 이벤트 목록
     @GetMapping("/board/eventList")
     public String getEventList(@RequestParam(required = false) String findKeyword,
                                @RequestParam(required = false) String status,
@@ -280,13 +279,6 @@ public class EventController {
 
         return "event/eventEndDetail"; // eventEndDetail.html로 이동
     }
-
-
-
-
-
-
-
 
 
     @GetMapping("/dev/board/editEvent/{seasonId}")

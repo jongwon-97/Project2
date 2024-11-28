@@ -41,7 +41,7 @@ public class SignupController {
         //log.info("signup====={}", signup);
 
         // 업로드 디렉토리 경로 설정
-        String upDir = req.getServletContext().getRealPath("/Signup_upload");
+        String upDir = req.getServletContext().getRealPath("/member_img");
         File dir = new File(upDir);
         if (!dir.exists()) {
             dir.mkdirs(); // 디렉토리 생성
@@ -63,7 +63,7 @@ public class SignupController {
                 return "message";
             }
         } else {
-            signup.setMemberImgName("images/noimage.png"); // 기본 이미지 설정
+            signup.setMemberImgName("images/noIdp.png"); // 기본 이미지 설정
         }
 
 
@@ -118,8 +118,28 @@ public class SignupController {
         }
 
         try {
+            // 중복 확인
+            boolean isExists = signupService.isCompanyExists(signup.getCompanyNum());
+            if (isExists) {
+                // 중복된 경우 기존 데이터 사용
+                CompanyDTO existingCompany = signupService.findCompanyByCompanyNum(signup.getCompanyNum());
+                if (existingCompany != null) {
+                    if (existingCompany.getCompanyLogoName() != null && !existingCompany.getCompanyLogoName().isEmpty()) {
+                        existingCompany.setCompanyLogoUrl("/company_logos/" + existingCompany.getCompanyLogoName());
+                    } else {
+                        existingCompany.setCompanyLogoUrl("/images/noimage.png"); // 기본 이미지 설정
+                    }
+                }
+
+                // 세션에 기존 데이터 저장
+                ses.setAttribute("companySignup", existingCompany);
+                model.addAttribute("msg", "이미 등록된 사업자 번호입니다. 기존 정보를 사용하여 다음 단계로 이동합니다.");
+                model.addAttribute("loc", "/bSignup2");
+                return "message";
+            }
+
             // 업로드 디렉토리 설정
-            String uploadDir = req.getServletContext().getRealPath("/uploads/company-logos/");
+            String uploadDir = req.getServletContext().getRealPath("/company_logos/");
             File dir = new File(uploadDir);
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -136,7 +156,7 @@ public class SignupController {
 
                 // 파일명과 URL 설정
                 signup.setCompanyLogoName(savedFilename); // 파일명 저장
-                signup.setCompanyLogoUrl("/uploads/company-logos/" + savedFilename); // URL 생성
+                signup.setCompanyLogoUrl("/company_logos/" + savedFilename); // URL 생성
             } else if (signup.getCompanyLogoUrl() != null && !signup.getCompanyLogoUrl().isEmpty()) {
                 // URL만 전달된 경우
                 signup.setCompanyLogoName(null); // 파일명 비워두기
@@ -144,10 +164,9 @@ public class SignupController {
             } else {
                 // 기본값 설정
                 signup.setCompanyLogoName("/images/noimage.png");
-                signup.setCompanyLogoUrl("/uploads/company-logos/default-logo.png");
+                signup.setCompanyLogoUrl("/company_logos/default_logo.png");
             }
 
-            ses.setAttribute("companySignup", signup);
             // 데이터베이스 저장
             int result = signupService.insertCompany(signup);
             if (result > 0) {
@@ -171,7 +190,7 @@ public class SignupController {
     @GetMapping("/bSignup2")
     public String BsignupForm2(HttpSession ses, Model model){
         CompanyDTO companySignup = (CompanyDTO) ses.getAttribute("companySignup");
-        log.info("companyinfo==={}",companySignup);
+        //log.info("companyinfo==={}",companySignup);
 
         if (companySignup == null) {
             model.addAttribute("msg", "이전 단계의 회사 정보가 없습니다. 다시 입력해주세요.");
@@ -202,12 +221,21 @@ public class SignupController {
     @PostMapping("/bSignup2")
     public String bSignupProcess2(SignupDTO signup,
                                   @RequestParam("memberImg") MultipartFile memberImg,
-                                  HttpServletRequest req,
+                                  HttpServletRequest req, HttpSession ses,
                                   Model model){
         //log.info("bsignup2====={}", signup);
+        CompanyDTO companySignup = (CompanyDTO) ses.getAttribute("companySignup");
+        if (companySignup == null || companySignup.getCompanyId() == null) {
+            //log.error("companySignup is null or companyId is null in session.");
+            model.addAttribute("msg", "회사 정보가 없습니다. 이전 단계로 돌아가 주세요.");
+            model.addAttribute("loc", "/bSignup");
+            return "message";
+        }
+
+        signup.setCompanyId(companySignup.getCompanyId());
 
         // 업로드 디렉토리 경로 설정
-        String upDir = req.getServletContext().getRealPath("/bSignup_upload");
+        String upDir = req.getServletContext().getRealPath("/member_img");
         File dir = new File(upDir);
         if (!dir.exists()) {
             dir.mkdirs(); // 디렉토리 생성
@@ -229,7 +257,7 @@ public class SignupController {
                 return "message";
             }
         } else {
-            signup.setMemberImgName("images/noimage.png"); // 기본 이미지 설정
+            signup.setMemberImgName("images/noIdp.png"); // 기본 이미지 설정
         }
 
 

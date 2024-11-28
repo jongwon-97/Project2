@@ -1,5 +1,6 @@
 package com.kosmo.nexus.service;
 
+import com.kosmo.nexus.common.util.PasswordUtil;
 import com.kosmo.nexus.dto.FindAccountDTO;
 import com.kosmo.nexus.mapper.FindAccountMapper;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,32 @@ public class FindAccoutServiceImpl implements FindAccountService{
         log.info("findBusinessAccountByPhone called with memberName='{}', memberPhone='{}'", memberName, memberPhone);
         FindAccountDTO result = findAccountMapper.findBusinessAccountByPhone(memberName, memberPhone);
         return result;
+    }
+
+    @Override
+    public FindAccountDTO findPasswordByEmail(String memberId, String memberName, String memberEmail) {
+        log.info("findPasswordByEmail called with memberId={}, memberName={}, memberEmail={}", memberId, memberName, memberEmail);
+        return findAccountMapper.findPasswordByEmail(memberId, memberName, memberEmail);
+    }
+
+    @Override
+    public FindAccountDTO findPasswordByPhone(String memberId, String memberName, String memberPhone) {
+        log.info("findPasswordByPhone called with memberId={}, memberName={}, memberPhone={}", memberId, memberName, memberPhone);
+        return findAccountMapper.findPasswordByPhone(memberId, memberName, memberPhone);
+    }
+
+
+    @Override
+    public FindAccountDTO findPasswordByCompanyNum(String memberId, String companyNum, String memberNum) {
+        log.info("findPasswordByCompanyNum called with memberId={}, companyNum={}, memberNum={}", memberId, companyNum, memberNum);
+        return findAccountMapper.findBusinessAccountByCompanyNum(companyNum, memberNum);
+    }
+
+    @Override
+    public void updatePassword(String memberId, String newPassword) {
+        log.info("updatePassword called with memberId={}, newPassword={}", memberId, newPassword);
+        String hashedPassword = PasswordUtil.hashPassword(newPassword);
+        findAccountMapper.updatePassword(memberId, hashedPassword);
+        log.info("updatePassword called with memberId={}, newPassword={}", memberId, newPassword);
     }
 }

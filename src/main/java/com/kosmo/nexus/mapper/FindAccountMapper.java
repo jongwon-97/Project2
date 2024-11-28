@@ -11,4 +11,12 @@ public interface FindAccountMapper {
     FindAccountDTO findBusinessAccountByCompanyNum(@Param("companyNum") String companyNum, @Param("memberNum") String memberNum);
     FindAccountDTO findBusinessAccountByEmail(@Param("memberName") String memberName, @Param("memberEmail") String memberEmail);
     FindAccountDTO findBusinessAccountByPhone(@Param("memberName") String memberName, @Param("memberPhone") String memberPhone);
+
+    FindAccountDTO findPasswordByEmail(@Param("memberId") String memberId,
+                                       @Param("memberName") String memberName,
+                                       @Param("memberEmail") String memberEmail);
+    FindAccountDTO findPasswordByPhone(@Param("memberId") String memberId,
+                                       @Param("memberName") String memberName,
+                                       @Param("memberPhone") String memberPhone);
+    void updatePassword(@Param("memberId") String memberId, @Param("newPassword") String newPassword);
 }

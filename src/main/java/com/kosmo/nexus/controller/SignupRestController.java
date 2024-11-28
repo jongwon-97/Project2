@@ -28,7 +28,7 @@ public class SignupRestController {
             if (company != null) {
                 // 로고 경로 추가
                 if (company.getCompanyLogoName() != null && !company.getCompanyLogoName().isEmpty()) {
-                    String logoUrl = "/uploads/company-logos/" + company.getCompanyLogoName(); // URL 생성
+                    String logoUrl = "/company_logos/" + company.getCompanyLogoName(); // URL 생성
                     company.setCompanyLogoUrl(logoUrl); // URL 설정
                 }
                 return ResponseEntity.ok(company);

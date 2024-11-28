@@ -2,19 +2,25 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-	<!-- 타입 별칭 설정 -->
+	<!-- 타입 별칭 설정============================ -->
+
 	<typeAliases>
 		<typeAlias type="com.kosmo.nexus.dto.TestDTO" alias="Test"/>
+
 		<typeAlias type="com.kosmo.nexus.dto.LoginDTO" alias="Login"/>
 		<typeAlias type="com.kosmo.nexus.dto.MemberDTO" alias="Member"/>
+
 		<typeAlias type="com.kosmo.nexus.dto.BoardDTO" alias="Board"/>
 		<typeAlias type="com.kosmo.nexus.dto.CommentDTO" alias="Comment"/>
-		<typeAlias type="com.kosmo.nexus.dto.FileDTO" alias="File"/> <!-- 파일 DTO 추가 -->
+		<typeAlias type="com.kosmo.nexus.dto.FileDTO" alias="File"/>
 		<typeAlias type="com.kosmo.nexus.dto.PagingDTO" alias="Paging"/>
 		<typeAlias type="com.kosmo.nexus.dto.SeasonDTO" alias="Season"/>
 		<typeAlias type="com.kosmo.nexus.dto.EventDTO" alias="Event"/>
+
 		<typeAlias type="com.kosmo.nexus.dto.FindAccountDTO" alias="FindAccount"/>
 		<typeAlias type="com.kosmo.nexus.dto.SignupDTO" alias="Signup"/>
 		<typeAlias type="com.kosmo.nexus.dto.CompanyDTO" alias="Company"/>
 	</typeAliases>
+
+
 </configuration>

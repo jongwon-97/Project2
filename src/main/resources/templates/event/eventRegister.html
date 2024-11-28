@@ -32,15 +32,24 @@
     .form-actions {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
     }
-    button {
+    .left-actions {
+        display: flex;
+        gap: 10px; /* 버튼 간격 */
+    }
+    .form-actions button, .form-actions a {
         padding: 10px 20px;
         background-color: #007bff;
         color: #ffffff;
         border: none;
         cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 5px;
     }
-    button:hover {
+    .form-actions button:hover, .form-actions a:hover {
         background-color: #0056b3;
     }
     textarea {
@@ -93,8 +102,11 @@
       <textarea id="season-info" name="season_info" required></textarea>
     </div>
     <div class="form-actions">
-      <button type="submit">등록</button>
-      <button type="button">임시저장</button>
+      <div class="left-actions">
+        <button type="button">임시저장</button>
+        <button type="submit">등록</button>
+      </div>
+      <a href="/board/eventList">목록 보기</a>
     </div>
   </form>
 </div>

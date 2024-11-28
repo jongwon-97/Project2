@@ -37,10 +37,10 @@ public class AdminController {
     @GetMapping("/memberList")
     public String findMemberList(HttpSession ses, Model model){
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
         List<String> departmentsInCompany = adminService.findDepartmentByCompanyId(sesCompanyId);
         List<String> ranksInCompany = adminService.findRankByCompanyId(sesCompanyId);
         List<MemberDTO> listMember= adminService.findMemberList(sesCompanyId);
-
         List<String> departments = listMember.stream()
                 .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
                 .distinct() // 중복 제거
@@ -57,6 +57,8 @@ public class AdminController {
         model.addAttribute("ranks", ranks);
         model.addAttribute("departmentsInCompany", departmentsInCompany);
         model.addAttribute("ranksInCompany", ranksInCompany);
+        model.addAttribute("sesLoginId", sesLoginId);
+
 
         log.info("MemberDTOList====={}", listMember);
         log.info("DepartmentList====={}", departments);
@@ -102,8 +104,9 @@ public class AdminController {
             model.addAttribute("loc", "/admin/memberList");
             return "message";
         }
-        log.info("cid가 일치하는 경우");
-        log.info("member==={}",member);
+        // log.info("cid가 일치하는 경우");
+        // log.info("member==={}",member);
+
         int result = adminService.updateMemberByAdmin(member, sesCompanyId);
 
         log.info("수정된 데이터의 개수======{}", result);
@@ -113,14 +116,18 @@ public class AdminController {
 
 
     @PostMapping("/memberDel")
-    public String DeleteMemberList(@RequestParam List<String> membersDel, HttpSession ses, Model model) throws IOException {
+    public String DeleteMemberList(@RequestParam List<String> memberIds, HttpSession ses, Model model) throws IOException {
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
 
-        // membersDel의 ID를 이용하여 memberImgName List 받아오기
-        List<String> ImgNames = adminService.findImgNamebyIdList(membersDel, sesCompanyId);
+        // memberIds안에 자기 자신의 아이디가 있다면 리스트에서 삭제하기
+        memberIds.remove(sesLoginId);
+
+        // memberIds ID를 이용하여 memberImgName List 받아오기
+        List<String> ImgNames = adminService.findImgNamebyIdList(memberIds, sesCompanyId);
 
         // 삭제 리스트에서 같은 회사 id일때만 삭제
-        int result = adminService.deleteMemberList(membersDel, sesCompanyId);
+        int result = adminService.deleteMemberList(memberIds, sesCompanyId);
 
         // DB에서 삭제 후 memberImgName 경로의 파일 삭제하기
         deleteImages(ImgNames);
@@ -134,6 +141,7 @@ public class AdminController {
     public String searchMemberList(@RequestParam("simpleSearch") String search, @RequestParam("searchOption") String option,
                                    HttpSession ses, Model model){
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
         log.info("search========={}, option========{}",search, option);
         List<MemberDTO> listMember= adminService.searchMemberList(search, option, sesCompanyId);
         List<String> departments = listMember.stream()
@@ -156,6 +164,7 @@ public class AdminController {
         model.addAttribute("ranks", ranks);
         model.addAttribute("simpleSearch", search);
         model.addAttribute("searchOption", option);
+        model.addAttribute("sesLoginId", sesLoginId);
         log.info("SearchMemberList====={}", listMember);
         return "/admin/memberList";
     }
@@ -167,6 +176,7 @@ public class AdminController {
                                      @RequestParam("hireEnd") String hireEnd,
                                      HttpSession ses, Model model){
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
 
         if (birthStart.isEmpty()) birthStart = null;
         if (birthEnd.isEmpty()) birthEnd = null;
@@ -204,6 +214,7 @@ public class AdminController {
         model.addAttribute("birthEnd", birthEnd);
         model.addAttribute("hireStart", hireStart);
         model.addAttribute("hireEnd", hireEnd);
+        model.addAttribute("sesLoginId", sesLoginId);
         log.info("SearchMemberList====={}", listMember);
         return "/admin/memberList";
     }

@@ -67,7 +67,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void insertBoard(BoardDTO boardDTO) {
-        boardMapper.insertBoard(boardDTO); // MyBatis Mapper 호출
+        log.info("insertBoard 호출 전: {}", boardDTO);
+        boardMapper.insertBoard(boardDTO);
+        log.info("insertBoard 호출 후: boardId = {}", boardDTO.getBoardId());
     }
 
 
@@ -114,5 +116,14 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void updateAnswerStatus(int boardId, String answerStatus) {
         boardMapper.updateAnswerStatus(boardId, answerStatus);
+    }
+
+    @Override
+    public void deleteBoardById(int boardId) {
+        boardMapper.deleteBoardById(boardId);
+    }
+    @Override
+    public void updateBoard(BoardDTO boardDTO) {
+        boardMapper.updateBoard(boardDTO);
     }
 }

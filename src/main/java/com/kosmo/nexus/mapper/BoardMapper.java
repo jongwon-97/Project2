@@ -31,4 +31,11 @@ public interface BoardMapper {
     void updateQnaViewCount(int num); // QnA 조회수 증가
 
     void updateAnswerStatus(@Param("boardId") int boardId, @Param("answerStatus") String answerStatus);
+
+    // 특정 board_id 데이터 삭제
+    void deleteBoardById(@Param("boardId") int boardId);
+
+    void updateBoard(BoardDTO boardDTO);
+
+
 }

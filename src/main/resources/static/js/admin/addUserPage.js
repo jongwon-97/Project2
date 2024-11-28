@@ -283,10 +283,10 @@ const addMember = async () => {
 
             // 일치하는 멤버가 있으면 파일을 formData에 추가
             if (matchedMember) {
-                console.log("Appending image file", matchedMember.memberId, imageFile); // 디버깅
+                //console.log("Appending image file", matchedMember.memberId, imageFile); // 디버깅
                 formData.append(`imageFiles[${matchedMember.memberId}]`, imageFile); // key를 'imageFiles[memberId]'로 설정
             } else {
-                console.log("Skipping image file due to no matching memberId", imageFile); // 디버깅
+                //console.log("Skipping image file due to no matching memberId", imageFile); // 디버깅
             }
         }
 

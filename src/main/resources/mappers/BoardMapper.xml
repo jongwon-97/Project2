@@ -107,7 +107,6 @@
     <update id="updateNotification" parameterType="com.kosmo.nexus.dto.NoticeDTO">
         UPDATE c_board
         SET
-
         board_title = #{boardTitle},
         board_content = #{boardContent},
         is_notice = #{isNotice} <!-- 공지 여부 업데이트 -->
@@ -124,7 +123,6 @@
         INSERT INTO c_board (board_title, board_content, board_category, member_id, board_create_date)
         VALUES (#{boardTitle}, #{boardContent}, #{boardCategory}, #{memberId}, NOW())
     </insert>
-
 
     <!-- QnA xml문-->
     <!-- QnA 목록 조회 -->
@@ -173,7 +171,6 @@
     <!-- QnA 상세보기 -->
     <select id="selectQnaById" resultType="Board">
         SELECT
-
         board_id AS boardId,
         board_title AS boardTitle,
         board_content AS boardContent,
@@ -182,7 +179,6 @@
         board_views AS boardViews,
         board_category AS boardCategory,
         disclosure_status AS disclosureStatus <!-- 추가 -->
-
         FROM c_board
         WHERE board_id = #{num};
     </select>
@@ -197,11 +193,9 @@
     <update id="updateQna" parameterType="com.kosmo.nexus.dto.BoardDTO">
         UPDATE c_board
         SET
-
-        board_title = #{boardTitle},
-        board_content = #{boardContent},
-        disclosure_status = #{disclosureStatus}
-
+            board_title = #{boardTitle},
+            board_content = #{boardContent},
+            disclosure_status = #{disclosureStatus}
         WHERE board_id = #{boardId};
     </update>
 
@@ -231,11 +225,11 @@
     <update id="updateBoard" parameterType="Board">
         UPDATE c_board
         SET
-        board_title = #{boardTitle},
-        board_content = #{boardContent},
-        board_category = #{boardCategory},
-        board_create_date = #{boardCreateDate},
-        disclosure_status = #{disclosureStatus}
+            board_title = #{boardTitle},
+            board_content = #{boardContent},
+            board_category = #{boardCategory},
+            board_create_date = #{boardCreateDate},
+            disclosure_status = #{disclosureStatus}
         WHERE board_id = #{boardId}
     </update>
 

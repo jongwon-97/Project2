@@ -209,7 +209,8 @@
         member_birth= #{member.memberBirth},          -- 생년월일
         member_postcode = #{member.memberPostcode},      -- 우편번호
         member_address = #{member.memberAddress},       -- 주소
-        member_d_address = #{member.memberDAddress}     -- 상세 주소
+        member_d_address = #{member.memberDAddress},     -- 상세 주소
+        member_status = #{member.memberStatus}     -- 상태
         WHERE member_id = #{member.memberId} and company_id =#{companyId}
     </update>
 

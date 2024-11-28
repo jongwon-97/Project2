@@ -36,7 +36,13 @@ function goToUserPage(button) {
     window.location.href = `/dev/userPage?id=${memberId}`;
 }
 
-function goTO
+function goToCompanyPage(companyId){
+    window.location.href = `/dev/companyPage?id=${companyId}`;
+}
+
+function goToAddPage(companyId){
+    window.location.href = `/dev/addMember?id=${companyId}`;
+}
 
 
 function submitAction(actionType) {
@@ -48,6 +54,7 @@ function submitAction(actionType) {
 
     // 폼에서 기존에 존재하는 hidden input들을 모두 제거
     const hiddenInputs = form.querySelectorAll('input[type="hidden"]');
+    const companyInput = document.createElement('input');
 
     switch (actionType) {
         case 'search':
@@ -58,6 +65,12 @@ function submitAction(actionType) {
                 event.preventDefault();  // 폼 제출을 막음
                 return;
             }
+
+            companyInput.type = 'hidden';
+            companyInput.name = 'companyId';  // 서버에서 받을 이름
+            companyInput.value = companyId;   // 실제 companyId 값을 설정
+            form.appendChild(companyInput);
+
             form.action = '/dev/search';       // search action
             break;
 
@@ -73,6 +86,11 @@ function submitAction(actionType) {
                 event.preventDefault();  // 폼 제출을 막음
                 return;
             }
+            companyInput.type = 'hidden';
+            companyInput.name = 'companyId';  // 서버에서 받을 이름
+            companyInput.value = companyId;   // 실제 companyId 값을 설정
+            form.appendChild(companyInput);
+
             //console.log(birthStart, birthEnd, hireStart, hireEnd);
             form.action = '/dev/adSearch';       // search action
             break;
@@ -102,6 +120,11 @@ function submitAction(actionType) {
 
             hiddenInputs.forEach(input => input.remove());
 
+            companyInput.type = 'hidden';
+            companyInput.name = 'companyId';  // 서버에서 받을 이름
+            companyInput.value = companyId;   // 실제 companyId 값을 설정
+            form.appendChild(companyInput);
+
             // 선택된 항목을 form에 hidden input으로 추가
             selectedMembers.forEach(checkbox => {
                 const hiddenInput = document.createElement('input');
@@ -124,6 +147,12 @@ function submitAction(actionType) {
             hiddenInputs.forEach(input => input.remove());
             // console.log(selDepartment);
             // 선택된 항목을 form에 hidden input으로 추가
+
+            companyInput.type = 'hidden';
+            companyInput.name = 'companyId';  // 서버에서 받을 이름
+            companyInput.value = companyId;   // 실제 companyId 값을 설정
+            form.appendChild(companyInput);
+
             selectedMembers.forEach(checkbox => {
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
@@ -145,6 +174,11 @@ function submitAction(actionType) {
             const selRank= document.getElementById('selRank').value;
             hiddenInputs.forEach(input => input.remove());
 
+            companyInput.type = 'hidden';
+            companyInput.name = 'companyId';  // 서버에서 받을 이름
+            companyInput.value = companyId;   // 실제 companyId 값을 설정
+            form.appendChild(companyInput);
+
             // 선택된 항목을 form에 hidden input으로 추가
             selectedMembers.forEach(checkbox => {
                 const hiddenInput = document.createElement('input');
@@ -165,6 +199,11 @@ function submitAction(actionType) {
 
             const selStatus= document.getElementById('selStatus').value;
             hiddenInputs.forEach(input => input.remove());
+
+            companyInput.type = 'hidden';
+            companyInput.name = 'companyId';  // 서버에서 받을 이름
+            companyInput.value = companyId;   // 실제 companyId 값을 설정
+            form.appendChild(companyInput);
 
             // 선택된 항목을 form에 hidden input으로 추가
             selectedMembers.forEach(checkbox => {
@@ -339,11 +378,13 @@ function filterBirthMonth(){
         const birthMonthFromDate = new Date(memberBirth).getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줘야 실제 월이 됨
         const formattedMonth = birthMonthFromDate.toString().padStart(2, '0'); // 두 자릿수로 포맷팅 (예: 9 → 09)
 
-    if (birthMonth === formattedMonth) {
-            row.style.display = ''; // 해당하는 경우 표시
-        } else {
-            row.style.display = 'none'; // 해당하지 않는 경우 숨김
-        }
+
+    if (birthMonth === '전체보기' || birthMonth === formattedMonth) {
+                row.style.display = ''; // 전체보기이거나 해당 월인 경우 표시
+            } else {
+                row.style.display = 'none'; // 해당하지 않는 경우 숨김
+            }
+
     });
 }
 
@@ -356,10 +397,10 @@ function filterHireMonth(){
         const startMonthFromDate = new Date(memberStart).getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줘야 실제 월이 됨
         const formattedMonth = startMonthFromDate.toString().padStart(2, '0'); // 두 자릿수로 포맷팅 (예: 9 → 09)
 
-    if (hireMonth === formattedMonth) {
-            row.style.display = ''; // 해당하는 경우 표시
-        } else {
-            row.style.display = 'none'; // 해당하지 않는 경우 숨김
-        }
+    if (hireMonth === '전체보기' || hireMonth === formattedMonth) {
+                row.style.display = ''; // 전체보기이거나 해당 월인 경우 표시
+            } else {
+                row.style.display = 'none'; // 해당하지 않는 경우 숨김
+            }
     });
 }

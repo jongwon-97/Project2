@@ -336,11 +336,13 @@ function filterBirthMonth(){
         const birthMonthFromDate = new Date(memberBirth).getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줘야 실제 월이 됨
         const formattedMonth = birthMonthFromDate.toString().padStart(2, '0'); // 두 자릿수로 포맷팅 (예: 9 → 09)
 
-    if (birthMonth === formattedMonth) {
-            row.style.display = ''; // 해당하는 경우 표시
-        } else {
-            row.style.display = 'none'; // 해당하지 않는 경우 숨김
-        }
+
+    if (birthMonth === '전체보기' || birthMonth === formattedMonth) {
+                row.style.display = ''; // 전체보기이거나 해당 월인 경우 표시
+            } else {
+                row.style.display = 'none'; // 해당하지 않는 경우 숨김
+            }
+
     });
 }
 
@@ -353,10 +355,10 @@ function filterHireMonth(){
         const startMonthFromDate = new Date(memberStart).getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줘야 실제 월이 됨
         const formattedMonth = startMonthFromDate.toString().padStart(2, '0'); // 두 자릿수로 포맷팅 (예: 9 → 09)
 
-    if (hireMonth === formattedMonth) {
-            row.style.display = ''; // 해당하는 경우 표시
-        } else {
-            row.style.display = 'none'; // 해당하지 않는 경우 숨김
-        }
+    if (hireMonth === '전체보기' || hireMonth === formattedMonth) {
+                row.style.display = ''; // 전체보기이거나 해당 월인 경우 표시
+            } else {
+                row.style.display = 'none'; // 해당하지 않는 경우 숨김
+            }
     });
 }

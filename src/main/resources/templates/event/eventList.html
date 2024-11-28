@@ -139,10 +139,19 @@
 
 <h1>이벤트 목록</h1>
 
-<!-- Tabs -->
+<!-- 검색 폼 -->
+<form method="get" action="" id="searchForm">
+  <input type="text" name="findKeyword" placeholder="제목 검색"
+         th:value="${findKeyword != null ? findKeyword : ''}">
+  <input type="hidden" name="status" id="statusInput"
+         th:value="${status != null ? status : '모집중'}">
+  <button type="submit">검색</button>
+</form>
+
+<!-- 탭 -->
 <div class="tabs">
-  <div class="tab active" data-tab="ongoing">모집중 행사</div>
-  <div class="tab" data-tab="ended">마감된 행사</div>
+  <div class="tab" data-tab="ongoing" onclick="setStatus('모집중')">모집중 행사</div>
+  <div class="tab" data-tab="ended" onclick="setStatus('마감')">마감된 행사</div>
 </div>
 
 <!-- 모집중 행사 -->
@@ -184,7 +193,13 @@
       <td class="status open" th:text="${season.seasonState}"></td>
       <td class="d-day"></td>
       <td>
-        <a th:href="@{'/event/apply/' + ${season.seasonId}}" class="apply-btn">신청하러 가기</a>
+        <a th:if="${requestURI.contains('/admin')}"
+           th:href="@{'/admin/event/apply/' + ${season.seasonId}}"
+           class="apply-btn">단체 신청하러 가기</a>
+
+        <a th:if="${!requestURI.contains('/admin')}"
+           th:href="@{'/event/apply/' + ${season.seasonId}}"
+           class="apply-btn">신청하러 가기</a>
       </td>
     </tr>
     </tbody>
@@ -235,59 +250,87 @@
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const tabs = document.querySelectorAll(".tab");
-    const tabContents = document.querySelectorAll(".tab-content");
+  function setStatus(status) {
+  // 상태를 hidden input에 설정
+  const form = document.getElementById('searchForm');
+  const statusInput = document.getElementById('statusInput');
 
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
+  // 현재 URL 경로 확인
+  const currentPath = window.location.pathname;
+  if (currentPath.includes("/admin")) {
+    form.action = "/admin/board/eventList"; // 관리자 경로 설정
+  } else {
+    form.action = "/board/eventList"; // 일반 사용자 경로 설정
+  }
 
-        const target = tab.dataset.tab;
-        tabContents.forEach(content => {
-          content.id === target
-                  ? content.classList.add("active")
-                  : content.classList.remove("active");
-        });
-      });
-    });
+  statusInput.value = status; // 상태 업데이트
+  form.submit(); // 폼 제출
+}
 
-    // Calculate D-DAY and update Status
-    const rows = document.querySelectorAll("tbody tr");
+document.addEventListener("DOMContentLoaded", function () {
+  const tabs = document.querySelectorAll(".tab");
+  const tabContents = document.querySelectorAll(".tab-content");
+  const currentStatus = document.getElementById('statusInput').value;
 
-    rows.forEach(row => {
-      const endDateCell = row.querySelector(".season-end-date");
-      const statusCell = row.querySelector(".status");
-      const dDayCell = row.querySelector(".d-day");
-
-      if (endDateCell && statusCell && dDayCell) {
-        const endDateStr = endDateCell.textContent.trim();
-
-        if (endDateStr) {
-          const endDate = new Date(endDateStr);
-          const today = new Date();
-
-          const diffTime = endDate - today;
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-          // D-DAY 계산
-          if (diffDays > 0) {
-            dDayCell.textContent = `D-${diffDays}`;
-            statusCell.textContent = "모집중";
-            statusCell.classList.add("open");
-          } else {
-            dDayCell.textContent = "D-0";
-            statusCell.textContent = "마감";
-            statusCell.classList.add("closed");
-          }
-        } else {
-          dDayCell.textContent = "D-알 수 없음";
-          statusCell.textContent = "상태 없음";
-        }
-      }
-    });
+  // 탭 상태 설정
+  tabs.forEach(tab => {
+    const targetTab = tab.dataset.tab;
+    if (
+      (currentStatus === "모집중" && targetTab === "ongoing") ||
+      (currentStatus === "마감" && targetTab === "ended")
+    ) {
+      tab.classList.add("active");
+    } else {
+      tab.classList.remove("active");
+    }
   });
+
+  // 탭 콘텐츠 활성화
+  tabContents.forEach(content => {
+    if (
+      (currentStatus === "모집중" && content.id === "ongoing") ||
+      (currentStatus === "마감" && content.id === "ended")
+    ) {
+      content.classList.add("active");
+    } else {
+      content.classList.remove("active");
+    }
+  });
+
+  // D-DAY 계산 및 상태 업데이트
+  const rows = document.querySelectorAll("tbody tr");
+  rows.forEach(row => {
+    const endDateCell = row.querySelector(".season-end-date");
+    const statusCell = row.querySelector(".status");
+    const dDayCell = row.querySelector(".d-day");
+
+    if (endDateCell && statusCell && dDayCell) {
+      const endDateStr = endDateCell.textContent.trim();
+      if (endDateStr) {
+        const endDate = new Date(endDateStr);
+        const today = new Date();
+        const diffTime = endDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 0) {
+          dDayCell.textContent = `D-${diffDays}`;
+          statusCell.textContent = "모집중";
+          statusCell.classList.add("open");
+          statusCell.classList.remove("closed");
+        } else {
+          dDayCell.textContent = `D-${Math.abs(diffDays)}`;
+          statusCell.textContent = "마감";
+          statusCell.classList.add("closed");
+          statusCell.classList.remove("open");
+        }
+      } else {
+        dDayCell.textContent = "D-알 수 없음";
+        statusCell.textContent = "상태 없음";
+      }
+    }
+  });
+});
+
 </script>
 </body>
 </html>

@@ -30,7 +30,8 @@ import java.util.UUID;
 
 @Controller
 @Slf4j
-public class EventController {
+@RequestMapping("/admin")
+public class AdminEventController {
 
     @Autowired
     private EventService eventService;

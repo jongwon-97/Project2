@@ -17,10 +17,10 @@
 
 
     <!-- 페이징된 공지사항 목록 조회(댓글 개수와 함께) -->
+    <!-- 페이징된 공지사항 목록 조회(댓글 개수와 함께) -->
     <select id="selectNotificationList" parameterType="Paging" resultType="Board">
-        SELECT * FROM (
-        -- 공지사항 가져오기
         (
+        -- 공지사항 가져오기
         SELECT
         b.board_id AS boardId,
         b.board_title AS boardTitle,
@@ -29,11 +29,12 @@
         b.board_create_date AS boardCreateDate,
         b.board_views AS boardViews,
         b.is_notice AS isNotice,
-        (SELECT COUNT(*) FROM c_comment c WHERE c.board_id = b.board_id AND c.parent_id IS NULL) AS commentCount,
+        (SELECT COUNT(*)
+        FROM c_comment c
+        WHERE c.board_id = b.board_id AND c.parent_id IS NULL) AS commentCount,
         1 AS priority
         FROM c_board b
         WHERE b.is_notice = true
-        AND b.board_category = '공지사항'
         <if test="findType != null and findType == 'title'">
             AND b.board_title LIKE CONCAT('%', #{findKeyword}, '%')
         </if>
@@ -42,8 +43,8 @@
         </if>
         )
         UNION ALL
-        -- 일반 글 가져오기
         (
+        -- 일반 글 가져오기
         SELECT
         b.board_id AS boardId,
         b.board_title AS boardTitle,
@@ -52,21 +53,23 @@
         b.board_create_date AS boardCreateDate,
         b.board_views AS boardViews,
         b.is_notice AS isNotice,
-        (SELECT COUNT(*) FROM c_comment c WHERE c.board_id = b.board_id AND c.parent_id IS NULL) AS commentCount,
+        (SELECT COUNT(*)
+        FROM c_comment c
+        WHERE c.board_id = b.board_id AND c.parent_id IS NULL) AS commentCount,
         2 AS priority
         FROM c_board b
         WHERE b.is_notice = false
-        AND b.board_category = '공지사항'
         <if test="findType != null and findType == 'title'">
             AND b.board_title LIKE CONCAT('%', #{findKeyword}, '%')
         </if>
         <if test="findType != null and findType == 'member'">
             AND b.member_id LIKE CONCAT('%', #{findKeyword}, '%')
         </if>
+
+        ORDER BY b.board_id DESC
+        LIMIT #{start}, #{oneRecordPage}
         )
-        ) AS merged_results
-        ORDER BY priority ASC, boardId DESC
-        LIMIT #{start}, #{oneRecordPage};
+        ORDER BY priority ASC, boardId DESC;
     </select>
 
     <select id="getTotalGeneralCount" parameterType="Paging" resultType="int">

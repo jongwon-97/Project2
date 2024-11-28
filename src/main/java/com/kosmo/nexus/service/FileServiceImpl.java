@@ -42,4 +42,5 @@ public class FileServiceImpl implements FileService {
     public void deleteFilesBySeasonId(int seasonId) {
         fileMapper.deleteFilesBySeasonId(seasonId); // FileMapper의 쿼리 호출
     }
+
 }

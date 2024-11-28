@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>사원 추가하기</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script> <!-- PapaParse 라이브러리 추가 -->
+</head>
+<body>
+<h1> 사원 등록하기 </h1>
+<h3> 관리자(admin)는 회원가입으로 등록하거나 개발자에게 연락해야 합니다 </h3>
+
+<!-- CSV 파일 업로드 버튼 추가 -->
+<input type="file" id="csvFileInput" accept=".csv">
+<button type="button" onclick="loadCSV()">불러오기</button>
+
+<form name="addMemberForm" id="addMemberForm" method="POST" enctype="multipart/form-data">
+    <input type="file" id="imageFileInput" name="imageFile" accept="image/*" multiple>
+    <table id="memberTable">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+            <th>사번</th>
+            <th>회원 ID</th>
+            <th>이름</th>
+            <th>직급</th>
+            <th>부서</th>
+            <th>전화번호</th>
+            <th>생년월일</th>
+            <th>성별</th>
+            <th>이메일</th>
+            <th>우편번호</th>
+            <th>주소</th>
+            <th>상세주소</th>
+            <th>입사일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 기본 행 -->
+        <tr>
+            <td>1</td>
+            <td><input type="checkbox" name="checkRow" onchange="checkAllSelected()"></td>
+            <td><input type="text" name="memberNum" maxlength="15"></td>
+            <td><input type="text" name="memberId" maxlength="20"></td>
+            <td><input type="text" name="memberName" maxlength="10"></td>
+            <td><input type="text" name="memberRank" maxlength="10"></td>
+            <td><input type="text" name="memberDepartment" maxlength="250"></td>
+            <td><input type="text" name="memberPhone" maxlength="13"></td>
+            <td><input type="date" name="memberBirth"></td>
+            <td>
+                <select name="memberGender">
+                    <option value="M">남성</option>
+                    <option value="F">여성</option>
+                </select>
+            </td>
+            <td><input type="email" name="memberEmail" maxlength="250"></td>
+            <td><input type="number" name="memberPostcode"></td>
+            <td><input type="text" name="memberAddress" maxlength="250"></td>
+            <td><input type="text" name="memberDAddress" maxlength="250"></td>
+            <td><input type="date" name="memberStartDate" value="2024-01-01" readonly></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button type="button" onclick="addRow()">+ 추가</button>
+    <button type="button" onclick="deleteSelectedRows()">삭제</button>
+    <button type="button" onclick="addMember()"> 등록하기 </button>
+</form>
+<button type="button" onclick="window.location.href='/admin/memberList'">목록으로</button>
+<script src="/js/admin/addUserPage.js"></script>
+</body>
+</html>

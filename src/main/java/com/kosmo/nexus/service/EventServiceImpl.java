@@ -1,5 +1,6 @@
 package com.kosmo.nexus.service;
 
+
 import com.kosmo.nexus.dto.BoardDTO;
 import com.kosmo.nexus.dto.EventDTO;
 import com.kosmo.nexus.dto.SeasonDTO;
@@ -22,12 +23,14 @@ public class EventServiceImpl implements EventService{
 
     @Autowired
     private EventMapper eventMapper;
+
     @Autowired
     private BoardMapper boardMapper;
     @Autowired
     private FileMapper fileMapper;
     @Autowired
     private BoardService boardService;
+
 
     @Override
     public void registerEvent(EventDTO eventDTO) {
@@ -92,7 +95,6 @@ public class EventServiceImpl implements EventService{
         return eventMapper.selectMaxEventId(); // 현재 가장 큰 event_id 조회
     }
 
-
     @Override
     public int getBoardIdBySeasonId(int seasonId) {
         return eventMapper.getBoardIdBySeasonId(seasonId);
@@ -147,8 +149,5 @@ public class EventServiceImpl implements EventService{
     public List<SeasonDTO> searchSeasonsByTitle(String findKeyword) {
         return eventMapper.searchSeasonsByTitle(findKeyword); // 제목 검색 전용 매퍼 호출
     }
-
-
-
 
 }

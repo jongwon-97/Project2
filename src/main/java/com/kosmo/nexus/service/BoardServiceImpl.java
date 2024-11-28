@@ -117,7 +117,6 @@ public class BoardServiceImpl implements BoardService {
     public void updateAnswerStatus(int boardId, String answerStatus) {
         boardMapper.updateAnswerStatus(boardId, answerStatus);
     }
-
     @Override
     public void deleteBoardById(int boardId) {
         boardMapper.deleteBoardById(boardId);

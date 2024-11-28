@@ -4,6 +4,7 @@
 <mapper namespace="com.kosmo.nexus.mapper.FileMapper">
 
     <!-- 파일 삽입 -->
+
     <insert id="insertFile" parameterType="File">
         INSERT INTO c_file (file_path, board_id, file_size, file_date, file_origin_name)
         VALUES (#{filePath}, #{boardId}, #{fileSize}, NOW(), #{fileOriginName})
@@ -21,6 +22,7 @@
         WHERE board_id = #{boardId}
     </select>
 
+
     <!-- 특정 게시판 ID로 파일 삭제 -->
     <delete id="deleteFilesByBoardId" parameterType="int">
         DELETE FROM c_file WHERE board_id = #{boardId}
@@ -28,6 +30,7 @@
 
     <!-- 특정 게시판 ID로 모든 파일 조회 -->
     <select id="selectFilesByBoardId" resultType="File">
+
         SELECT file_id AS fileId,
         file_path AS filePath,
         board_id AS boardId,

@@ -34,7 +34,6 @@ public interface BoardMapper {
 
     // 특정 board_id 데이터 삭제
     void deleteBoardById(@Param("boardId") int boardId);
-
     void updateBoard(BoardDTO boardDTO);
 
 

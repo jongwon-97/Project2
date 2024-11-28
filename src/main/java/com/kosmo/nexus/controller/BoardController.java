@@ -385,7 +385,7 @@ public class BoardController {
     public String qnaDetail(@RequestParam("num") int num, Model model, HttpSession session) {
         // 조회수 증가
         boardService.increaseQnaViewCount(num);
-        
+
         // 로그인된 사용자 ID 가져오기
         String loggedInUserId = getLoggedInUserId(session);
         model.addAttribute("loggedInUserId", loggedInUserId);

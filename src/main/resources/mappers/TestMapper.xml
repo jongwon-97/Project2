@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper
+3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosmo.nexus.mapper.TestMapper">
+    <insert id = "insertTest" parameterType="Test">
+        insert into test(id, title) values(#{id}, #{title})
+    </insert>
+
+    <select id="listTest" resultType="Test">
+        select id, title from test
+    </select>
+</mapper>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이디 중복 확인</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .popup-container {
+            background: white;
+            width: 300px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .popup-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .popup-container button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .popup-container .result {
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .popup-container .result.success {
+            color: green;
+        }
+
+        .popup-container .result.error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="popup-container">
+    <h2>아이디 중복 확인</h2>
+    <input type="text" id="memberId" placeholder="아이디를 입력하세요">
+    <button onclick="checkId()">중복 확인</button>
+    <div class="result" id="resultMessage"></div>
+    <button onclick="confirmId()">확인</button>
+</div>
+
+<script>
+    let isIdAvailable = false;
+
+  function checkId() {
+      const memberId = document.getElementById("memberId").value;
+      const resultMessage = document.getElementById("resultMessage");
+
+      if (!memberId.trim()) {
+          resultMessage.textContent = "아이디를 입력해주세요.";
+          resultMessage.className = "result error";
+          return;
+      }
+
+      // 서버 요청
+      fetch(`/checkId?memberId=${encodeURIComponent(memberId)}`)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error(`HTTP 오류 상태: ${response.status}`);
+              }
+              return response.json();
+          })
+          .then(data => {
+              isIdAvailable = data.isAvailable;
+              if (isIdAvailable) {
+                  resultMessage.textContent = "사용 가능한 아이디입니다.";
+                  resultMessage.className = "result success";
+              } else {
+                  resultMessage.textContent = "이미 사용 중인 아이디입니다.";
+                  resultMessage.className = "result error";
+              }
+          })
+          .catch(error => {
+              console.error("오류 발생:", error);
+              resultMessage.textContent = "서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.";
+              resultMessage.className = "result error";
+          });
+  }
+
+  function confirmId() {
+      if (!isIdAvailable) {
+          alert("아이디 중복 확인을 완료한 후 확인 버튼을 눌러주세요.");
+          return;
+      }
+
+      const memberId = document.getElementById("memberId").value;
+      window.opener.setIdCheckResult(memberId); // 부모 창에 값 전달
+      window.close();
+  }
+</script>
+</body>
+</html>

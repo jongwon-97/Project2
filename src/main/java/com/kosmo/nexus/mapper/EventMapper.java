@@ -5,6 +5,7 @@ import com.kosmo.nexus.dto.SeasonDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+
 import java.util.List;
 
 @Mapper
@@ -23,6 +24,7 @@ public interface EventMapper {
 
     int selectMaxEventId();
 
+
     // 특정 season_id에 해당하는 board_id 조회
     int getBoardIdBySeasonId(@Param("seasonId") int seasonId);
 
@@ -38,4 +40,5 @@ public interface EventMapper {
     List<SeasonDTO> searchSeasons(String findKeyword, String status);
 
     List<SeasonDTO> searchSeasonsByTitle(String findKeyword);
+
 }

@@ -160,5 +160,4 @@
         ORDER BY season_start_date DESC
     </select>
 
-
 </mapper>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Home</title>
+  <script src="/static/js/common.js"></script>
+  <script>
+    function checkSession() {
+      fetch('/session-status', { method: 'GET' })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("로그인 상태가 아닙니다.");
+          }
+        })
+        .then(data => {
+          document.getElementById('sessionStatus').innerText = `${data.memberName} 님 로그인 중입니다.`;
+          document.getElementById('memberRole').innerText = `권한: ${data.memberRole}`;
+        })
+        .catch(() => {
+          document.getElementById('sessionStatus').innerText = "로그인 정보가 없습니다.";
+          document.getElementById('memberRole').innerText = "권한 정보를 확인할 수 없습니다.";
+        });
+    }
+
+    window.onload = function() {
+      checkSession();
+      enableBackButtonProtection("/adminhome");
+    };
+
+    function logout() {
+      fetch('/logout', { method: 'POST' })
+        .then(() => {
+          window.location.href = '/';
+        });
+    }
+  </script>
+</head>
+<body>
+<h1>Admin Home</h1>
+<p id="sessionStatus">세션 정보를 불러오는 중...</p>
+<p id="memberRole">권한 정보를 불러오는 중...</p>
+<button onclick="logout()">로그아웃</button>
+<a href = "/admin/memberList"> 사원 관리 </a>
+</body>
+</html>

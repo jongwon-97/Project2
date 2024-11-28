@@ -37,7 +37,9 @@ public interface BoardService {
     void increaseQnaViewCount(int num); // QnA 조회수 증가
 
     void updateAnswerStatus(int boardId, String answerStatus);
+
     void deleteBoardById(int boardId);
 
     void updateBoard(BoardDTO boardDTO); // 게시글 수정
+
 }

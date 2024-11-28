@@ -111,8 +111,7 @@
     </label>
     <div class="links">
         <a onclick="navigateToSignup('/bSignup')">회원가입</a> |
-
-        <a href="/find-account">아이디/비밀번호 찾기</a>
+        <a onclick="navigateToFindAccount('/findAccount')">아이디/비밀번호 찾기</a>
     </div>
 </div>
 <script>
@@ -120,6 +119,10 @@
         parent.document.getElementById('iframeContainer').style.display = 'none';
         window.parent.location.href = signupUrl;
     }
+    function navigateToFindAccount(findAccountUrl) {
+      parent.document.getElementById('iframeContainer').style.display = 'none';
+      window.parent.location.href = findAccountUrl;
+  }
     // 페이지 로드 시 실행
     document.addEventListener('DOMContentLoaded', function () {
         const memberIdInput = document.querySelector('input[name="memberId"]');

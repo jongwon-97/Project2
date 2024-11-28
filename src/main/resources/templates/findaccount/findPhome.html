@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>개인 회원 찾기</title>
+  <script>
+    function showForm(method) {
+        // 모든 폼을 숨기기
+        document.getElementById('emailForm').style.display = 'none';
+        document.getElementById('phoneForm').style.display = 'none';
+
+        // 선택한 폼을 보이게 설정
+        document.getElementById(method + 'Form').style.display = 'block';
+    }
+  </script>
+</head>
+<body>
+<h2>개인 회원 찾기</h2>
+
+<!-- 라디오 버튼 -->
+<form method="post" th:action="@{/processPAccount}">
+  <label>
+    <input type="radio" name="findMethod" value="email" onclick="showForm('email')">
+    이름 + 이메일로 찾기
+  </label>
+  <br>
+  <label>
+    <input type="radio" name="findMethod" value="phone" onclick="showForm('phone')">
+    이름 + 휴대전화번호로 찾기
+  </label>
+  <br>
+
+  <!-- 이메일 양식 -->
+  <div id="emailForm" style="display:none;">
+    <label for="name">이름:</label>
+    <input type="text" id="name" name="name">
+    <br>
+    <label for="email">이메일:</label>
+    <input type="email" id="email" name="email">
+    <br>
+  </div>
+
+  <!-- 휴대전화번호 양식 -->
+  <div id="phoneForm" style="display:none;">
+    <label for="namePhone">이름:</label>
+    <input type="text" id="namePhone" name="namePhone">
+    <br>
+    <label for="phone">휴대전화번호:</label>
+    <input type="text" id="phone" name="phone">
+    <br>
+  </div>
+
+  <button type="submit">다음</button>
+</form>
+</body>
+</html>

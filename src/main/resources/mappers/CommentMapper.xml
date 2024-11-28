@@ -11,16 +11,16 @@
         INSERT INTO c_comment (board_id, member_id, comment_content, parent_id)
         VALUES (#{boardId}, #{memberId}, #{commentContent},
         <choose>
-            <when test="parentId != null">#{parentId}</when>  <!-- 대댓글일 경우, 부모 댓글 ID -->
-            <otherwise>NULL</otherwise>  <!-- 댓글 작성 시, 부모 댓글이 없으므로 parent_id는 NULL -->
+            <when test="parentId != null">#{parentId}</when>
+            <otherwise>NULL</otherwise>
         </choose>);
     </insert>
 
     <!-- 댓글 목록을 가져오는 SQL(parent_id가 NULL인 댓글만 가져오기) -->
     <select id="findCommentsByBoardId" resultType="Comment">
         SELECT comment_id AS commentId, board_id AS boardId, member_id AS memberId,
-        comment_content AS commentContent, comment_time AS commentTime,
-        parent_id AS parentId
+               comment_content AS commentContent, comment_time AS commentTime,
+               parent_id AS parentId
         FROM c_comment
         WHERE board_id = #{boardId} AND parent_id IS NULL
         ORDER BY comment_time ASC;
@@ -28,8 +28,8 @@
     <!-- 대댓글을 가져오는 SQL(parent_id가 부모 댓글의 commentId인 대댓글 가져오기) -->
     <select id="findRepliesByParentId" resultType="Comment">
         SELECT comment_id AS commentId, board_id AS boardId, member_id AS memberId,
-        comment_content AS commentContent, comment_time AS commentTime,
-        parent_id AS parentId
+               comment_content AS commentContent, comment_time AS commentTime,
+               parent_id AS parentId
         FROM c_comment
         WHERE parent_id = #{parentId}
         ORDER BY comment_time ASC;
@@ -58,6 +58,18 @@
         UPDATE c_comment
         SET comment_content = #{commentContent}
         WHERE comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteCommentsByBoardId" parameterType="int">
+        DELETE FROM c_comment
+        WHERE board_id = #{boardId}
+    </delete>
+
+    <!-- Q&A 답변 상태 업데이트 -->
+    <update id="updateAnswerStatus">
+        UPDATE c_board
+        SET answer_status = 'Y'
+        WHERE board_id = #{boardId}
     </update>
 
 </mapper>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+
+  <title>마감된 이벤트 상세보기</title>
+</head>
+<body>
+<h1>마감된 이벤트 상세보기</h1>
+
+<div>
+  <p><strong>제목:</strong> <span th:text="${season.seasonTitle}"></span></p>
+  <p><strong>설명:</strong> <span th:text="${season.seasonInfo}"></span></p>
+  <p><strong>모집 인원:</strong> <span th:text="${season.seasonLimit}"></span></p>
+  <p><strong>참가비:</strong> <span th:text="${season.seasonFee}"></span></p>
+  <p><strong>시작 날짜:</strong> <span th:text="${season.seasonStartDate}"></span></p>
+  <p><strong>종료 날짜:</strong> <span th:text="${season.seasonEndDate}"></span></p>
+  <p><strong>상태:</strong> <span th:text="${season.seasonState}"></span></p>
+
+  <p><strong>조회수:</strong> <span th:text="${season.seasonViews}"></span></p>
+</div>
+
+<div>
+  <a href="/board/eventList"><button type="button">목록으로</button></a>
+</div>
+</body>
+</html>

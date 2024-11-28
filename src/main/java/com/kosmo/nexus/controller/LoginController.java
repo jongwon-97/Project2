@@ -46,10 +46,6 @@ public class LoginController {
         try {
             // 응답의 Content-Type을 설정 (HTML 형식으로 반환)
             res.setContentType("text/html;charset=UTF-8");
-
-            log.info("SaveId:{}", saveId);
-            log.info("tmpUser:{}", tmpUser);
-
             // 1. 유효성 체크 (userId, userPw 빈 문자열 여부 확인)
             // 빈 문자열일 경우 다시 로그인 페이지로 리디렉트
             if (tmpUser.getMemberId() == null || tmpUser.getMemberId().trim().isBlank() ||
@@ -65,8 +61,6 @@ public class LoginController {
             if (loginUser != null) {
                 // 로그인 성공: 세션에 사용자 정보 저장
                 ses.setAttribute("loginUser", loginUser);
-                log.info("세션 아이디: {}", ses.getId());
-
                 // 쿠키 설정
                 Cookie ck = new Cookie("uid", loginUser.getMemberId());
 
@@ -94,7 +88,6 @@ public class LoginController {
         } catch (NoMemberException e) {
             // 3. 로그인 실패 시 처리
             // - 예외 발생 시: 로그인 페이지로 다시 이동
-            log.error("로그인 실패: {}", e.getMessage());
             return "<script>alert('" + e.getMessage() + "'); window.location.href = '/pLogin';</script>";
         }
     }
@@ -103,7 +96,6 @@ public class LoginController {
     public String home() {
         return "member/home"; // mypage.html로 이동
     }
-
 
     @GetMapping("/session-status")
     @ResponseBody
@@ -118,12 +110,9 @@ public class LoginController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "로그인되지 않았습니다."));
     }
 
-
-
     //기업회원 로그인 페이지
     @GetMapping("/bLogin")
     public String businessLoginForm() {
-        log.info("test");
         return "member/business"; // static/member/business.html
     }
 
@@ -136,10 +125,6 @@ public class LoginController {
         try {
             // 응답의 Content-Type을 설정 (HTML 형식으로 반환)
             res.setContentType("text/html;charset=UTF-8");
-
-            log.info("SaveId:{}", saveId);
-            log.info("tmpUser:{}", tmpUser);
-
             // 1. 유효성 체크 (userId, userPw 빈 문자열 여부 확인)
             // 빈 문자열일 경우 다시 로그인 페이지로 리디렉트
             if (tmpUser.getMemberId() == null || tmpUser.getMemberId().trim().isBlank() ||
@@ -152,8 +137,6 @@ public class LoginController {
 
             // 3. 로그인 성공: 세션에 사용자 정보 저장
             ses.setAttribute("loginUser", loginUser);
-            log.info("세션 아이디: {}", ses.getId());
-
             // 4. 쿠키 설정
             Cookie ck = new Cookie("uid", loginUser.getMemberId());
             ck.setMaxAge(saveId ? 7 * 24 * 60 * 60 : 0); // 7일 유지 또는 즉시 삭제
@@ -171,7 +154,6 @@ public class LoginController {
 
         } catch (NoMemberException e) {
             // 6. 로그인 실패 처리
-            log.error("로그인 실패: {}", e.getMessage());
             return "<script>alert('" + e.getMessage() + "'); window.location.href = '/bLogin';</script>";
         }
     }
@@ -197,7 +179,6 @@ public class LoginController {
     private String validateRole(HttpSession session, String requiredRole, String successPage) {
         LoginDTO loginUser = (LoginDTO) session.getAttribute("loginUser");
         if (loginUser == null || !requiredRole.equalsIgnoreCase(loginUser.getMemberRole())) {
-            log.warn("권한 없음: {}", loginUser);
             return "redirect:/accessDenied";
         }
         return successPage;
@@ -211,8 +192,8 @@ public class LoginController {
 
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
-        session.invalidate(); // 세션 무효화
-        return ResponseEntity.ok("로그아웃 성공");
+    public String logout(HttpSession ses) {
+        ses.invalidate(); // 세션 무효화
+        return "redirect:/";
     }
 }

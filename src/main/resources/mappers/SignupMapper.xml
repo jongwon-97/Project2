@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper
+3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosmo.nexus.mapper.SignupMapper">
+
+    <resultMap id="CompanyResultMap" type="Company">
+        <result property="companyId" column="company_id"/>
+        <result property="companyNum" column="company_num"/>
+        <result property="companyName" column="company_name"/>
+        <result property="companyEmail" column="company_email"/>
+        <result property="companyPhone" column="company_phone"/>
+        <result property="companyPostcode" column="company_postcode"/>
+        <result property="companyAddress" column="company_address"/>
+        <result property="companyDAddress" column="company_d_address"/>
+        <result property="companyLogoName" column="company_logo"/>
+        <result property="companyStartDate" column="company_start_date"/>
+    </resultMap>
+
+    <!-- 아이디 중복 확인 -->
+    <select id="countById" resultType="int" parameterType="string">
+        SELECT COUNT(*)
+        FROM c_member
+        WHERE member_id = #{memberId}
+    </select>
+
+    <!-- 개인 회원가입 -->
+    <insert id="insertUser" parameterType="Signup">
+        INSERT INTO c_member (
+        member_id, member_pw, member_rank, member_num, member_name, member_department,
+        member_phone, member_birth, member_gender, member_email, member_address, member_start_date,
+        member_img, member_role, member_status, member_last_date, company_id, member_sns,
+        member_postcode,member_d_address
+        ) VALUES (
+        #{memberId}, #{memberPw},
+        NULL, NULL,         <!-- 디폴트 : 직급,사번 -->
+        #{memberName},
+        NULL,
+        #{memberPhone}, #{memberBirth}, #{memberGender}, #{memberEmail}, #{memberAddress},
+        CURRENT_TIMESTAMP,       <!-- 가입 일시: 현재 날짜와 시간 -->
+        #{memberImgName},
+        'User',            <!-- 디폴트: 개인 회원 권한 -->
+        '활동',             <!-- 디폴트: 상태 -->
+        CURRENT_TIMESTAMP,       <!-- 마지막 로그인: 가입 후 바로 현재 시간으로 설정 -->
+        -1,                 <!-- 디폴트: 개인 회원의 companyId -->
+        0,                  <!-- 디폴트: sns 연동 계정 0 -->
+        #{memberPostcode},  #{memberDAddress}
+        )
+    </insert>
+
+
+    <insert id="insertCompany" parameterType="Company" useGeneratedKeys="true" keyProperty="companyId">
+        INSERT INTO c_company (
+        company_num, company_name, company_email, company_phone,
+        company_postcode, company_address, company_d_address, company_logo , company_start_date
+        ) VALUES (
+        #{companyNum}, #{companyName}, #{companyEmail}, #{companyPhone},
+        #{companyPostcode}, #{companyAddress}, #{companyDAddress}, #{companyLogoName},CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <!-- 정보 찾기 -->
+    <select id="findCompanyByCompanyNum" resultMap="CompanyResultMap" parameterType="string">
+        SELECT company_id, company_num, company_name, company_email, company_phone,
+        company_postcode, company_address, company_logo , company_d_address
+        FROM c_company
+        WHERE company_num = #{companyNum}
+        LIMIT 1
+    </select>
+
+
+    <!-- 기업 회원가입 -->
+    <insert id="insertCompanyUser" parameterType="Signup">
+        INSERT INTO c_member (
+        member_id, member_pw, member_rank, member_num, member_name, member_department,
+        member_phone, member_birth, member_gender, member_email, member_address, member_start_date,
+        member_img, member_role, member_status, member_last_date, company_id, member_sns,
+        member_postcode,member_d_address
+        ) VALUES (
+        #{memberId}, #{memberPw},
+        #{memberRank},#{memberNum},
+        #{memberName},
+        #{memberDepartment},
+        #{memberPhone}, #{memberBirth}, #{memberGender}, #{memberEmail}, #{memberAddress},
+        CURRENT_TIMESTAMP,       <!-- 가입 일시: 현재 날짜와 시간 -->
+        #{memberImgName},
+        'Admin',            <!-- 디폴트: 개인 회원 권한 -->
+        '활동',              <!-- 디폴트: 상태 -->
+        CURRENT_TIMESTAMP,        <!-- 마지막 로그인: 가입 후 바로 현재 시간으로 설정 -->
+        #{companyId},
+        0,                  <!-- 디폴트: sns 연동 계정 0 -->
+        #{memberPostcode},  #{memberDAddress}
+        )
+    </insert>
+
+</mapper>

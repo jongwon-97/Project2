@@ -4,41 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>공지사항 작성</title>
+
 </head>
 <body>
-<!-- 공지사항 작성 폼 -->
-<div>
+<div class="container">
     <h1>공지사항 작성</h1>
     <form th:action="@{/board/notification}" method="post" enctype="multipart/form-data">
         <!-- 등록 및 임시저장 버튼 -->
-        <div>
+        <div class="form-actions">
             <button type="submit">등록</button>
             <button type="button">임시저장</button>
         </div>
 
         <!-- 제목 입력 -->
-        <div>
+        <div class="form-group">
             <label for="boardTitle">제목</label>
             <input type="text" id="boardTitle" name="boardTitle" placeholder="제목을 입력하세요" required>
         </div>
 
         <!-- 공지 체크박스 -->
-        <div>
+        <div class="form-group">
             <input type="checkbox" id="isNotice" name="isNotice" value="true">
             <label for="isNotice">공지</label>
         </div>
 
+        <!-- 여러 파일 첨부 -->
+        <div class="form-group">
+            <label for="file-input">파일 첨부</label>
+            <div id="file-upload-container">
+                <input type="file" id="file-input" multiple>
+            </div>
+            <div class="file-list" id="file-list">
+                <!-- 첨부 파일 리스트가 여기에 표시됩니다 -->
+            </div>
+        </div>
+
         <!-- 내용 작성 -->
-        <div>
+        <div class="form-group">
             <label for="boardContent">내용</label>
             <textarea id="boardContent" name="boardContent" rows="10" placeholder="내용을 입력하세요"></textarea>
         </div>
 
+        <!-- 숨겨진 카테고리 필드 -->
+        <input type="hidden" name="boardCategory" value="공지사항">
+
         <!-- 목록 버튼 -->
-        <div>
+        <div class="form-actions">
             <a th:href="@{/board/notificationList}"><button type="button">목록</button></a>
         </div>
     </form>
 </div>
+
+<script>
+    const fileInput = document.getElementById("file-input");
+    const fileListContainer = document.getElementById("file-list");
+    let uploadedFiles = [];
+
+    // 파일 선택 시 파일 리스트에 추가
+    fileInput.addEventListener("change", (event) => {
+        Array.from(event.target.files).forEach(file => {
+            const fileId = Date.now() + Math.random(); // 고유 ID 생성
+            uploadedFiles.push({ id: fileId, file });
+
+            // 파일 리스트에 표시
+            const fileItem = document.createElement("div");
+            fileItem.className = "file-item";
+            fileItem.setAttribute("data-id", fileId);
+
+            fileItem.innerHTML = `
+        <span>${file.name}</span>
+        <button type="button" class="remove-btn" data-id="${fileId}">삭제</button>
+      `;
+            fileListContainer.appendChild(fileItem);
+        });
+
+        // 파일 입력 필드 초기화 (같은 파일 다시 첨부 가능)
+        fileInput.value = "";
+    });
+
+    // 파일 리스트에서 삭제
+    fileListContainer.addEventListener("click", (event) => {
+        if (event.target.classList.contains("remove-btn")) {
+            const fileId = event.target.getAttribute("data-id");
+            uploadedFiles = uploadedFiles.filter(file => file.id !== fileId);
+
+            // 파일 리스트에서 DOM 제거
+            const fileItem = document.querySelector(`.file-item[data-id="${fileId}"]`);
+            if (fileItem) fileItem.remove();
+        }
+    });
+</script>
 </body>
 </html>

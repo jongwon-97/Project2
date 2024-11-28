@@ -13,7 +13,7 @@ import java.util.List;
 public class CommentDTO {
 
     private Long commentId;           // 댓글 ID
-    private Long boardId;             // 게시판 ID
+    private int boardId;             // 게시판 ID
     private String memberId;          // 작성자 ID
     private String commentContent;    // 댓글 내용
     private LocalDateTime commentTime; // 작성 시간

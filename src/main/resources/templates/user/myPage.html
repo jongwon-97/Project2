@@ -13,14 +13,14 @@
     <h1>My Page</h1>
     <div class="table-section">
     <h2 th:text="${member.memberName}+'님의 상세페이지('+${member.memberRole}+')'">상세 페이지</h2>
-    <form name="userMyPageForm" action="../user/mypage" method="post" enctype = "multipart/form-data">
+    <form name="userMyPageForm" action="../user/myPage" method="post" enctype = "multipart/form-data">
         <table>
             <tbody>
             <tr>
                 <td>사번</td>
-                <td colspan="2"><input id="member_num" name="member_num" th:value="${member.memberNum}" readonly></td>
+                <td colspan="2"><input id="memberNum" name="memberNum" th:value="${member.memberNum}" readonly></td>
                 <td rowspan="7" style="width: 100px; text-align: center; vertical-align: middle;">
-                    <img id="memberImg" name="memberImg" th:src="${member.memberImg}" alt="사진" style="width: 80px; height: 80px;">
+                    <img id="memberImgName" name="memberImgName" th:src="${member.memberImgName}" alt="사진" style="width: 80px; height: 80px;">
                 </td>
             </tr>
             <tr>
@@ -89,6 +89,7 @@
         </div>
     </form>
     </div>
+    <button type="button" onclick="window.location.href='/user/home'"> home </button>
 </body>
 <script>
     function enableEdit() {

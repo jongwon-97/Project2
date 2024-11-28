@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>사원페이지</title>
+    <style>
+        input {
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Page</h1>
+    <div class="table-section">
+    <h2 th:text="${member.memberName}+'님의 상세페이지('+${member.memberRole}+')'">상세 페이지</h2>
+    <form name="userMyPageForm" action="../dev/userPage" method="post" enctype = "multipart/form-data">
+        <table>
+            <tbody>
+            <tr>
+                <td>사번</td>
+                <td colspan="2"><input id="memberNum" name="memberNum" th:value="${member.memberNum}" readonly></td>
+                <td rowspan="7" style="width: 100px; text-align: center; vertical-align: middle;">
+                    <img id="memberImgName" name="memberImgName" th:src="${member.memberImgName}" alt="사진" th:value="${member.memberImgName}" style="width: 80px; height: 80px;">
+                </td>
+            </tr>
+            <tr>
+                <td>이름</td>
+                <td colspan="2"><input id="memberName" name="memberName" th:value="${member.memberName}" readonly></td>
+            </tr>
+            <tr>
+                <td>아이디</td>
+                <td colspan="2"><input id="memberId" name="memberId" th:value="${member.memberId}" readonly></td>
+            </tr>
+            <tr>
+                <td>부서</td>
+                <td colspan="2"><input id="memberDepartment" name="memberDepartment" th:value="${member.memberDepartment}" readonly></td>
+            </tr>
+            <tr>
+                <td>직급</td>
+                <td colspan="2"><input id="memberRank" name="memberRank" th:value="${member.memberRank}" readonly></td>
+            </tr>
+            <tr>
+                <td>전화번호</td>
+                <td colspan="2"><input id="memberPhone" name="memberPhone" th:value="${member.memberPhone}" readonly></td>
+            </tr>
+            <tr>
+                <td>생년월일</td>
+                <td colspan="3"><input id="memberBirth" name="memberBirth" th:value="${member.memberBirth}" readonly></td>
+            </tr>
+            <tr>
+                <td>성별</td>
+                <td colspan="3">
+                    <label>
+                        <input type="radio" id="memberGenderM" name="memberGender" value="M" th:checked="${member.memberGender == 'M'}" disabled>
+                        남성
+                    </label>
+                    <label>
+                        <input type="radio" id="memberGenderF" name="memberGender" value="F" th:checked="${member.memberGender == 'F'}" disabled>
+                        여성
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>이메일</td>
+                <td colspan="3"><input id="memberEmail" name="memberEmail" th:value="${member.memberEmail}" readonly></td>
+            </tr>
+            <tr>
+                <td>우편번호</td>
+                <td colspan="3"><input id="memberPostcode" name="memberPostcode" th:value="${member.memberPostcode}" readonly></td>
+            </tr>
+            <tr>
+                <td>주소</td>
+                <td colspan="3"><input id="memberAddress" name="memberAddress" th:value="${member.memberAddress}" readonly></td>
+            </tr>
+            <tr>
+                <td>상세주소</td>
+                <td colspan="3"><input id="memberDAddress" name="memberDAddress" th:value="${member.memberDAddress}" readonly></td>
+            </tr>
+
+            <tr>
+                <td>상태</td>
+                <td colspan="3"><input id="memberStatus" name="memberStatus" th:value="${member.memberStatus}" readonly></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="button-group">
+            <button type="button" id="edit" name="edit" onclick="enableEdit()">수정하기</button>
+            <button type="submit" id="submit" name="submit" style="visibility: hidden;">제출하기</button>
+            <button type="button" onclick="goToCompanyPage()">사원 목록</button>
+        </div>
+        <input id="companyId" name="companyId" type="hidden" th:value="${member.companyId}">
+    </form>
+    </div>
+</body>
+<script>
+    function goToCompanyPage(){
+        const companyId = [[${companyId}]];;
+        window.location.href = `/dev/companyPage?id=${companyId}`;
+    }
+
+    function enableEdit() {
+        const numInput = document.getElementById("memberNum");
+        const nameInput = document.getElementById("memberName");
+        const departmentInput = document.getElementById("memberDepartment");
+        const rankInput = document.getElementById("memberRank");
+
+        const phoneInput = document.getElementById("memberPhone");
+        const birthInput = document.getElementById("memberBirth");
+        const emailInput = document.getElementById("memberEmail");
+        const addressInput = document.getElementById("memberDAddress");
+        const statusInput = document.getElementById("memberStatus");
+
+        numInput.removeAttribute("readonly");
+        numInput.style.border = '1px solid #000';
+        nameInput.removeAttribute("readonly");
+        nameInput.style.border = '1px solid #000';
+        departmentInput.removeAttribute("readonly");
+        departmentInput.style.border = '1px solid #000';
+        rankInput.removeAttribute("readonly");
+        rankInput.style.border = '1px solid #000';
+
+        phoneInput.removeAttribute("readonly");
+        phoneInput.style.border = '1px solid #000';
+        birthInput.removeAttribute("readonly");
+        birthInput.style.border = '1px solid #000';
+        emailInput.removeAttribute("readonly");
+        emailInput.style.border = '1px solid #000';
+        addressInput.removeAttribute("readonly");
+        addressInput.style.border = '1px solid #000';
+        statusInput.removeAttribute("readonly");
+        statusInput.style.border = '1px solid #000';
+
+        const genderM = document.getElementById("memberGenderM");
+        const genderF = document.getElementById("memberGenderF");
+        genderM.removeAttribute("disabled");
+        genderF.removeAttribute("disabled");
+
+        const submitButton = document.getElementById("submit");
+        submitButton.style.visibility = "visible";
+        const editButton = document.getElementById("edit");
+        editButton.style.visibility = "hidden";
+    }
+</script>
+
+</html>

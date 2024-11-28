@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>찾기 결과</title>
+</head>
+<body>
+<h2>계정 찾기 결과</h2>
+
+<div th:if="${errorMessage != null}">
+  <p th:text="${errorMessage}"></p>
+</div>
+
+<div th:if="${result != null}">
+  <p>회원 아이디: <span th:text="${result.memberId}"></span></p>
+</div>
+
+<div th:if="${result == null}">
+  <p>해당 조건으로 검색된 아이디가 없습니다. 회원가입 또는 다시 시도해주세요.</p>
+</div>
+
+<a href="/findAccount">처음으로 돌아가기</a>
+</body>
+</html>

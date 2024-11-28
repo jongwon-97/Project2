@@ -41,9 +41,12 @@ dependencies {
 	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0' // JSTL API (Jakarta EE 기반)
 	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
 	implementation 'jakarta.servlet:jakarta.servlet-api'
+
+
 //	runtimeOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0' // Jakarta Servlet API
 	runtimeOnly 'com.h2database:h2' // 테스트용 인메모리 데이터베이스
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.mindrot:jbcrypt:0.4'
 
 }
 

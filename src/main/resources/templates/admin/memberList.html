@@ -12,41 +12,176 @@
 <body>
 <div class="main">
     <form id="actionForm" method="POST" >
-    <div class="search-container">
-        <div>
-            <label for="simple-search">간단검색</label>
-            <input type="text" id="simple-search" placeholder="검색어를 입력하세요">
-            <select>
-                <option>부서별</option>
-                <option>영업부</option>
-                <option>인사부</option>
-                <option>관리부</option>
-            </select>
-        </div>
-        <div>
-            <label for="join-date">입사일</label>
-            <input type="date" id="join-date">
-            <input type="checkbox" id="dept-sales"> 영업부
-            <input type="checkbox" id="dept-hr"> 인사부
-            <input type="checkbox" id="dept-admin"> 관리부
-        </div>
-    </div>
+        <div class="search-container">
+            <!-- 간단 검색 -->
+            <fieldset>
+                <legend> 간단 검색 </legend>
+                <div>
+                    <input type="text" id="simpleSearch" name ="simpleSearch" placeholder="검색어를 입력하세요"
+                           th:value="${simpleSearch != null ? simpleSearch : ''}">
+                    <select id="searchOption" name="searchOption">
+                        <option value="memberDepartment" th:selected="${searchOption == 'memberDepartment'}">부서별</option>
+                        <option value="memberId" th:selected="${searchOption == 'memberId'}">ID</option>
+                        <option value="memberNum" th:selected="${searchOption == 'memberNum'}">사번</option>
+                        <option value="memberName" th:selected="${searchOption == 'memberName'}">이름</option>
+                        <option value="memberRank" th:selected="${searchOption == 'memberRank'}">직급</option>
+                    </select>
+                    <button type="button" onclick="submitAction('search')">검색</button>
+                    <button type="button" onclick="window.location.href='/admin/memberList'"> 전체보기</button>
+                </div>
+            </fieldset>
 
-    <div class="table-container">
-        <table style="text-align:center;">
-            <thead>
-            <tr>
-                <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"> </th>
-                <th>사번</th>
-                <th>증명사진</th>
-                <th>이름</th>
-                <th>부서</th>
-                <th>직급</th>
-                <th>휴대폰 번호</th>
-                <th>이메일</th>
-                <th>상세보기</th>
-            </tr>
-            </thead>
+            <fieldset>
+                <legend onclick="toggleAdvancedSearch()"> 상세 검색 </legend>
+                <div id="adSearch" name ="adSearch">
+                    <!-- 부서별 체크 박스 -->
+                    <div style="display: inline-block; margin-right: 10px;">
+                        <label>부서</label><br>
+                        <!-- Thymeleaf를 사용하여 부서 목록을 체크박스로 출력 -->
+                        <div style="display: inline-block; margin-right: 10px;">
+                            <input type="checkbox" id="departmentsAll"
+                                   name="departmentsAll" checked="checked" value="모든부서" onclick="toggleAllDepartments(); filterMembers()">
+                            <label for="departmentsAll">모든 부서</label>
+                        </div>
+                        <div th:each="department : ${departments}"  style="display: inline-block; margin-right: 10px;">
+                            <input type="checkbox" th:id="'department_' + ${department}"
+                                   th:name="'department'" th:value="${department}" checked="checked"
+                                   onclick="updateDepartmentsAllState(); filterMembers()">
+                            <label th:for="'department_' + ${department}" th:text="${department}"></label>
+                        </div>
+                    </div>
+
+                    <!-- 직급별 체크 박스 -->
+                    <div>
+                        <label>직급</label><br>
+                        <!-- 모든 직급을 선택/해제하는 체크박스 -->
+                        <div style="display: inline-block; margin-right: 10px;">
+                            <input type="checkbox" id="ranksAll" name="ranksAll" checked="checked" value="모든직급" onclick="toggleAllRanks(); filterMembers()">
+                            <label for="ranksAll">모든 직급</label>
+                        </div>
+                        <div th:each="rank : ${ranks}"  style="display: inline-block; margin-right: 10px;">
+                            <input type="checkbox" th:id="'rank_' + ${rank}"
+                                   th:name="'rank'" th:value="${rank}" checked="checked"
+                                   onclick="updateRanksAllState(); filterMembers()">
+                            <label th:for="'rank_' + ${rank}" th:text="${rank}"></label>
+                        </div>
+                    </div>
+
+                    <!-- 생년월일 월별 검색 -->
+                    <div>
+                        <lable for="birthMonth"> 생일 월별 검색</lable><br>
+                        <select id="birthMonth" name="birthMonth" onchange="filterBirthMonth()">
+                            <option value="전체보기">전체보기</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select> 월
+                    </div>
+
+                    <!-- 입사일 월별 검색 -->
+                    <div>
+                        <lable for="hireMonth"> 입사일 월별 검색</lable><br>
+                        <select id="hireMonth" name="hireMonth" onchange="filterHireMonth()">
+                            <option value="전체보기">전체보기</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select> 월
+                    </div>
+
+                    <!-- 생년월일 -->
+                    <div>
+                        <label for="birthStart">생년월일</label>
+                        <input type="date" id="birthStart" name="birthStart"
+                               th:value="${birthStart != null ? birthStart : ''}" required>
+                        <span> ~ </span>
+                        <input type="date" id="birthEnd" name="birthEnd"
+                               th:value="${birthEnd != null ? birthEnd : ''}" required>
+                        <button type="button" onclick="resetBirthDates()"> 생년월일 초기화</button>
+                    </div>
+
+                    <!-- 입사일 -->
+                    <div>
+                        <label for="hireStart">입사일</label>
+                        <input type="date" id="hireStart" name="hireStart"
+                               th:value="${hireStart != null ? hireStart : ''}" required>
+                        <span> ~ </span>
+                        <input type="date" id="hireEnd" name="hireEnd"
+                               th:value="${hireEnd != null ? hireEnd : ''}" required>
+                        <button type="button" onclick="resetHireDates()"> 입사일 초기화</button>
+                    </div>
+
+                    <button type="button" onclick="submitAction('adSearch')">상세 검색</button>
+                    <button type="button" onclick="window.location.href='/admin/memberList'"> 전체보기</button>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="actions">
+            <button type="button" onclick="submitAction('delete')" >삭제</button>
+            <button type="button" onclick="location.href='/admin/addMember'" >추가하기</button>
+
+            <br>
+            <label for="selDepartment">부서 : </label>
+            <select id="selDepartment" name="selDepartment">
+                <option th:each="department : ${departmentsInCompany}" th:value="${department}" th:text="${department}"></option>
+            </select>
+            <button type="button" onclick="submitAction('department')">부서이동</button>
+            <br>
+            <label for="selRank">직급 :</label>
+            <select id="selRank" name="selRank">
+                <th:block th:each="rank : ${ranksInCompany}">
+                    <option th:value="${rank}" th:text="${rank}"></option>
+                </th:block>
+            </select>
+            <button type="button" onclick="submitAction('rank')">직급변경</button>
+            <br>
+            <label for="selStatus">상태 :</label>
+            <select id="selStatus" name="selStatus">
+                <option value="활동"> 활동 </option>
+                <option value="정지"> 정지 </option>
+                <option value="휴면"> 휴면 </option>
+            </select>
+            <button type="button" onclick="submitAction('status')">상태변경</button>
+        </div>
+
+        <div class="table-container">
+            <table style="text-align:center;">
+                <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"> </th>
+                    <th onclick="sortTable(1)">사번</th>
+                    <th>증명사진</th>
+                    <th onclick="sortTable(3)">이름</th>
+                    <th onclick="sortTable(4)">부서</th>
+                    <th onclick="sortTable(5)">직급</th>
+                    <th onclick="sortTable(6)">생년월일</th>
+                    <th onclick="sortTable(7)">입사일</th>
+                    <th onclick="sortTable(8)">휴대폰 번호</th>
+                    <th onclick="sortTable(9)">이메일</th>
+                    <th>상태</th>
+                    <th>상세보기</th>
+                </tr>
+                </thead>
+                <tbody id="memberTableBody">
                 <tr th:each="member : ${listMember}">
                     <td><input type="checkbox" name="selectedMembers" th:value="${member.memberId}" onchange="checkAllSelected()"></td>
 
@@ -57,7 +192,9 @@
 
                     <!-- 증명사진 -->
                     <td>
-                        <img id="memberImg" th:src="${member.memberImg}" alt="증명사진" style="width: 60px; height: 60px;">
+                        <img id="memberImgName"
+                             th:src="${member.memberImgName != null ? member.memberImgName : '/images/noidp.png'}"
+                             alt="증명사진" style="width: 60px; height: 60px;">
                     </td>
 
                     <!-- 이름 -->
@@ -75,6 +212,16 @@
                         <input id="memberRank" name="memberRank" th:value="${member.memberRank}" readonly>
                     </td>
 
+                    <!-- 생년월일 -->
+                    <td>
+                        <input id="memberBirth" name="memberBirth" th:value="${member.memberBirth}" readonly>
+                    </td>
+
+                    <!-- 입사일 -->
+                    <td>
+                        <input id="memberStartDate" name="memberStartDate" th:value="${member.memberStartDate}" readonly>
+                    </td>
+
                     <!-- 휴대폰 번호 -->
                     <td>
                         <input id="memberPhone" name="memberPhone" th:value="${member.memberPhone}" readonly>
@@ -85,86 +232,28 @@
                         <input id="memberEmail" name="memberEmail" th:value="${member.memberEmail}" readonly>
                     </td>
 
+                    <!-- 상태 -->
+                    <td>
+                        <input id="memberStatus" name="memberStatus" th:value="${member.memberStatus}" readonly>
+                    </td> <!-- 추가된 상태 열 -->
+
                     <!-- 상세보기 버튼 -->
                     <td style="text-align: center;">
                         <button type="button" onclick="goToUserPage(this)" class="view-btn" th:data-id="${member.memberId}" >상세보기</button>
                     </td>
                 </tr>
-            </tbody>
-        </table>
-        <div class="actions">
-            <button type="button" onclick="submitAction('delete')" >삭제</button>
-            <button type="button" >부서이동</button>
-            <button type="button" >상태변경</button>
-            <button type="button" >추가하기</button>
+                </tbody>
+            </table>
         </div>
-    </div>
     </form>
+    <button type="button" onclick="window.location.href='/admin/home'"> home </button>
 </div>
-</body>
-<script>
-    const selectAllCheckbox = document.getElementById("selectAll");
-    const checkboxes = document.getElementsByName("selectedMembers");
-    document.querySelector('form').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault(); // Enter 키로 인한 기본 동작(폼 제출)을 막음
-        }
-    });
-
-    function toggleSelectAll() {
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = selectAllCheckbox.checked;
-        });
-    }
-
-    function checkAllSelected(){
-        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-
-        // selectAll 체크박스의 상태를 업데이트
-        selectAllCheckbox.checked = allChecked;
-
-        // 하나라도 체크되지 않았다면 selectAll 체크박스 해제
-        if (!allChecked) {
-            selectAllCheckbox.indeterminate = Array.from(checkboxes).some(checkbox => checkbox.checked);
-        } else {
-            selectAllCheckbox.indeterminate = false;  // 모든 체크박스가 체크된 경우
-        }
-    }
-
-    function goToUserPage(button) {
-
-        console.log("동작함");
-        // 클릭된 버튼에서 data-id 값을 가져옴 (data-id에 memberId가 있음)
-        const memberId = button.getAttribute('data-id');
-
-        // memberId를 쿼리 파라미터로 URL에 추가하여 이동
-        window.location.href = `/admin/userPage?id=${memberId}`;
-    }
-
-    function submitAction(actionType) {
-        // 선택된 체크박스의 memberId 값을 폼에 추가합니다.
-        const form = document.forms['actionForm']; // Form element
-        const selectedMembers = document.querySelectorAll('input[name="selectedMembers"]:checked');
-
-        // 폼에서 기존에 존재하는 hidden input들을 모두 제거
-        const hiddenInputs = form.querySelectorAll('input[type="hidden"]');
-        hiddenInputs.forEach(input => input.remove());
-
-        // 선택된 항목을 form에 hidden input으로 추가
-        selectedMembers.forEach(checkbox => {
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'membersDel';  // 서버에서 받을 이름
-            hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
-            form.appendChild(hiddenInput);
-        });
-
-        switch (actionType) {
-            case 'delete':
-                form.action = '/admin/memberDel'; // Delete action
-                break;
-        }
-        form.submit(); // Submit the form
-    }
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let sesLoginId = [[${sesLoginId}]];  // Thymeleaf 값으로 JavaScript 변수 설정
+    /*]]>*/
 </script>
+<script src="/js/admin/adminMemberList.js"></script>
+<!-- 오류나면 type="module" 쓰기-->
+</body>
 </html>

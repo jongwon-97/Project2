@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회사 목록</title>
+    <style>
+        input {
+            border: none;
+        }
+    </style>
+</head>
+<body>
+<div class="main">
+    <form id="actionForm" method="POST" >
+        <div class="table-container">
+            <table style="text-align:center;">
+                <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"> </th>
+                    <th onclick="sortTable(1)">회사 id</th>
+                    <th>회사 로고</th>
+                    <th onclick="sortTable(3)">회사명</th>
+                    <th onclick="sortTable(4)">사업자등록번호</th>
+                    <th onclick="sortTable(5)">회사 이메일</th>
+                    <th onclick="sortTable(6)">회사 전화번호</th>
+                    <th onclick="sortTable(7)">대표 주소</th>
+                    <th onclick="sortTable(8)">회사 가입일</th>
+                    <th>상세보기</th>
+                </tr>
+                </thead>
+                <tbody id="companyTableBody">
+                <tr th:each="company : ${companyList}">
+                    <td><input type="checkbox" name="selectedCompanys" th:value="${company.companyId}" onchange="checkAllSelected()"></td>
+
+                    <!-- 회사 id -->
+                    <td>
+                        <input id="companyId" name="companyId" th:value="${company.companyId}" readonly>
+                    </td>
+
+                    <!-- 회사 로고 -->
+                    <td>
+                        <img id="companyLogoName"
+                             th:src="${company.companyLogoName != null ? company.companyLogoName : '/images/noimage.png'}"
+                             alt="회사로고" style="width: 60px; height: 60px;">
+                    </td>
+
+                    <!-- 회사명 -->
+                    <td>
+                        <input id="companyName" name="companyName" th:value="${company.companyName}" readonly>
+                    </td>
+
+                    <!-- 사업자등록번호 -->
+                    <td>
+                        <input id="companyNum" name="companyNum" th:value="${company.companyNum}" readonly>
+                    </td>
+
+                    <!-- 회사 대표 이메일 -->
+                    <td>
+                        <input id="companyEmail" name="companyEmail" th:value="${company.companyEmail}" readonly>
+                    </td>
+
+                    <!-- 회사 대표 전화 -->
+                    <td>
+                        <input id="companyPhone" name="companyPhone" th:value="${company.companyPhone}" readonly>
+                    </td>
+
+                    <!-- 회사 주소 -->
+                    <td>
+                        <input id="companyAddress" name="companyAddress" th:value="${company.companyAddress}" readonly>
+                    </td>
+
+                    <!-- 회사 가입일 -->
+                    <td>
+                        <input id="companyStartDate" name="companyStartDate" th:value="${company.companyStartDate}" readonly>
+                    </td>
+
+                    <!-- 상세보기 버튼 -->
+                    <td style="text-align: center;">
+                        <button type="button" onclick="goToCompanyPage(this)" class="view-btn" th:data-id="${company.companyId}" >상세보기</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+    <button type="button" onclick="window.location.href='/dev/home'"> home </button>
+</div>
+<script src="/js/dev/devCompanyList.js"></script>
+</body>
+</html>

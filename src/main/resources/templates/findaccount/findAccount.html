@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>아이디 찾기</title>
+</head>
+<body>
+<h2>아이디 찾기</h2>
+
+<!-- 구역 구분 -->
+<form id="findAccountForm" method="post" th:action="@{/processAccount}">
+
+  <!-- 개인회원 구역 -->
+  <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+    <h3>개인회원</h3>
+    <label>
+      <input type="radio" name="findMethod" value="email" onclick="showForm('email')" required>
+      이름 + 이메일로 찾기
+    </label>
+    <br>
+    <label>
+      <input type="radio" name="findMethod" value="phone" onclick="showForm('phone')" required>
+      이름 + 휴대전화번호로 찾기
+    </label>
+    <div id="emailForm" style="display:none; margin-top: 10px;">
+      <label for="memberNameEmail">이름:</label>
+      <input type="text" id="memberNameEmail" name="memberNameEmail" placeholder="ex: 홍길동">
+      <br>
+      <label for="memberEmail">이메일:</label>
+      <input type="text" id="memberEmail" name="memberEmail" placeholder="ex: example@domain.com">
+      <br>
+    </div>
+    <div id="phoneForm" style="display:none; margin-top: 10px;">
+      <label for="memberNamePhone">이름:</label>
+      <input type="text" id="memberNamePhone" name="memberNamePhone" placeholder="ex: 홍길동">
+      <br>
+      <label for="memberPhone">휴대전화번호:</label>
+      <input type="text" id="memberPhone" name="memberPhone" placeholder="ex: 010-1234-5678" oninput="formatPhone(this)">
+      <br>
+    </div>
+  </div>
+
+  <!-- 기업회원 구역 -->
+  <div style="border: 1px solid #ccc; padding: 10px;">
+    <h3>기업회원</h3>
+    <label>
+      <input type="radio" name="findMethod" value="company" onclick="showForm('company')" required>
+      사업자등록번호 + 사원번호로 찾기
+    </label>
+    <div id="companyForm" style="display:none; margin-top: 10px;">
+      <label for="companyNum">사업자 등록번호:</label>
+      <input type="text" id="companyNum" name="companyNum" placeholder="ex: 123-45-67890" oninput="formatBusinessNumber(this)">
+      <br>
+      <label for="memberNum">사원번호:</label>
+      <input type="text" id="memberNum" name="memberNum" placeholder="ex: 1001">
+      <br>
+    </div>
+  </div>
+
+  <button type="submit" style="margin-top: 20px;">다음</button>
+</form>
+
+<!-- 외부 스크립트 파일 로드 -->
+<script src="/js/account/findAccount.js"></script>
+</body>
+</html>

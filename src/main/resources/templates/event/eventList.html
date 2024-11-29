@@ -306,11 +306,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (endDateCell && statusCell && dDayCell) {
       const endDateStr = endDateCell.textContent.trim();
-
       if (endDateStr) {
         const endDate = new Date(endDateStr);
         const today = new Date();
-
         const diffTime = endDate - today;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 

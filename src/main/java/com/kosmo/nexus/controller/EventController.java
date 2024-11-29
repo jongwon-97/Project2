@@ -1,11 +1,13 @@
 package com.kosmo.nexus.controller;
 
 import com.kosmo.nexus.dto.*;
+import com.kosmo.nexus.service.AdminService;
 import com.kosmo.nexus.service.BoardService;
 import com.kosmo.nexus.service.EventService;
 import com.kosmo.nexus.service.FileService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -37,6 +40,8 @@ public class EventController {
     private FileService fileService;
     @Autowired
     private ServletContext servletContext;
+    @Autowired
+    private AdminService adminService;
 
     // 이벤트 작성 폼
     @GetMapping("/board/event")
@@ -455,6 +460,42 @@ public class EventController {
         }
     }
 
+    @GetMapping("/admin/event/apply/{seasonId}")
+    private String getApplyForm(@PathVariable("seasonId") int seasonId, HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
+        List<String> departmentsInCompany = adminService.findDepartmentByCompanyId(sesCompanyId);
+        List<String> ranksInCompany = adminService.findRankByCompanyId(sesCompanyId);
+        List<MemberDTO> listMember= adminService.findMemberList(sesCompanyId);
+        List<String> departments = listMember.stream()
+                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> ranks = listMember.stream()
+                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+
+        model.addAttribute("listMember", listMember);
+        model.addAttribute("departments", departments);
+        model.addAttribute("ranks", ranks);
+        model.addAttribute("departmentsInCompany", departmentsInCompany);
+        model.addAttribute("ranksInCompany", ranksInCompany);
+        model.addAttribute("sesLoginId", sesLoginId);
+        model.addAttribute("seasonId",seasonId);
+
+        return "event/adminApplyForm";
+    }
+
+    @PostMapping("/admin/event/apply/{seasonId}")
+    public String getApplyMember(@RequestParam List<String> memberIds,
+                                 @PathVariable("seasonId") int seasonId,
+                                 HttpSession ses, Model model){
+        log.info("memberIds=={}",memberIds);
+        return "redirect:/admin/event/apply/"+seasonId;
+    }
 
     private void deleteExistingFile(String filePath) {
         if (filePath != null && !filePath.isEmpty()) {
@@ -472,4 +513,25 @@ public class EventController {
         }
     }
 
+    public Long getLoginUserCompanyId(HttpSession ses, Model model){
+        // 세션에서 loginUser 객체 가져오기
+        LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");
+        if (loginUser == null) {
+            message(model, "정상적인 로그인 정보가 아닙니다.", "/logout");
+            return null;
+        }
+        Long companyId = loginUser.getCompanyId();
+        if (companyId == null) {     // memberId가 없는 경우
+            message(model, "정상적인 로그인 정보가 아닙니다.", "/logout");
+            return null;
+        }
+        return companyId;
+    }
+
+
+    public String message(Model model, String msg, String loc){
+        model.addAttribute("msg", msg);
+        model.addAttribute("loc", loc);
+        return "message";
+    }
 }

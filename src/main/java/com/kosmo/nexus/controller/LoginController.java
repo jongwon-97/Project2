@@ -79,7 +79,7 @@ public class LoginController {
                 res.addCookie(ck);
 
                 // 부모 창(home)으로 이동하는 스크립트 반환
-                return "<script>window.parent.location.href = '/home';</script>";
+                return "<script>window.parent.location.href = '/user/home';</script>";
             }
 
             // 이 코드에 도달하지 않지만 안전을 위해 추가
@@ -90,11 +90,6 @@ public class LoginController {
             // - 예외 발생 시: 로그인 페이지로 다시 이동
             return "<script>alert('" + e.getMessage() + "'); window.location.href = '/pLogin';</script>";
         }
-    }
-
-    @GetMapping("/home")
-    public String home() {
-        return "member/home"; // mypage.html로 이동
     }
 
     @GetMapping("/session-status")

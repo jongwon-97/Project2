@@ -1,6 +1,7 @@
 package com.kosmo.nexus.service;
 
 import com.kosmo.nexus.dto.FileDTO;
+import com.kosmo.nexus.dto.ImageDTO;
 import com.kosmo.nexus.mapper.FileMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+
     public void deleteFilesByBoardId(int boardId) {
         // 데이터베이스에서 파일 정보 가져오기
         List<FileDTO> files = fileMapper.selectFilesByBoardId(boardId);
@@ -67,6 +69,15 @@ public class FileServiceImpl implements FileService {
 
         // 데이터베이스에서 파일 정보 삭제
         fileMapper.deleteFilesByBoardId(boardId);
+    }
+
+    public void saveContent(ImageDTO imageDTO) {
+        fileMapper.insertContent(imageDTO);
+    }
+
+    @Override
+    public List<ImageDTO> getContentByBoardId(int boardId) {
+        return fileMapper.selectContentByBoardId(boardId);
     }
 
 }

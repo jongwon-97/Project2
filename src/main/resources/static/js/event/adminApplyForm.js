@@ -28,22 +28,6 @@ function checkAllSelected(){
     }
 }
 
-function goToUserPage(button) {
-    // 클릭된 버튼에서 data-id 값을 가져옴 (data-id에 memberId가 있음)
-    const memberId = button.getAttribute('data-id');
-
-    // memberId를 쿼리 파라미터로 URL에 추가하여 이동
-    window.location.href = `/dev/userPage?id=${memberId}`;
-}
-
-function goToCompanyPage(companyId){
-    window.location.href = `/dev/companyPage?id=${companyId}`;
-}
-
-function goToAddPage(companyId){
-    window.location.href = `/dev/addMember?id=${companyId}`;
-}
-
 
 function submitAction(actionType) {
     const form = document.forms['actionForm']; // Form element
@@ -54,7 +38,6 @@ function submitAction(actionType) {
 
     // 폼에서 기존에 존재하는 hidden input들을 모두 제거
     const hiddenInputs = form.querySelectorAll('input[type="hidden"]');
-    const companyInput = document.createElement('input');
 
     switch (actionType) {
         case 'search':
@@ -65,13 +48,7 @@ function submitAction(actionType) {
                 event.preventDefault();  // 폼 제출을 막음
                 return;
             }
-
-            companyInput.type = 'hidden';
-            companyInput.name = 'companyId';  // 서버에서 받을 이름
-            companyInput.value = companyId;   // 실제 companyId 값을 설정
-            form.appendChild(companyInput);
-
-            form.action = '/dev/search';       // search action
+            form.action = '/admin/search';       // search action
             break;
 
         case 'adSearch':
@@ -86,44 +63,18 @@ function submitAction(actionType) {
                 event.preventDefault();  // 폼 제출을 막음
                 return;
             }
-            companyInput.type = 'hidden';
-            companyInput.name = 'companyId';  // 서버에서 받을 이름
-            companyInput.value = companyId;   // 실제 companyId 값을 설정
-            form.appendChild(companyInput);
-
             //console.log(birthStart, birthEnd, hireStart, hireEnd);
-            form.action = '/dev/adSearch';       // search action
+            form.action = '/admin/adSearch';       // search action
             break;
 
-        case 'delete':
+        case 'apply':
             // 선택된 항목의 개수 구하기
             if (selectedCount < 1){
                 alert("한 개 이상의 행을 선택하세요")
                 return;
             }
 
-            //console.log(sesLoginId);
-
-            // selectedMembers가 NodeList이므로 배열로 변환
-            const selectedMembersArray = Array.from(selectedMembers);
-            // 본인 ID가 포함되었는지 확인
-            const invalidId = selectedMembersArray.some(checkbox => checkbox.value === sesLoginId);
-
-            if (invalidId) {
-                alert("본인을 삭제 할 수 없습니다.");
-                return; // 삭제 진행을 중지
-            }
-
-            // 삭제 확인 메시지 표시
-            const confirmation = confirm(`${selectedCount}개 항목을 삭제하시겠습니까?`);
-            if(!confirmation) return;
-
             hiddenInputs.forEach(input => input.remove());
-
-            companyInput.type = 'hidden';
-            companyInput.name = 'companyId';  // 서버에서 받을 이름
-            companyInput.value = companyId;   // 실제 companyId 값을 설정
-            form.appendChild(companyInput);
 
             // 선택된 항목을 form에 hidden input으로 추가
             selectedMembers.forEach(checkbox => {
@@ -133,88 +84,9 @@ function submitAction(actionType) {
                 hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
                 form.appendChild(hiddenInput);
             });
-            form.action = '/dev/memberDel'; // Delete action
+            form.action = '/admin/event/apply/'+seasonId;
             break;
 
-        case 'department':
-            // 선택된 항목의 개수 구하기
-            if (selectedCount < 1){
-                alert("한 개 이상의 행을 선택하세요")
-                return;
-            }
-            const selDepartment = document.getElementById('selDepartment').value;
-
-            hiddenInputs.forEach(input => input.remove());
-            // console.log(selDepartment);
-            // 선택된 항목을 form에 hidden input으로 추가
-
-            companyInput.type = 'hidden';
-            companyInput.name = 'companyId';  // 서버에서 받을 이름
-            companyInput.value = companyId;   // 실제 companyId 값을 설정
-            form.appendChild(companyInput);
-
-            selectedMembers.forEach(checkbox => {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'memberIds';  // 서버에서 받을 이름
-                hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
-                form.appendChild(hiddenInput);
-            });
-
-            form.action = '/dev/moveDep'; // Delete action
-            break;
-
-        case 'rank':
-            // 선택된 항목의 개수 구하기
-            if (selectedCount < 1){
-                alert("한 개 이상의 행을 선택하세요")
-                return;
-            }
-
-            const selRank= document.getElementById('selRank').value;
-            hiddenInputs.forEach(input => input.remove());
-
-            companyInput.type = 'hidden';
-            companyInput.name = 'companyId';  // 서버에서 받을 이름
-            companyInput.value = companyId;   // 실제 companyId 값을 설정
-            form.appendChild(companyInput);
-
-            // 선택된 항목을 form에 hidden input으로 추가
-            selectedMembers.forEach(checkbox => {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'memberIds';  // 서버에서 받을 이름
-                hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
-                form.appendChild(hiddenInput);
-            });
-            form.action = '/dev/moveRank'; // Delete action
-            break;
-
-        case 'status':
-            // 선택된 항목의 개수 구하기
-            if (selectedCount < 1){
-                alert("한 개 이상의 행을 선택하세요")
-                return;
-            }
-
-            const selStatus= document.getElementById('selStatus').value;
-            hiddenInputs.forEach(input => input.remove());
-
-            companyInput.type = 'hidden';
-            companyInput.name = 'companyId';  // 서버에서 받을 이름
-            companyInput.value = companyId;   // 실제 companyId 값을 설정
-            form.appendChild(companyInput);
-
-            // 선택된 항목을 form에 hidden input으로 추가
-            selectedMembers.forEach(checkbox => {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'memberIds';  // 서버에서 받을 이름
-                hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
-                form.appendChild(hiddenInput);
-            });
-            form.action = '/dev/moveStatus'; // Delete action
-            break;
     }
     form.submit(); // Submit the form
 }
@@ -345,6 +217,16 @@ function sortTable(columnIndex) {
     // 정렬된 행을 테이블에 다시 추가
     const tbody = table.querySelector("tbody");
     rows.forEach(row => tbody.appendChild(row));
+}
+
+// 간단검색 보이기 숨기기 기능
+function toggleSearch() {
+    var advancedSearchDiv = document.getElementById("search");
+    if (advancedSearchDiv.style.display === "none" || advancedSearchDiv.style.display === "") {
+        advancedSearchDiv.style.display = "block";
+    } else {
+        advancedSearchDiv.style.display = "none";
+    }
 }
 
 // 상세검색 보이기 숨기기 기능

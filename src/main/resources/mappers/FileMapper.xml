@@ -84,8 +84,28 @@
         )
     </delete>
 
+    <insert id="insertContent" parameterType="Image">
+        INSERT INTO c_image
+        (board_id, img_path, img_date, img_size, img_origin_name, content_order, content_type, content_data)
+        VALUES
+        (#{boardId}, #{imgPath}, NOW(), #{imgSize}, #{imgOriginName}, #{contentOrder}, #{contentType}, #{contentData})
+    </insert>
 
-
-
+    <!-- 게시글 ID로 이미지 및 텍스트 조회 -->
+    <select id="selectContentByBoardId" resultType="Image">
+        SELECT
+        img_id AS imgId,
+        img_path AS imgPath,
+        img_date AS imgDate,
+        img_size AS imgSize,
+        img_origin_name AS imgOriginName,
+        content_order AS contentOrder,
+        content_type AS contentType,
+        content_data AS contentData,
+        board_id AS boardId
+        FROM c_image
+        WHERE board_id = #{boardId}
+        ORDER BY content_order ASC
+    </select>
 
 </mapper>

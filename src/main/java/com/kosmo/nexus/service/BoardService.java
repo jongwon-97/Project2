@@ -21,7 +21,6 @@ public interface BoardService {
     void increaseViewCount(int num);
 
     List<BoardDTO> selectNotificationList(PagingDTO pagingDTO);
-
     int getTotalNotificationCount(PagingDTO pagingDTO);
     // 일반 글의 총 개수를 가져오는 메서드
     int getTotalGeneralCount(PagingDTO paging);

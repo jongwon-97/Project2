@@ -1,7 +1,9 @@
 package com.kosmo.nexus.mapper;
 
 import com.kosmo.nexus.dto.FileDTO;
+import com.kosmo.nexus.dto.ImageDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,4 +22,8 @@ public interface FileMapper {
     void deleteFilesBySeasonId(int seasonId); // 특정 시즌 ID와 연결된 모든 파일 데이터 삭제
 
     void deleteFilesByBoardId(int boardId);
+
+    void insertContent(ImageDTO imageDTO);
+
+    List<ImageDTO> selectContentByBoardId(@Param("boardId") int boardId);
 }

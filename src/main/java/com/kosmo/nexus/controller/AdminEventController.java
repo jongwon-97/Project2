@@ -1,6 +1,9 @@
 package com.kosmo.nexus.controller;
 
-import com.kosmo.nexus.dto.*;
+import com.kosmo.nexus.dto.BoardDTO;
+import com.kosmo.nexus.dto.EventDTO;
+import com.kosmo.nexus.dto.FileDTO;
+import com.kosmo.nexus.dto.SeasonDTO;
 import com.kosmo.nexus.service.BoardService;
 import com.kosmo.nexus.service.EventService;
 import com.kosmo.nexus.service.FileService;
@@ -27,7 +30,8 @@ import java.util.UUID;
 
 @Controller
 @Slf4j
-public class EventController {
+@RequestMapping("/admin")
+public class AdminEventController {
 
     @Autowired
     private EventService eventService;
@@ -55,12 +59,8 @@ public class EventController {
             @RequestParam("fee") int fee,
             @RequestParam("season_info") String seasonInfo,
             @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
-            @RequestParam(value = "images", required = false) MultipartFile[] images, // 다중 이미지 업로드
-            @RequestParam(value = "texts", required = false) List<String> texts, // 텍스트 리스트
+            @RequestParam(value = "image", required = false) MultipartFile image,
             @RequestParam(value = "file", required = false) MultipartFile file) {
-
-        log.info("Request Params: eventId={}, title={}, images={}", eventId, title, images != null ? "있음" : "null");
-
 
         int nextRoundNumber;
 
@@ -106,91 +106,6 @@ public class EventController {
 
         eventService.registerSeason(seasonDTO); // 여기에만 `boardService.insertBoard` 포함됨
 
-        // Content Order 초기화
-        int contentOrder = 1;
-
-        // 텍스트 저장
-        if (texts != null && !texts.isEmpty()) {
-            for (String text : texts) {
-                if (text != null && !text.isBlank()) {
-                    ImageDTO content = new ImageDTO();
-                    content.setBoardId(seasonDTO.getBoardId());
-                    content.setContentType("text");
-                    content.setContentOrder(contentOrder++);
-                    content.setContentData(text.trim()); // 트림 처리
-                    fileService.saveContent(content); // 텍스트 저장 서비스 호출
-                }
-            }
-        }
-        // 디버깅: images 배열이 null인지 확인
-        log.info("images 배열 상태: {}", images != null ? images.length : "null");
-
-        // 이미지 저장
-        if (images != null) {
-            String basePath = "src/main/resources/static/images"; // 기본 경로 설정
-            Path folderPath = Paths.get(basePath);
-
-            // 폴더 생성 확인 및 생성
-            try {
-                if (!Files.exists(folderPath)) {
-                    Files.createDirectories(folderPath);
-                    log.info("이미지 저장 폴더 생성 완료: {}", folderPath.toAbsolutePath());
-                }
-            } catch (IOException e) {
-                log.error("이미지 저장 폴더 생성 중 예외 발생: {}", e.getMessage());
-                throw new RuntimeException("이미지 저장 폴더 생성 실패", e);
-            }
-
-            for (MultipartFile image : images) {
-                if (image != null && !image.isEmpty()) {
-                    // 파일명 생성
-                    String originalFilename = image.getOriginalFilename();
-                    String fileName = UUID.randomUUID() + "_" + originalFilename;
-
-                    try {
-                        // 저장 경로 설정
-                        Path filePath = folderPath.resolve(fileName);
-
-                        // 파일 저장
-                        Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                        log.info("이미지 저장 성공: {}", filePath.toAbsolutePath());
-
-                        // DB에 저장할 경로 생성
-                        String imagePath = "/images/" + fileName;
-
-                        // DB 저장용 DTO 생성
-                        ImageDTO content = new ImageDTO();
-                        content.setBoardId(seasonDTO.getBoardId());
-                        content.setContentType("image");
-                        content.setContentOrder(contentOrder++);
-                        content.setImgPath(imagePath);
-                        content.setImgOriginName(originalFilename);
-                        content.setImgSize((int) image.getSize());
-
-                        log.info("DB 저장 전 DTO: {}", content);
-
-                        // DB에 저장
-                        try {
-                            fileService.saveContent(content);
-                            log.info("DB 저장 성공: {}", content);
-                        } catch (Exception e) {
-                            log.error("DB 저장 중 예외 발생: {}", e.getMessage());
-                            throw new RuntimeException("DB 저장 실패", e);
-                        }
-
-                    } catch (IOException e) {
-                        log.error("이미지 저장 중 예외 발생: {}", e.getMessage());
-                        throw new RuntimeException("이미지 저장 실패", e);
-                    }
-                } else {
-                    log.error("이미지 파일이 비어 있거나 null입니다.");
-                }
-            }
-        } else {
-            log.error("images 배열이 null입니다.");
-        }
-
-
         // 일반 파일 업로드 처리
         if (file != null && !file.isEmpty()) {
             String filePath = saveFile(file, "files");
@@ -204,8 +119,14 @@ public class EventController {
 
             fileService.saveFile(fileDTO);
         }
+
+        // 이미지 파일 업로드 처리
+        if (image != null && !image.isEmpty()) {
+            saveFile(image, "images");
+        }
+
         return "redirect:/board/eventList";
-    }//--------------------------------
+    }
 
     // 이벤트 목록
     @GetMapping("/board/eventList")
@@ -227,10 +148,6 @@ public class EventController {
 
     // 파일 저장 메서드
     private String saveFile(MultipartFile file, String folder) {
-        if (file == null || file.isEmpty()) {
-            return null; // 파일이 없는 경우 null 반환
-        }
-
         String basePath = "src/main/resources/static/" + folder;
         String originalFilename = file.getOriginalFilename();
         String fileName = UUID.randomUUID() + "_" + originalFilename;
@@ -244,13 +161,13 @@ public class EventController {
             Path filePath = folderPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-
-            return "/" + folder + "/" + fileName; // 저장된 파일 경로 반환
+            log.info("파일 저장 성공: {}", filePath);
+            return "/" + folder + "/" + fileName;
         } catch (IOException e) {
-            throw new RuntimeException("파일 저장에 실패했습니다."); // 예외 발생
+            log.error("파일 저장 실패: {}", e.getMessage());
+            throw new RuntimeException("파일 저장에 실패했습니다.");
         }
     }
-
 
     // 이벤트 목록 JSON 반환
     @GetMapping("/api/events")
@@ -292,12 +209,12 @@ public class EventController {
 
                 if (targetFile.exists()) {
                     if (targetFile.delete()) {
-//                        log.info("파일 삭제 성공: {}", filePath);
+                        log.info("파일 삭제 성공: {}", filePath);
                     } else {
-//                        log.warn("파일 삭제 실패: {}", filePath);
+                        log.warn("파일 삭제 실패: {}", filePath);
                     }
                 } else {
-//                    log.warn("파일을 찾을 수 없습니다: {}", filePath);
+                    log.warn("파일을 찾을 수 없습니다: {}", filePath);
                 }
             }
 
@@ -310,10 +227,10 @@ public class EventController {
             // 6. c_season 데이터 삭제
             eventService.deleteSeason(seasonId);
 
-//            log.info("행사 및 관련 데이터 삭제 성공: 시즌 ID = {}", seasonId);
+            log.info("행사 및 관련 데이터 삭제 성공: 시즌 ID = {}", seasonId);
             return "redirect:/dev/board/eventList";
         } catch (Exception e) {
-//            log.error("행사 삭제 실패: 시즌 ID = {}, 에러: {}", seasonId, e.getMessage());
+            log.error("행사 삭제 실패: 시즌 ID = {}, 에러: {}", seasonId, e.getMessage());
             model.addAttribute("errorMessage", "행사를 삭제하는 중 문제가 발생했습니다.");
             return "event/devEventList";
         }
@@ -330,12 +247,8 @@ public class EventController {
         eventService.increaseSeasonViews(seasonId);
         season.setSeasonViews(season.getSeasonViews() + 1); // 모델에 최신 조회수 반영
 
-        // 이미지 및 텍스트 데이터 가져오기
-        List<ImageDTO> contentList = fileService.getContentByBoardId(season.getBoardId());
-
         // 모델에 시즌 데이터 추가
         model.addAttribute("season", season);
-        model.addAttribute("contentList", contentList); // 이미지 및 텍스트 정보
 
         return "event/eventDetail"; // eventDetail.html로 이동
     }

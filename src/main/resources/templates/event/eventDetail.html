@@ -3,11 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <title>이벤트 상세보기</title>
+    <style>
+        /* 썸네일 컨테이너 */
+.event-thumbnail-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px; /* 원하는 크기로 조정 */
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 10px; /* 모서리 둥글게 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+}
+
+/* 썸네일 이미지 */
+.event-thumbnail img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    filter: brightness(70%); /* 이미지 어둡게 */
+}
+
+/* 제목 오버레이 */
+.event-title-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); /* 텍스트 그림자 */
+    z-index: 2;
+}
+        .content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.content-item img {
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.text-item p {
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+    </style>
 </head>
 <body>
 <h1>이벤트 상세보기</h1>
 <div>
-    <p><strong>제목:</strong> <span th:text="${season.seasonTitle}"></span></p>
+    <div class="event-thumbnail-container">
+        <div class="event-thumbnail">
+            <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}" alt="썸네일" />
+            <div class="event-title-overlay">
+                <h2 th:text="${season.seasonTitle}"></h2>
+            </div>
+        </div>
+    </div>
     <p><strong>설명:</strong> <span th:text="${season.seasonInfo}"></span></p>
     <p><strong>모집 인원:</strong> <span th:text="${season.seasonLimit}"></span></p>
     <p><strong>참가비:</strong> <span th:text="${season.seasonFee}"></span></p>
@@ -17,6 +80,21 @@
     <p><strong>조회수:</strong> <span th:text="${season.seasonViews}"></span></p> <!-- 조회수 추가 -->
     <p><strong>회차 설명:</strong></p>
     <p th:text="${season.seasonInfo}"></p>
+</div>
+
+<!-- 이미지 및 텍스트 표시 -->
+<div class="content-grid">
+    <div th:each="content : ${contentList}" class="content-item">
+        <!-- 이미지일 경우 -->
+        <div th:if="${content.contentType == 'image'}">
+            <img th:src="${content.imgPath}" alt="이미지" />
+        </div>
+
+        <!-- 텍스트일 경우 -->
+        <div th:if="${content.contentType == 'text'}" class="text-item">
+            <p th:text="${content.contentData}"></p>
+        </div>
+    </div>
 </div>
 
 <!-- 삭제 버튼 -->

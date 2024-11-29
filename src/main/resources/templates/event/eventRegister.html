@@ -101,6 +101,15 @@
       <label for="season-info">회차 설명</label>
       <textarea id="season-info" name="season_info" required></textarea>
     </div>
+    <!--이미지 추가, 글 추가-->
+    <div id="content-container">
+      <!-- 이곳에 글과 이미지를 동적으로 추가 -->
+    </div>
+
+    <button type="button" id="addText">글 추가</button>
+    <button type="button" id="addImage">이미지 추가</button>
+    <!-- 동적 콘텐츠 추가 영역 -->
+
     <div class="form-actions">
       <div class="left-actions">
         <button type="button">임시저장</button>
@@ -138,6 +147,47 @@
       })
       .catch(error => console.error('Error:', error));
   }
+
+    // 동적으로 글 추가
+  document.getElementById('addText').addEventListener('click', function() {
+    const container = document.getElementById('content-container');
+    const textDiv = document.createElement('div');
+    textDiv.className = 'content-item';
+    textDiv.innerHTML = `
+      <textarea name="texts[]" placeholder="여기에 글을 입력하세요"></textarea>
+      <button type="button" onclick="removeItem(this)">삭제</button>
+    `;
+    container.appendChild(textDiv);
+  });
+
+  // 동적으로 이미지 추가
+  document.getElementById('addImage').addEventListener('click', function() {
+    const container = document.getElementById('content-container');
+    const imageDiv = document.createElement('div');
+    imageDiv.className = 'content-item';
+    imageDiv.innerHTML = `
+      <input type="file" name="images[]" accept="image/*" multiple>
+      <button type="button" onclick="removeItem(this)">삭제</button>
+    `;
+    container.appendChild(imageDiv);
+  });
+
+  // 항목 삭제
+  function removeItem(button) {
+    button.parentElement.remove();
+  }
+  //확인용
+  document.querySelector('form').addEventListener('submit', function (event) {
+    const images = document.querySelectorAll('input[name="images[]"]');
+    images.forEach((input, index) => {
+        if (input.files.length > 0) {
+            console.log(`이미지 ${index + 1}:`, input.files[0].name);
+        } else {
+            console.log(`이미지 ${index + 1}: 파일이 선택되지 않음`);
+        }
+    });
+});
+
 </script>
 </body>
 </html>

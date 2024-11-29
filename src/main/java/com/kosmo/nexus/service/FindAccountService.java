@@ -4,12 +4,9 @@ import com.kosmo.nexus.dto.FindAccountDTO;
 
 
 public interface FindAccountService {
-    FindAccountDTO findPersonalAccountByEmail(String memberName, String memberEmail);
-    FindAccountDTO findPersonalAccountByPhone(String memberName, String memberPhone);
-
-    FindAccountDTO findBusinessAccountByCompanyNum(String companyNum, String memberNum);
-    FindAccountDTO findBusinessAccountByEmail(String memberName, String memberEmail);
-    FindAccountDTO findBusinessAccountByPhone(String memberName, String memberPhone);
+    FindAccountDTO findAccountByCompanyNum(String companyNum, String memberNum);
+    FindAccountDTO findAccountByEmail(String memberName, String memberEmail);
+    FindAccountDTO findAccountByPhone(String memberName, String memberPhone);
 
     // 비밀번호 찾기
     FindAccountDTO findPasswordByEmail(String memberId, String memberName, String memberEmail);

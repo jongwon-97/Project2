@@ -15,18 +15,8 @@
         <result property="memberPw" column="member_pw"/>
     </resultMap>
 
-    <!-- 개인 회원 찾기 (이름 + 이메일) -->
-    <select id="findPersonalAccountByEmail" resultMap="FindAccountResultMap">
-        SELECT
-        member_id, member_name, member_email,
-        member_phone, member_num
-        FROM c_member
-        WHERE TRIM(LOWER(member_name)) = TRIM(LOWER(#{memberName}))
-        AND TRIM(LOWER(member_email)) = TRIM(LOWER(#{memberEmail}));
-    </select>
-
-    <!-- 개인 회원 찾기 (이름 + 휴대전화번호) -->
-    <select id="findPersonalAccountByPhone" resultMap="FindAccountResultMap">
+    <!-- 아이디 (이름 + 휴대전화번호) -->
+    <select id="findAccountByPhone" resultMap="FindAccountResultMap">
         SELECT
         member_id, member_name, member_email, member_phone, member_num
         FROM c_member
@@ -34,8 +24,17 @@
         AND member_phone = #{memberPhone}
     </select>
 
-    <!-- 기업 회원 찾기 (사업자등록번호 + 사원번호) -->
-    <select id="findBusinessAccountByCompanyNum" resultMap="FindAccountResultMap">
+    <!-- 아이디 찾기 (이름 + 이메일) -->
+    <select id="findAccountByEmail" resultMap="FindAccountResultMap">
+        SELECT
+        member_id, member_name, member_email, member_phone, member_num
+        FROM c_member
+        WHERE TRIM(LOWER(member_name)) = TRIM(LOWER(#{memberName}))
+        AND TRIM(LOWER(member_email)) = TRIM(LOWER(#{memberEmail}));
+    </select>
+
+    <!-- 아이디 찾기 (사업자등록번호 + 사원번호) -->
+    <select id="findAccountByCompanyNum" resultMap="FindAccountResultMap">
         SELECT
         m.member_id, m.member_name, m.member_email, m.member_phone,
         m.member_num, c.company_num
@@ -45,36 +44,7 @@
         AND m.member_num = #{memberNum}
     </select>
 
-    <!-- 기업 회원 찾기 (이름 + 이메일) -->
-    <select id="findBusinessAccountByEmail" resultMap="FindAccountResultMap">
-        SELECT
-        member_id, member_name, member_email, member_phone, member_num
-        FROM c_member
-        WHERE TRIM(LOWER(member_name)) = TRIM(LOWER(#{memberName}))
-        AND TRIM(LOWER(member_email)) = TRIM(LOWER(#{memberEmail}));
-    </select>
-
-    <!-- 기업 회원 찾기 (이름 + 휴대전화번호) -->
-    <select id="findBusinessAccountByPhone" resultMap="FindAccountResultMap">
-        SELECT
-        member_id, member_name, member_email, member_phone, member_num
-        FROM c_member
-        WHERE TRIM(LOWER(member_name)) = TRIM(LOWER(#{memberName}))
-        AND member_phone = #{memberPhone}
-    </select>
-
-    <!-- 비밀번호 찾기 (아이디 + 사업자등록번호 + 사원번호) -->
-    <select id="findPasswordByCompanyInfo" resultMap="FindAccountResultMap">
-        SELECT
-        m.member_id, m.member_name, m.member_email, m.member_phone,
-        m.member_num, c.company_num
-        FROM c_member m
-        LEFT JOIN c_company c ON m.company_id = c.company_id
-        WHERE m.member_id = #{memberId}
-        AND c.company_num = #{companyNum}
-        AND m.member_num = #{memberNum};
-    </select>
-
+    <!-- 비밀번호 찾기 (아이디 + 이름 + 이메일) -->
     <select id="findPasswordByEmail" resultMap="FindAccountResultMap">
         SELECT
         member_id, member_name, member_email, member_phone, member_num
@@ -94,12 +64,23 @@
         AND member_phone = #{memberPhone};
     </select>
 
+    <!-- 비밀번호 찾기 (아이디 + 사업자등록번호 + 사원번호) -->
+    <select id="findPasswordByCompanyInfo" resultMap="FindAccountResultMap">
+        SELECT
+        m.member_id, m.member_name, m.member_email, m.member_phone,
+        m.member_num, c.company_num
+        FROM c_member m
+        LEFT JOIN c_company c ON m.company_id = c.company_id
+        WHERE m.member_id = #{memberId}
+        AND c.company_num = #{companyNum}
+        AND m.member_num = #{memberNum};
+    </select>
+
     <!-- 비밀번호 업데이트 -->
     <update id="updatePassword">
         UPDATE c_member
         SET member_pw = #{newPassword}
         WHERE member_id = #{memberId};
     </update>
-
 
 </mapper>

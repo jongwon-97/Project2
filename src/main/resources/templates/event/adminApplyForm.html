@@ -16,7 +16,7 @@
             <!-- 간단 검색 -->
             <fieldset>
                 <legend onclick="toggleSearch()"> 간단 검색 ▼ </legend>
-                <div id="search" name="search">
+                <div id="search" name ="search" style="display:none;">
                     <input type="text" id="simpleSearch" name ="simpleSearch" placeholder="검색어를 입력하세요"
                            th:value="${simpleSearch != null ? simpleSearch : ''}">
                     <select id="searchOption" name="searchOption">
@@ -33,7 +33,7 @@
 
             <fieldset>
                 <legend onclick="toggleAdvancedSearch()"> 상세 검색▼ </legend>
-                <div id="adSearch" name="adSearch">
+                <div id="adSearch" name ="adSearch" style="display:none;">
                     <!-- 생년월일 -->
                     <div>
                         <label for="birthStart">생년월일</label>
@@ -137,38 +137,8 @@
             </fieldset>
         </div>
 
-
-        <div class="actions" style="display: flex; gap: 20px;">
-            <button type="button" onclick="submitAction('delete')" >삭제</button>
-            <button type="button" onclick="location.href='/admin/addMember'" >추가하기</button>
-
-            <br>
-            <label for="selDepartment">부서 : </label>
-            <select id="selDepartment" name="selDepartment">
-                <option th:each="department : ${departmentsInCompany}" th:value="${department}" th:text="${department}"></option>
-            </select>
-            <button type="button" onclick="submitAction('department')">부서이동</button>
-            <br>
-            <label for="selRank">직급 :</label>
-            <select id="selRank" name="selRank">
-                <th:block th:each="rank : ${ranksInCompany}">
-                    <option th:value="${rank}" th:text="${rank}"></option>
-                </th:block>
-            </select>
-            <button type="button" onclick="submitAction('rank')">직급변경</button>
-            <br>
-            <label for="selStatus">상태 :</label>
-            <select id="selStatus" name="selStatus">
-                <option value="활동"> 활동 </option>
-                <option value="정지"> 정지 </option>
-                <option value="휴면"> 휴면 </option>
-            </select>
-            <button type="button" onclick="submitAction('status')">상태변경</button>
-        </div>
-
-
         <div class="table-container">
-            <table style="text-align:center;">
+            <table id="memberTable" name="memberTable" style="text-align:center;">
                 <thead>
                 <tr>
                     <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"> </th>
@@ -182,7 +152,6 @@
                     <th onclick="sortTable(8)">휴대폰 번호</th>
                     <th onclick="sortTable(9)">이메일</th>
                     <th>상태</th>
-                    <th>상세보기</th>
                 </tr>
                 </thead>
                 <tbody id="memberTableBody">
@@ -241,23 +210,21 @@
                         <input id="memberStatus" name="memberStatus" th:value="${member.memberStatus}" readonly>
                     </td> <!-- 추가된 상태 열 -->
 
-                    <!-- 상세보기 버튼 -->
-                    <td style="text-align: center;">
-                        <button type="button" onclick="goToUserPage(this)" class="view-btn" th:data-id="${member.memberId}" >상세보기</button>
-                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </form>
+    <button type="button" onclick="submitAction('apply')"> 등록하기 </button>
     <button type="button" onclick="window.location.href='/admin/home'"> home </button>
 </div>
 <script th:inline="javascript">
     /*<![CDATA[*/
     let sesLoginId = [[${sesLoginId}]];  // Thymeleaf 값으로 JavaScript 변수 설정
+    let seasonId = [[${seasonId}]];
     /*]]>*/
 </script>
-<script src="/js/admin/adminMemberList.js"></script>
+<script src="/js/event/adminApplyForm.js"></script>
 <!-- 오류나면 type="module" 쓰기-->
 </body>
 </html>

@@ -15,8 +15,8 @@
         <div class="search-container">
             <!-- 간단 검색 -->
             <fieldset>
-                <legend> 간단 검색 </legend>
-                <div>
+                <legend onclick="toggleSearch()"> 간단 검색 ▼ </legend>
+                <div id="search" name="search">
                     <input type="text" id="simpleSearch" name ="simpleSearch" placeholder="검색어를 입력하세요"
                            th:value="${simpleSearch != null ? simpleSearch : ''}">
                     <select id="searchOption" name="searchOption">
@@ -32,81 +32,8 @@
             </fieldset>
 
             <fieldset>
-                <legend onclick="toggleAdvancedSearch()"> 상세 검색 </legend>
-                <div id="adSearch" name ="adSearch">
-                    <!-- 부서별 체크 박스 -->
-                    <div style="display: inline-block; margin-right: 10px;">
-                        <label>부서</label><br>
-                        <!-- Thymeleaf를 사용하여 부서 목록을 체크박스로 출력 -->
-                        <div style="display: inline-block; margin-right: 10px;">
-                            <input type="checkbox" id="departmentsAll"
-                                   name="departmentsAll" checked="checked" value="모든부서" onclick="toggleAllDepartments(); filterMembers()">
-                            <label for="departmentsAll">모든 부서</label>
-                        </div>
-                        <div th:each="department : ${departments}"  style="display: inline-block; margin-right: 10px;">
-                            <input type="checkbox" th:id="'department_' + ${department}"
-                                   th:name="'department'" th:value="${department}" checked="checked"
-                                   onclick="updateDepartmentsAllState(); filterMembers()">
-                            <label th:for="'department_' + ${department}" th:text="${department}"></label>
-                        </div>
-                    </div>
-
-                    <!-- 직급별 체크 박스 -->
-                    <div>
-                        <label>직급</label><br>
-                        <!-- 모든 직급을 선택/해제하는 체크박스 -->
-                        <div style="display: inline-block; margin-right: 10px;">
-                            <input type="checkbox" id="ranksAll" name="ranksAll" checked="checked" value="모든직급" onclick="toggleAllRanks(); filterMembers()">
-                            <label for="ranksAll">모든 직급</label>
-                        </div>
-                        <div th:each="rank : ${ranks}"  style="display: inline-block; margin-right: 10px;">
-                            <input type="checkbox" th:id="'rank_' + ${rank}"
-                                   th:name="'rank'" th:value="${rank}" checked="checked"
-                                   onclick="updateRanksAllState(); filterMembers()">
-                            <label th:for="'rank_' + ${rank}" th:text="${rank}"></label>
-                        </div>
-                    </div>
-
-                    <!-- 생년월일 월별 검색 -->
-                    <div>
-                        <lable for="birthMonth"> 생일 월별 검색</lable><br>
-                        <select id="birthMonth" name="birthMonth" onchange="filterBirthMonth()">
-                            <option value="전체보기">전체보기</option>
-                            <option value="01">01</option>
-                            <option value="02">02</option>
-                            <option value="03">03</option>
-                            <option value="04">04</option>
-                            <option value="05">05</option>
-                            <option value="06">06</option>
-                            <option value="07">07</option>
-                            <option value="08">08</option>
-                            <option value="09">09</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                        </select> 월
-                    </div>
-
-                    <!-- 입사일 월별 검색 -->
-                    <div>
-                        <lable for="hireMonth"> 입사일 월별 검색</lable><br>
-                        <select id="hireMonth" name="hireMonth" onchange="filterHireMonth()">
-                            <option value="전체보기">전체보기</option>
-                            <option value="01">01</option>
-                            <option value="02">02</option>
-                            <option value="03">03</option>
-                            <option value="04">04</option>
-                            <option value="05">05</option>
-                            <option value="06">06</option>
-                            <option value="07">07</option>
-                            <option value="08">08</option>
-                            <option value="09">09</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                        </select> 월
-                    </div>
-
+                <legend onclick="toggleAdvancedSearch()"> 상세 검색▼ </legend>
+                <div id="adSearch" name="adSearch">
                     <!-- 생년월일 -->
                     <div>
                         <label for="birthStart">생년월일</label>
@@ -131,6 +58,81 @@
 
                     <button type="button" onclick="submitAction('adSearch')">상세 검색</button>
                     <button type="button" onclick="goToCompanyPage(companyId)"> 전체보기</button>
+                </div>
+            </fieldset>
+            <fieldset style="display: flex; gap: 20px;">
+                <legend>필터</legend>
+                <!-- 부서별 체크 박스 -->
+                <div style="display: inline-block; margin-right: 10px;">
+                    <label>부서</label><br>
+                    <!-- Thymeleaf를 사용하여 부서 목록을 체크박스로 출력 -->
+                    <div style="display: inline-block; margin-right: 10px;">
+                        <input type="checkbox" id="departmentsAll"
+                               name="departmentsAll" checked="checked" value="모든부서" onclick="toggleAllDepartments(); filterMembers()">
+                        <label for="departmentsAll">모든 부서</label>
+                    </div>
+                    <div th:each="department : ${departments}"  style="display: inline-block; margin-right: 10px;">
+                        <input type="checkbox" th:id="'department_' + ${department}"
+                               th:name="'department'" th:value="${department}" checked="checked"
+                               onclick="updateDepartmentsAllState(); filterMembers()">
+                        <label th:for="'department_' + ${department}" th:text="${department}"></label>
+                    </div>
+                </div>
+
+                <!-- 직급별 체크 박스 -->
+                <div>
+                    <label>직급</label><br>
+                    <!-- 모든 직급을 선택/해제하는 체크박스 -->
+                    <div style="display: inline-block; margin-right: 10px;">
+                        <input type="checkbox" id="ranksAll" name="ranksAll" checked="checked" value="모든직급" onclick="toggleAllRanks(); filterMembers()">
+                        <label for="ranksAll">모든 직급</label>
+                    </div>
+                    <div th:each="rank : ${ranks}"  style="display: inline-block; margin-right: 10px;">
+                        <input type="checkbox" th:id="'rank_' + ${rank}"
+                               th:name="'rank'" th:value="${rank}" checked="checked"
+                               onclick="updateRanksAllState(); filterMembers()">
+                        <label th:for="'rank_' + ${rank}" th:text="${rank}"></label>
+                    </div>
+                </div>
+
+                <!-- 생년월일 월별 검색 -->
+                <div>
+                    <lable for="birthMonth"> 생일 월별 검색</lable><br>
+                    <select id="birthMonth" name="birthMonth" onchange="filterBirthMonth()">
+                        <option value="전체보기">전체보기</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select> 월
+                </div>
+
+                <!-- 입사일 월별 검색 -->
+                <div>
+                    <lable for="hireMonth"> 입사일 월별 검색</lable><br>
+                    <select id="hireMonth" name="hireMonth" onchange="filterHireMonth()">
+                        <option value="전체보기">전체보기</option>
+                        <option value="01">01</option>
+                        <option value="02">02</option>
+                        <option value="03">03</option>
+                        <option value="04">04</option>
+                        <option value="05">05</option>
+                        <option value="06">06</option>
+                        <option value="07">07</option>
+                        <option value="08">08</option>
+                        <option value="09">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select> 월
                 </div>
             </fieldset>
         </div>

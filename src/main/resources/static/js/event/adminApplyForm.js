@@ -28,13 +28,6 @@ function checkAllSelected(){
     }
 }
 
-function goToUserPage(button) {
-    // 클릭된 버튼에서 data-id 값을 가져옴 (data-id에 memberId가 있음)
-    const memberId = button.getAttribute('data-id');
-
-    // memberId를 쿼리 파라미터로 URL에 추가하여 이동
-    window.location.href = `/admin/userPage?id=${memberId}`;
-}
 
 function submitAction(actionType) {
     const form = document.forms['actionForm']; // Form element
@@ -74,28 +67,12 @@ function submitAction(actionType) {
             form.action = '/admin/adSearch';       // search action
             break;
 
-        case 'delete':
+        case 'apply':
             // 선택된 항목의 개수 구하기
             if (selectedCount < 1){
                 alert("한 개 이상의 행을 선택하세요")
                 return;
             }
-
-            //console.log(sesLoginId);
-
-            // selectedMembers가 NodeList이므로 배열로 변환
-            const selectedMembersArray = Array.from(selectedMembers);
-            // 본인 ID가 포함되었는지 확인
-            const invalidId = selectedMembersArray.some(checkbox => checkbox.value === sesLoginId);
-
-            if (invalidId) {
-                alert("본인을 삭제 할 수 없습니다.");
-                return; // 삭제 진행을 중지
-            }
-
-            // 삭제 확인 메시지 표시
-            const confirmation = confirm(`${selectedCount}개 항목을 삭제하시겠습니까?`);
-            if(!confirmation) return;
 
             hiddenInputs.forEach(input => input.remove());
 
@@ -107,72 +84,9 @@ function submitAction(actionType) {
                 hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
                 form.appendChild(hiddenInput);
             });
-            form.action = '/admin/memberDel'; // Delete action
+            form.action = '/admin/event/apply/'+seasonId;
             break;
 
-        case 'department':
-            // 선택된 항목의 개수 구하기
-            if (selectedCount < 1){
-                alert("한 개 이상의 행을 선택하세요")
-                return;
-            }
-            const selDepartment = document.getElementById('selDepartment').value;
-
-            hiddenInputs.forEach(input => input.remove());
-            // console.log(selDepartment);
-            // 선택된 항목을 form에 hidden input으로 추가
-            selectedMembers.forEach(checkbox => {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'memberIds';  // 서버에서 받을 이름
-                hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
-                form.appendChild(hiddenInput);
-            });
-
-            form.action = '/admin/moveDep'; // Delete action
-            break;
-
-        case 'rank':
-            // 선택된 항목의 개수 구하기
-            if (selectedCount < 1){
-                alert("한 개 이상의 행을 선택하세요")
-                return;
-            }
-
-            const selRank= document.getElementById('selRank').value;
-            hiddenInputs.forEach(input => input.remove());
-
-            // 선택된 항목을 form에 hidden input으로 추가
-            selectedMembers.forEach(checkbox => {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'memberIds';  // 서버에서 받을 이름
-                hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
-                form.appendChild(hiddenInput);
-            });
-            form.action = '/admin/moveRank'; // Delete action
-            break;
-
-        case 'status':
-            // 선택된 항목의 개수 구하기
-            if (selectedCount < 1){
-                alert("한 개 이상의 행을 선택하세요")
-                return;
-            }
-
-            const selStatus= document.getElementById('selStatus').value;
-            hiddenInputs.forEach(input => input.remove());
-
-            // 선택된 항목을 form에 hidden input으로 추가
-            selectedMembers.forEach(checkbox => {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'memberIds';  // 서버에서 받을 이름
-                hiddenInput.value = checkbox.value;    // 체크된 항목의 memberId 값을 추가
-                form.appendChild(hiddenInput);
-            });
-            form.action = '/admin/moveStatus'; // Delete action
-            break;
     }
     form.submit(); // Submit the form
 }

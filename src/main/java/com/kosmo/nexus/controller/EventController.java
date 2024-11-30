@@ -21,8 +21,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 @Controller
 @Slf4j
@@ -500,6 +502,144 @@ public class EventController {
     }
 
 
+    @GetMapping("/admin/event/apply/{seasonId}")
+    private String getApplyForm(@PathVariable("seasonId") int seasonId, HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
+        List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
+        List<MemberDTO> listMember=eventService.findAbsenceMemberList(seasonId, sesCompanyId);
+        List<String> departments = listMember.stream()
+                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> ranks = listMember.stream()
+                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+
+        model.addAttribute("attentionMember",attentionMember);
+        model.addAttribute("listMember", listMember);
+        model.addAttribute("departments", departments);
+        model.addAttribute("ranks", ranks);
+        model.addAttribute("sesLoginId", sesLoginId);
+        model.addAttribute("seasonId",seasonId);
+
+        return "event/adminApplyForm";
+    }
+
+    @PostMapping("/admin/event/apply/{seasonId}")
+    public String getApplyMember(@RequestParam List<String> memberIds,
+                                 @PathVariable("seasonId") int seasonId,
+                                 HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        log.info("memberIds=={}",memberIds);
+
+        List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
+        // memberIds에서 attentionMember의 memberId와 일치하는 값을 삭제
+        memberIds.removeIf(memberId ->
+                attentionMember.stream()
+                        .anyMatch(attention -> attention.getMemberId().equals(memberId))
+        );
+
+        int result = eventService.applyEventByAdmin(memberIds, seasonId, sesCompanyId);
+        return "redirect:/admin/event/apply/"+seasonId;
+    }
+
+    @PostMapping("/admin/event/apply/search")
+    public String searchApplyMemberList(@RequestParam("simpleSearch") String search,
+                                        @RequestParam("searchOption") String option,
+                                        @RequestParam("seasonId") int seasonId,
+                                   HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
+        log.info("search========={}, option========{}",search, option);
+        List<MemberDTO> listMember= eventService.searchAbsenceMemberList(search, option, seasonId, sesCompanyId);
+        List<String> departments = listMember.stream()
+                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> ranks = listMember.stream()
+                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
+        model.addAttribute("attentionMember",attentionMember);
+        model.addAttribute("listMember", listMember);
+        model.addAttribute("departments", departments);
+        model.addAttribute("ranks", ranks);
+        model.addAttribute("simpleSearch", search);
+        model.addAttribute("searchOption", option);
+        model.addAttribute("sesLoginId", sesLoginId);
+        model.addAttribute("seasonId",seasonId);
+        log.info("SearchMemberList====={}", listMember);
+        return "event/adminApplyForm";
+    }
+
+    @PostMapping("/admin/event/apply/adSearch")
+    public String adSearchApplyMemberList(@RequestParam("birthStart") String birthStart,
+                                     @RequestParam("birthEnd") String birthEnd,
+                                     @RequestParam("hireStart") String hireStart,
+                                     @RequestParam("hireEnd") String hireEnd,
+                                     @RequestParam("seasonId") int seasonId,
+                                     HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
+
+        if (birthStart.isEmpty()) birthStart = null;
+        if (birthEnd.isEmpty()) birthEnd = null;
+        if (hireStart.isEmpty()) hireStart = null;
+        if (hireEnd.isEmpty())hireEnd = null;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("companyId", sesCompanyId);
+        params.put("birthStart", birthStart);
+        params.put("birthEnd", birthEnd);
+        params.put("hireStart", hireStart);
+        params.put("hireEnd", hireEnd);
+        params.put("seasonId", seasonId);
+        List<MemberDTO> listMember = eventService.searchAbsenceMemberListByDate(params);
+        log.info("이벤트 단 SearchMemberList====={}", listMember);
+        // List<MemberDTO>에서 memberDepartment 추출하여 List<String>으로 변환
+        List<String> departments = listMember.stream()
+                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> ranks = listMember.stream()
+                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+
+        List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
+        model.addAttribute("attentionMember",attentionMember);
+        model.addAttribute("listMember", listMember);
+        model.addAttribute("departments", departments);
+        model.addAttribute("ranks", ranks);
+        model.addAttribute("companyId", sesCompanyId);
+        model.addAttribute("birthStart", birthStart);
+        model.addAttribute("birthEnd", birthEnd);
+        model.addAttribute("hireStart", hireStart);
+        model.addAttribute("hireEnd", hireEnd);
+        model.addAttribute("sesLoginId", sesLoginId);
+        model.addAttribute("seasonId",seasonId);
+
+        return "event/adminApplyForm";
+    }
+
+    @PostMapping("/admin/event/apply/cancel")
+    private String deletecancelMember(@RequestParam("memberId") String memberId,
+                                     @RequestParam("seasonId") int seasonId,
+                                     HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        //log.info("삭제할 아이디 ========{}", memberId);
+        int result = eventService.deleteCancelMember(memberId, seasonId, sesCompanyId);
+        return "redirect:/admin/event/apply/"+seasonId;
+    }
 
 
     private void deleteExistingFile(String filePath) {

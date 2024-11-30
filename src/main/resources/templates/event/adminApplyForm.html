@@ -27,12 +27,12 @@
                         <option value="memberRank" th:selected="${searchOption == 'memberRank'}">직급</option>
                     </select>
                     <button type="button" onclick="submitAction('search')">검색</button>
-                    <button type="button" onclick="window.location.href='/admin/memberList'"> 전체보기</button>
+                    <button type="button" onclick="allMemberList()"> 전체보기</button>
                 </div>
             </fieldset>
 
             <fieldset>
-                <legend onclick="toggleAdvancedSearch()"> 상세 검색▼ </legend>
+                <legend onclick="toggleAdvancedSearch()"> 상세 검색 ▼ </legend>
                 <div id="adSearch" name ="adSearch" style="display:none;">
                     <!-- 생년월일 -->
                     <div>
@@ -57,11 +57,12 @@
                     </div>
 
                     <button type="button" onclick="submitAction('adSearch')">상세 검색</button>
-                    <button type="button" onclick="window.location.href='/admin/memberList'"> 전체보기</button>
+                    <button type="button" onclick="allMemberList()"> 전체보기</button>
                 </div>
             </fieldset>
             <fieldset style="display: flex; gap: 20px;">
                 <legend>필터</legend>
+                <button type="button" onclick="allMemberList()"> 전체보기</button>
                 <!-- 부서별 체크 박스 -->
                 <div style="display: inline-block; margin-right: 10px;">
                     <label>부서</label><br>
@@ -136,6 +137,23 @@
                 </div>
             </fieldset>
         </div>
+        <fieldset>
+            <legend onclick="toggleAttentionMember()"> [참가자 명단] </legend>
+            <table id="attentionMember" name="attentionMember">
+                <tbody>
+                <!-- attentionMember 리스트를 반복 -->
+                <tr th:each="i, iterStat : ${attentionMember}">
+                    <td th:text="${i.memberName} + '(' + ${i.memberDepartment} + '/' + ${i.memberRank} + ')'"></td>
+                    <td th:text="${i.memberPhone}"></td>
+                    <td th:text="${i.memberEmail}"></td>
+                    <td>
+                        <button type="button" th:data-member-id="${i.memberId}" onclick="cancelMember(this)">취소</button>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </fieldset>
 
         <div class="table-container">
             <table id="memberTable" name="memberTable" style="text-align:center;">
@@ -215,7 +233,7 @@
             </table>
         </div>
     </form>
-    <button type="button" onclick="submitAction('apply')"> 등록하기 </button>
+    <button type="button" onclick="submitAction('apply')"> 신청하기 </button>
     <button type="button" onclick="window.location.href='/admin/home'"> home </button>
 </div>
 <script th:inline="javascript">
@@ -226,5 +244,7 @@
 </script>
 <script src="/js/event/adminApplyForm.js"></script>
 <!-- 오류나면 type="module" 쓰기-->
+
+
 </body>
 </html>

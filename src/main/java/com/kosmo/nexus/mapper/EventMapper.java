@@ -49,4 +49,6 @@ public interface EventMapper {
     List<MemberDTO> searchAbsenceMemberList(String search, String option, int seasonId, Long companyId);
     List<MemberDTO> searchAbsenceMemberListByDate(Map<String, Object> params);
     int deleteCancelMember(String memberId, int seasonId, Long companyId);
+
+    List<SeasonDTO> findSeasonsByBoardId(int boardId);
 }

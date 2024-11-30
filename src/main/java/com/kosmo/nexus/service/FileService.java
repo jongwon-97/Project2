@@ -28,6 +28,8 @@ public interface FileService {
 
     List<ImageDTO> getTextsByBoardId(int boardId);  // 특정 boardId로 텍스트 조회
     void deleteTextsByBoardId(int boardId);         // 특정 boardId로 텍스트 삭제
-
     void deleteOnlyImagesByBoardId(int boardId);
+
+    void deleteTextById(Integer textId);
+    void deleteImageById(Integer imageId);
 }

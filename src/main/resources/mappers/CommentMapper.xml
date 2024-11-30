@@ -72,4 +72,20 @@
         WHERE board_id = #{boardId}
     </update>
 
+    <!-- seasonId로 댓글 및 대댓글 가져오기 -->
+    <select id="selectCommentsByBoardId" parameterType="int" resultType="Comment">
+        SELECT
+        comment_id AS commentId,
+        board_id AS boardId,
+        parent_id AS parentId,
+        member_id AS memberId,
+        comment_content AS commentContent,
+        comment_time AS commentTime
+        FROM c_comment
+        WHERE board_id = #{boardId}
+        ORDER BY parent_id ASC, comment_id ASC
+    </select>
+
+
+
 </mapper>

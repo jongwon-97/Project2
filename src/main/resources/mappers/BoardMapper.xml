@@ -237,4 +237,12 @@
         WHERE board_id = #{boardId}
     </update>
 
+    <!-- season_id를 통해 board_id 조회 -->
+    <select id="getBoardIdBySeasonId" parameterType="int" resultType="java.lang.Integer">
+        SELECT board_id
+        FROM c_season
+        WHERE season_id = #{seasonId}
+    </select>
+
+
 </mapper>

@@ -37,5 +37,6 @@ public interface BoardMapper {
 
     void updateBoard(BoardDTO boardDTO);
 
+    int getBoardIdBySeasonId(@Param("seasonId") int seasonId);
 
 }

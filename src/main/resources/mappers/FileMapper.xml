@@ -133,4 +133,16 @@
         DELETE FROM c_image
         WHERE board_id = #{boardId} AND content_type = 'image'
     </delete>
+
+    <!-- 특정 텍스트 ID로 삭제 -->
+    <delete id="deleteTextById">
+        DELETE FROM c_image
+        WHERE img_id = #{textId} AND content_type = 'text'
+    </delete>
+
+    <!-- 특정 이미지 ID로 삭제 -->
+    <delete id="deleteImageById">
+        DELETE FROM c_image
+        WHERE img_id = #{imageId} AND content_type = 'image'
+    </delete>
 </mapper>

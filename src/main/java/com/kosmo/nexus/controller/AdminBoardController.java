@@ -260,6 +260,8 @@ public class AdminBoardController {
             log.error("게시물 삭제 실패: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시물 삭제에 실패했습니다.");
         }
+
+
     }
 
 

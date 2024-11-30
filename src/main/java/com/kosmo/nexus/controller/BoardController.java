@@ -3,6 +3,7 @@ package com.kosmo.nexus.controller;
 import com.kosmo.nexus.dto.*;
 import com.kosmo.nexus.service.BoardService;
 import com.kosmo.nexus.service.CommentService;
+import com.kosmo.nexus.service.EventService;
 import com.kosmo.nexus.service.FileService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -39,17 +40,8 @@ public class BoardController {
     private FileService fileService;
     @Autowired
     private CommentService commentService;
-
-    // 공통 메서드: 로그인된 사용자 ID 가져오기
-    private String getLoggedInUserId(HttpSession session) {
-        if (session == null) {
-            log.warn("HttpSession is null, using default user ID.");
-            return "testUser"; // 기본 사용자 ID
-        }
-        String loggedInUserId = (String) session.getAttribute("loggedInUserId");
-        log.info("Logged in user ID: {}", loggedInUserId);
-        return (loggedInUserId != null) ? loggedInUserId : "testUser";
-    }
+    @Autowired
+    private EventService eventService;
 
     private String saveFileWithUUID(MultipartFile file, String uploadDir) throws IOException {
         Path path = Paths.get(uploadDir);
@@ -135,7 +127,7 @@ public class BoardController {
             noticeDTO.setIsNotice(false);
         }
 
-        String loggedInUserId = getLoggedInUserId(session); // HttpSession 전달
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         noticeDTO.setMemberId(loggedInUserId);
         noticeDTO.setBoardCategory("공지사항");
 
@@ -235,7 +227,7 @@ public class BoardController {
 
     @DeleteMapping("/board/deleteNotification")
     public ResponseEntity<String> deleteNotification(@RequestParam("num") int num, HttpSession session) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 권한 확인
@@ -303,7 +295,7 @@ public class BoardController {
     @PostMapping("/board/addComment")
     public String addComment(@ModelAttribute CommentDTO comment, HttpSession session) {
         // 로그인된 사용자 ID 설정
-        String memberId = getLoggedInUserId(session);
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         comment.setMemberId(memberId);
 
         try {
@@ -324,7 +316,7 @@ public class BoardController {
                                 @RequestParam int boardId,
                                 Model model,
                                 HttpSession session) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 삭제 서비스 호출
@@ -349,7 +341,7 @@ public class BoardController {
                               @RequestParam("commentContent") String commentContent,
                               @RequestParam("boardId") int boardId,
                               HttpSession session, Model model) {
-        String memberId = getLoggedInUserId(session); // 현재 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 수정 처리
@@ -413,7 +405,7 @@ public class BoardController {
         boardService.increaseQnaViewCount(num);
 
         // 로그인된 사용자 ID 가져오기
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         model.addAttribute("loggedInUserId", loggedInUserId);
 
         // QnA 데이터 가져오기
@@ -481,7 +473,7 @@ public class BoardController {
     @PostMapping("/board/addQnaComment")
     public String addQnaComment(@ModelAttribute CommentDTO comment, HttpSession session) {
         // 로그인된 사용자 ID 설정
-        String memberId = getLoggedInUserId(session);
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         comment.setMemberId(memberId);
 
         try {
@@ -500,7 +492,7 @@ public class BoardController {
     public String deleteQnaComment(@RequestParam Long commentId,
                                    @RequestParam int boardId,
                                    HttpSession session, Model model) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 삭제 서비스 호출
@@ -523,7 +515,7 @@ public class BoardController {
                                  @RequestParam("commentContent") String commentContent,
                                  @RequestParam("boardId") int boardId,
                                  HttpSession session, Model model) {
-        String memberId = getLoggedInUserId(session); // 현재 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 수정 처리
@@ -551,7 +543,7 @@ public class BoardController {
     public String deleteQna(@RequestParam("boardId") int boardId, HttpSession session, Model model) {
         try {
             // QnA 삭제 처리
-            String loggedInUserId = getLoggedInUserId(session);
+            String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
             boardService.deleteQna(boardId);
             log.info("QnA 삭제 성공: {}", boardId);
 
@@ -561,6 +553,36 @@ public class BoardController {
             model.addAttribute("alertMessage", "QnA 삭제에 실패했습니다.");
             return "redirect:/board/qnaDetail?num=" + boardId; // 실패 시 해당 QnA 상세 페이지로 리다이렉트
         }
+    }//----------------
+
+    @PostMapping("/board/addCommentBySeason")
+    public String addCommentBySeason(@RequestParam("seasonId") int seasonId,
+                                     @RequestParam("commentContent") String commentContent,
+                                     @RequestParam(value = "parentId", required = false) Long parentId,
+                                     HttpSession session) {
+        // 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+        if (memberId == null) {
+            throw new RuntimeException("로그인이 필요합니다.");
+        }
+
+        // season_id로 board_id 조회
+        int boardId = eventService.getBoardIdBySeasonId(seasonId);
+        log.info("조회된 boardId: {}", boardId);
+
+        // 댓글 DTO 생성
+        CommentDTO comment = new CommentDTO();
+        comment.setBoardId(boardId); // board_id 설정
+        comment.setMemberId(memberId);
+        comment.setCommentContent(commentContent);
+        comment.setParentId(parentId); // 대댓글의 경우 parentId 설정
+
+        // 댓글 저장
+        commentService.saveComment(comment);
+        log.info("댓글 저장 완료: {}", comment);
+
+        // 댓글 작성 후 상세보기로 리다이렉트
+        return "redirect:/board/event/detail/" + seasonId;
     }
 
 }

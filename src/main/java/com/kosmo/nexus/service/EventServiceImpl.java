@@ -121,6 +121,10 @@ public class EventServiceImpl implements EventService{
     public SeasonDTO getSeasonById(int seasonId) {
         return eventMapper.getSeasonById(seasonId);
     }
+    @Override
+    public List<SeasonDTO> getSeasonsByBoardId(int boardId) {
+        return eventMapper.findSeasonsByBoardId(boardId);
+    }
 
     @Override
     public void updateSeason(SeasonDTO seasonDTO) {
@@ -185,6 +189,8 @@ public class EventServiceImpl implements EventService{
     public int deleteCancelMember(String memberId, int seasonId, Long companyId) {
         return eventMapper.deleteCancelMember(memberId, seasonId, companyId);
     }
+
+
 
 
 }

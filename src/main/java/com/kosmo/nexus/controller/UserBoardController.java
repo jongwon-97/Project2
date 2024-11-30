@@ -121,6 +121,7 @@ public class UserBoardController {
         return "notice/notificationDetail";
     }
 
+
     // 파일 다운로드
     @GetMapping("/board/download")
     public ResponseEntity<Resource> downloadFile(@RequestParam("filePath") String filePath) {
@@ -289,37 +290,8 @@ public class UserBoardController {
         return "qna/qnaDetail";
     }
 
-    // QnA 작성 폼 반환
-    @GetMapping("/user/board/qna")
-    public String qnaForm(Model model) {
-        // 필요 시 기본값 전달
-        BoardDTO boardDTO = new BoardDTO();
-        boardDTO.setDisclosureStatus("공개"); // 기본 공개 설정
-        model.addAttribute("board", boardDTO);
-        return "qna/qna";
-    }
-
-    // QnA 작성 처리
-    @PostMapping("/user/board/qna")
-    public String addQna(@ModelAttribute BoardDTO boardDTO) {
-        // 로그인된 사용자 ID 설정
-        String loggedInUserId = "testUser";
-        boardDTO.setMemberId(loggedInUserId);
-        boardDTO.setBoardCategory("QnA");
-
-        // 디버깅 로그
-        log.info("저장 요청 데이터: {}", boardDTO);
-
-        log.info("QnA 추가 요청 데이터: {}", boardDTO);
-
-        // 게시글 저장
-        boardService.insertQna(boardDTO); // QnA 작성 메서드 호출
-
-        return "redirect:/board/qnaList";
-    }
-
     // QnA 수정 폼 반환
-    @GetMapping("/user/board/editQna")
+    @GetMapping("/board/editQna")
     public String editQna(@RequestParam("num") int num, Model model) {
         // Q&A 데이터 가져오기
         BoardDTO qna = boardService.findQnaById(num);
@@ -329,7 +301,7 @@ public class UserBoardController {
     }
 
     // QnA 수정 처리
-    @PostMapping("/user/board/editQna")
+    @PostMapping("/board/editQna")
     public String updateQna(@ModelAttribute BoardDTO boardDTO) {
         // Q&A 수정 처리
         boardService.updateQna(boardDTO);

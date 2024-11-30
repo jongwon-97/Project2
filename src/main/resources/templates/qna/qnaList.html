@@ -140,7 +140,8 @@
     </tbody>
 </table>
 <div>
-    <button onclick="location.href='/board/qna'">글쓰기</button>
+    <button th:if="${#authentication?.hasRole('ROLE_USER')}" onclick="location.href='/board/qna'">글쓰기</button>
+    <span th:if="${!#authentication?.hasRole('ROLE_USER')}" style="color: red;">글쓰기는 USER 권한만 가능합니다.</span>
 </div>
 <div class="pagination-container">
     <ul class="pagination">

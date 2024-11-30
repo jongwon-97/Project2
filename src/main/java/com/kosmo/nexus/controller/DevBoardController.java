@@ -1,9 +1,11 @@
 package com.kosmo.nexus.controller;
 
 import com.kosmo.nexus.dto.*;
+import com.kosmo.nexus.service.AdminService;
 import com.kosmo.nexus.service.BoardService;
 import com.kosmo.nexus.service.CommentService;
 import com.kosmo.nexus.service.FileService;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,17 +43,9 @@ public class DevBoardController {
     private FileService fileService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private AdminService adminService;
 
-    // 공통 메서드: 로그인된 사용자 ID 가져오기
-    private String getLoggedInUserId(HttpSession session) {
-        if (session == null) {
-            log.warn("HttpSession is null, using default user ID.");
-            return "testUser"; // 기본 사용자 ID
-        }
-        String loggedInUserId = (String) session.getAttribute("loggedInUserId");
-        log.info("Logged in user ID: {}", loggedInUserId);
-        return (loggedInUserId != null) ? loggedInUserId : "testUser";
-    }
 
     private String saveFileWithUUID(MultipartFile file, String uploadDir) throws IOException {
         Path path = Paths.get(uploadDir);
@@ -92,7 +87,7 @@ public class DevBoardController {
         model.addAttribute("notifications", list);
         model.addAttribute("paging", paging);
 
-        return "notice/notificationList";
+        return "/notice/notificationList";
     }
 
     // 공지사항 상세보기
@@ -122,21 +117,30 @@ public class DevBoardController {
     }
 
     // 공지사항 작성 폼
-    @GetMapping("/dev/board/notification")
+    @GetMapping("/board/notification")
     public String notificationForm() {
         return "notice/notification";
     }
 
     // 공지사항 작성
-    @PostMapping("/dev/board/notification")
+    @PostMapping("/board/notification")
     public String addNotification(@ModelAttribute NoticeDTO noticeDTO,
                                   @RequestParam(value = "files", required = false) MultipartFile[] files,
-                                  HttpSession session) { // HttpSession 추가
+                                  HttpSession session,
+                                  Model model) { // HttpSession 추가
         if (noticeDTO.getIsNotice() == null) {
             noticeDTO.setIsNotice(false);
         }
+        Enumeration<String> attributeNames = session.getAttributeNames();
+        log.info("등록확인");
+        log.info("test==={}", attributeNames);
+        while (attributeNames.hasMoreElements()) {
+            String attributeName = attributeNames.nextElement();
+            log.info("세션 속성: {} = {}",attributeName, session.getAttribute(attributeName));
+        }
 
-        String loggedInUserId = getLoggedInUserId(session); // HttpSession 전달
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+        log.info("로그인된 아이디 ========{}", loggedInUserId);
         noticeDTO.setMemberId(loggedInUserId);
         noticeDTO.setBoardCategory("공지사항");
 
@@ -167,10 +171,10 @@ public class DevBoardController {
             }
         }
 
-        return "redirect:/board/notificationList";
+        return "redirect: /dev/board/notificationList";
     }
 
-    @GetMapping("/dev/board/editNotification")
+    @GetMapping("/board/editNotification")
     public String editNotification(@RequestParam("num") int num, Model model) {
         // 공지사항 정보 조회
         BoardDTO notification = boardService.findNotificationById(num);
@@ -185,7 +189,7 @@ public class DevBoardController {
     }
 
 
-    @PostMapping("/dev/board/editNotification")
+    @PostMapping("/board/editNotification")
     public String updateNotification(
             @ModelAttribute NoticeDTO noticeDTO,
             @RequestParam(value = "newFiles", required = false) List<MultipartFile> newFiles) {
@@ -236,7 +240,7 @@ public class DevBoardController {
 
     @DeleteMapping("/board/deleteNotification")
     public ResponseEntity<String> deleteNotification(@RequestParam("num") int num, HttpSession session) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 권한 확인
@@ -304,7 +308,7 @@ public class DevBoardController {
     @PostMapping("/board/addComment")
     public String addComment(@ModelAttribute CommentDTO comment, HttpSession session) {
         // 로그인된 사용자 ID 설정
-        String memberId = getLoggedInUserId(session);
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         comment.setMemberId(memberId);
 
         try {
@@ -325,7 +329,7 @@ public class DevBoardController {
                                 @RequestParam int boardId,
                                 Model model,
                                 HttpSession session) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 삭제 서비스 호출
@@ -350,7 +354,7 @@ public class DevBoardController {
                               @RequestParam("commentContent") String commentContent,
                               @RequestParam("boardId") int boardId,
                               HttpSession session, Model model) {
-        String memberId = getLoggedInUserId(session); // 현재 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 수정 처리
@@ -414,7 +418,7 @@ public class DevBoardController {
         boardService.increaseQnaViewCount(num);
 
         // 로그인된 사용자 ID 가져오기
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         model.addAttribute("loggedInUserId", loggedInUserId);
 
         // QnA 데이터 가져오기
@@ -431,10 +435,29 @@ public class DevBoardController {
         return "qna/qnaDetail";
     }
 
+    // QnA 수정 폼 반환
+    @GetMapping("/board/editQna")
+    public String editQna(@RequestParam("num") int num, Model model) {
+        // Q&A 데이터 가져오기
+        BoardDTO qna = boardService.findQnaById(num);
+        model.addAttribute("qna", qna);
+
+        return "qna/qnaEdit"; // 수정 페이지 경로
+    }
+
+    // QnA 수정 처리
+    @PostMapping("/board/editQna")
+    public String updateQna(@ModelAttribute BoardDTO boardDTO) {
+        // Q&A 수정 처리
+        boardService.updateQna(boardDTO);
+
+        return "redirect:/board/qnaDetail?num=" + boardDTO.getBoardId();
+    }
+
     @PostMapping("/board/addQnaComment")
     public String addQnaComment(@ModelAttribute CommentDTO comment, HttpSession session) {
         // 로그인된 사용자 ID 설정
-        String memberId = getLoggedInUserId(session);
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         comment.setMemberId(memberId);
 
         try {
@@ -453,7 +476,7 @@ public class DevBoardController {
     public String deleteQnaComment(@RequestParam Long commentId,
                                    @RequestParam int boardId,
                                    HttpSession session, Model model) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 삭제 서비스 호출
@@ -476,7 +499,7 @@ public class DevBoardController {
                                  @RequestParam("commentContent") String commentContent,
                                  @RequestParam("boardId") int boardId,
                                  HttpSession session, Model model) {
-        String memberId = getLoggedInUserId(session); // 현재 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 수정 처리
@@ -500,5 +523,22 @@ public class DevBoardController {
             return "redirect:/board/qnaDetail?num=" + boardId;
         }
     }
+    @PostMapping("/board/deleteQna")
+    public String deleteQna(@RequestParam("boardId") int boardId, HttpSession session, Model model) {
+        try {
+            // QnA 삭제 처리
+            String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+            boardService.deleteQna(boardId);
+            log.info("QnA 삭제 성공: {}", boardId);
+
+            return "redirect:/board/qnaList"; // 삭제 후 QnA 목록으로 리다이렉트
+        } catch (Exception e) {
+            log.error("QnA 삭제 실패", e);
+            model.addAttribute("alertMessage", "QnA 삭제에 실패했습니다.");
+            return "redirect:/board/qnaDetail?num=" + boardId; // 실패 시 해당 QnA 상세 페이지로 리다이렉트
+        }
+    }
 
 }
+
+

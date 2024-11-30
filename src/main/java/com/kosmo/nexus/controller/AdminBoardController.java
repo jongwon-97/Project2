@@ -1,9 +1,11 @@
 package com.kosmo.nexus.controller;
 
 import com.kosmo.nexus.dto.*;
+import com.kosmo.nexus.service.AdminService;
 import com.kosmo.nexus.service.BoardService;
 import com.kosmo.nexus.service.CommentService;
 import com.kosmo.nexus.service.FileService;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,17 +43,9 @@ public class AdminBoardController {
     private FileService fileService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private AdminService adminService;
 
-    // 공통 메서드: 로그인된 사용자 ID 가져오기
-    private String getLoggedInUserId(HttpSession session) {
-        if (session == null) {
-            log.warn("HttpSession is null, using default user ID.");
-            return "testUser"; // 기본 사용자 ID
-        }
-        String loggedInUserId = (String) session.getAttribute("loggedInUserId");
-        log.info("Logged in user ID: {}", loggedInUserId);
-        return (loggedInUserId != null) ? loggedInUserId : "testUser";
-    }
 
     private String saveFileWithUUID(MultipartFile file, String uploadDir) throws IOException {
         Path path = Paths.get(uploadDir);
@@ -92,7 +87,7 @@ public class AdminBoardController {
         model.addAttribute("notifications", list);
         model.addAttribute("paging", paging);
 
-        return "notice/notificationList";
+        return "/notice/notificationList";
     }
 
     // 공지사항 상세보기
@@ -122,21 +117,30 @@ public class AdminBoardController {
     }
 
     // 공지사항 작성 폼
-    @GetMapping("/abmin/board/notification")
+    @GetMapping("/board/notification")
     public String notificationForm() {
         return "notice/notification";
     }
 
     // 공지사항 작성
-    @PostMapping("/admin/board/notification")
+    @PostMapping("/board/notification")
     public String addNotification(@ModelAttribute NoticeDTO noticeDTO,
                                   @RequestParam(value = "files", required = false) MultipartFile[] files,
-                                  HttpSession session) { // HttpSession 추가
+                                  HttpSession session,
+                                  Model model) { // HttpSession 추가
         if (noticeDTO.getIsNotice() == null) {
             noticeDTO.setIsNotice(false);
         }
+        Enumeration<String> attributeNames = session.getAttributeNames();
+        log.info("등록확인");
+        log.info("test==={}", attributeNames);
+        while (attributeNames.hasMoreElements()) {
+            String attributeName = attributeNames.nextElement();
+            log.info("세션 속성: {} = {}",attributeName, session.getAttribute(attributeName));
+        }
 
-        String loggedInUserId = getLoggedInUserId(session); // HttpSession 전달
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+        log.info("로그인된 아이디 ========{}", loggedInUserId);
         noticeDTO.setMemberId(loggedInUserId);
         noticeDTO.setBoardCategory("공지사항");
 
@@ -236,7 +240,7 @@ public class AdminBoardController {
 
     @DeleteMapping("/board/deleteNotification")
     public ResponseEntity<String> deleteNotification(@RequestParam("num") int num, HttpSession session) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 권한 확인
@@ -304,7 +308,7 @@ public class AdminBoardController {
     @PostMapping("/board/addComment")
     public String addComment(@ModelAttribute CommentDTO comment, HttpSession session) {
         // 로그인된 사용자 ID 설정
-        String memberId = getLoggedInUserId(session);
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         comment.setMemberId(memberId);
 
         try {
@@ -325,7 +329,7 @@ public class AdminBoardController {
                                 @RequestParam int boardId,
                                 Model model,
                                 HttpSession session) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 삭제 서비스 호출
@@ -350,7 +354,7 @@ public class AdminBoardController {
                               @RequestParam("commentContent") String commentContent,
                               @RequestParam("boardId") int boardId,
                               HttpSession session, Model model) {
-        String memberId = getLoggedInUserId(session); // 현재 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 수정 처리
@@ -414,7 +418,7 @@ public class AdminBoardController {
         boardService.increaseQnaViewCount(num);
 
         // 로그인된 사용자 ID 가져오기
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         model.addAttribute("loggedInUserId", loggedInUserId);
 
         // QnA 데이터 가져오기
@@ -429,35 +433,6 @@ public class AdminBoardController {
         log.info("댓글 목록 데이터 == {}", commentList);
 
         return "qna/qnaDetail";
-    }
-
-    // QnA 작성 폼 반환
-    @GetMapping("/board/qna")
-    public String qnaForm(Model model) {
-        // 필요 시 기본값 전달
-        BoardDTO boardDTO = new BoardDTO();
-        boardDTO.setDisclosureStatus("공개"); // 기본 공개 설정
-        model.addAttribute("board", boardDTO);
-        return "qna/qna";
-    }
-
-    // QnA 작성 처리
-    @PostMapping("/board/qna")
-    public String addQna(@ModelAttribute BoardDTO boardDTO) {
-        // 로그인된 사용자 ID 설정
-        String loggedInUserId = "testUser";
-        boardDTO.setMemberId(loggedInUserId);
-        boardDTO.setBoardCategory("QnA");
-
-        // 디버깅 로그
-        log.info("저장 요청 데이터: {}", boardDTO);
-
-        log.info("QnA 추가 요청 데이터: {}", boardDTO);
-
-        // 게시글 저장
-        boardService.insertQna(boardDTO); // QnA 작성 메서드 호출
-
-        return "redirect:/board/qnaList";
     }
 
     // QnA 수정 폼 반환
@@ -482,7 +457,7 @@ public class AdminBoardController {
     @PostMapping("/board/addQnaComment")
     public String addQnaComment(@ModelAttribute CommentDTO comment, HttpSession session) {
         // 로그인된 사용자 ID 설정
-        String memberId = getLoggedInUserId(session);
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         comment.setMemberId(memberId);
 
         try {
@@ -501,7 +476,7 @@ public class AdminBoardController {
     public String deleteQnaComment(@RequestParam Long commentId,
                                    @RequestParam int boardId,
                                    HttpSession session, Model model) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 삭제 서비스 호출
@@ -524,7 +499,7 @@ public class AdminBoardController {
                                  @RequestParam("commentContent") String commentContent,
                                  @RequestParam("boardId") int boardId,
                                  HttpSession session, Model model) {
-        String memberId = getLoggedInUserId(session); // 현재 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 수정 처리
@@ -552,7 +527,7 @@ public class AdminBoardController {
     public String deleteQna(@RequestParam("boardId") int boardId, HttpSession session, Model model) {
         try {
             // QnA 삭제 처리
-            String loggedInUserId = getLoggedInUserId(session);
+            String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
             boardService.deleteQna(boardId);
             log.info("QnA 삭제 성공: {}", boardId);
 
@@ -565,3 +540,5 @@ public class AdminBoardController {
     }
 
 }
+
+

@@ -7,7 +7,7 @@
 <body>
 <div class="container">
     <h1>공지사항 수정</h1>
-    <form th:action="@{/board/editNotification}" th:method="post" enctype="multipart/form-data">
+    <form action="../board/editNotification" method="post" enctype="multipart/form-data">
         <!-- 게시글 ID -->
         <input type="hidden" name="boardId" th:value="${notification.boardId}">
 

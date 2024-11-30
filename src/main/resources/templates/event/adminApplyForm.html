@@ -233,6 +233,7 @@
             </table>
         </div>
     </form>
+    <span> 신청 가능 인원 : </span><span id="availC" th:text="${availC}">가능인원</span> / <span th:text="${limitC}">제한인원</span> <span onclick="reloadAvailC()"> ⟳ </span>
     <button type="button" onclick="submitAction('apply')"> 신청하기 </button>
     <button type="button" onclick="window.location.href='/admin/home'"> home </button>
 </div>

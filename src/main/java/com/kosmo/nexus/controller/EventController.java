@@ -511,6 +511,8 @@ public class EventController {
         String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
         List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
         List<MemberDTO> listMember=eventService.findAbsenceMemberList(seasonId, sesCompanyId);
+        int limitC = eventService.findLimitCount(seasonId);
+        int availC = eventService.findAvailableCount(seasonId);
         List<String> departments = listMember.stream()
                 .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
                 .distinct() // 중복 제거
@@ -528,6 +530,8 @@ public class EventController {
         model.addAttribute("ranks", ranks);
         model.addAttribute("sesLoginId", sesLoginId);
         model.addAttribute("seasonId",seasonId);
+        model.addAttribute("limitC",limitC);
+        model.addAttribute("availC",availC);
 
         return "event/adminApplyForm";
     }
@@ -559,6 +563,8 @@ public class EventController {
         String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
         log.info("search========={}, option========{}",search, option);
         List<MemberDTO> listMember= eventService.searchAbsenceMemberList(search, option, seasonId, sesCompanyId);
+        int limitC = eventService.findLimitCount(seasonId);
+        int availC = eventService.findAvailableCount(seasonId);
         List<String> departments = listMember.stream()
                 .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
                 .distinct() // 중복 제거
@@ -578,6 +584,8 @@ public class EventController {
         model.addAttribute("searchOption", option);
         model.addAttribute("sesLoginId", sesLoginId);
         model.addAttribute("seasonId",seasonId);
+        model.addAttribute("limitC",limitC);
+        model.addAttribute("availC",availC);
         log.info("SearchMemberList====={}", listMember);
         return "event/adminApplyForm";
     }
@@ -591,6 +599,8 @@ public class EventController {
                                      HttpSession ses, Model model){
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
         String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
+        int limitC = eventService.findLimitCount(seasonId);
+        int availC = eventService.findAvailableCount(seasonId);
 
         if (birthStart.isEmpty()) birthStart = null;
         if (birthEnd.isEmpty()) birthEnd = null;
@@ -630,6 +640,8 @@ public class EventController {
         model.addAttribute("hireEnd", hireEnd);
         model.addAttribute("sesLoginId", sesLoginId);
         model.addAttribute("seasonId",seasonId);
+        model.addAttribute("limitC",limitC);
+        model.addAttribute("availC",availC);
 
         return "event/adminApplyForm";
     }

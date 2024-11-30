@@ -186,5 +186,15 @@ public class EventServiceImpl implements EventService{
         return eventMapper.deleteCancelMember(memberId, seasonId, companyId);
     }
 
+    @Override
+    public int findLimitCount(int seasonId) {
+        return eventMapper.findLimitCount(seasonId);
+    }
+
+    @Override
+    public int findAvailableCount(int seasonId) {
+        return eventMapper.findAvailableCount(seasonId);
+    }
+
 
 }

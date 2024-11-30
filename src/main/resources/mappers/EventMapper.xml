@@ -302,4 +302,20 @@
         AND season_id = #{seasonId}
         AND company_id = #{companyId}
     </delete>
+    
+    <select id="findLimitCount" resultType="_int">
+        SELECT season_limit
+        FROM c_season
+        WHERE season_id = #{seasonId}
+    </select>
+
+    <select id="findAvailableCount" resultType="_int">
+        SELECT season_limit - (
+        SELECT COUNT(*)
+        FROM c_attention
+        WHERE season_id = #{seasonId}
+        )
+        FROM c_season
+        WHERE season_id = #{seasonId}
+    </select>
 </mapper>

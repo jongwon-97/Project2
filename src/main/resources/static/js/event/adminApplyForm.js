@@ -301,9 +301,31 @@ function resetHireDates() {
     document.getElementById('hireEnd').value = '';    // 입사일 종료일 초기화
 }
 
-
-
-
 function allMemberList(){
     window.location.href = `/admin/event/apply/`+seasonId;
+}
+
+async function reloadAvailC() {
+    try {
+        // AJAX 요청 보내기
+        const response = await fetch('/admin/getAvailC', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ seasonId: seasonId })
+        });
+        const data = await response.json();
+        // console.log("response 확인", data);
+        // 'availC' 요소가 존재하는지 확인
+        const availCElement = document.getElementById('availC');
+        if (availCElement && data.availC !== undefined) {
+            availCElement.textContent = data.availC;
+        } else {
+            console.error('Error: availC element or data.availC not found');
+        }
+    } catch (error) {
+        // 오류 처리
+        console.error('Error:', error);
+    }
 }

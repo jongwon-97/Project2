@@ -26,4 +26,13 @@ public interface FileMapper {
     void insertContent(ImageDTO imageDTO);
 
     List<ImageDTO> selectContentByBoardId(@Param("boardId") int boardId);
+
+    List<ImageDTO> getImagesByBoardId(int boardId); // 특정 board_id와 연결된 이미지 조회
+    void deleteImagesByBoardId(int boardId);       // 특정 board_id와 연결된 이미지 삭제
+
+    List<ImageDTO> getTextsByBoardId(int boardId);  // 특정 boardId로 텍스트 조회
+    void deleteTextsByBoardId(int boardId);         // 특정 boardId로 텍스트 삭제
+
+
+    void deleteOnlyImagesByBoardId(int boardId);
 }

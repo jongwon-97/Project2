@@ -38,6 +38,12 @@ function submitAction(actionType) {
 
     // 폼에서 기존에 존재하는 hidden input들을 모두 제거
     const hiddenInputs = form.querySelectorAll('input[type="hidden"]');
+    hiddenInputs.forEach(input => input.remove());
+    const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'seasonId';  // 서버에서 받을 이름
+                hiddenInput.value = seasonId;    // 체크된 항목의 memberId 값을 추가
+                form.appendChild(hiddenInput);
 
     switch (actionType) {
         case 'search':
@@ -48,7 +54,8 @@ function submitAction(actionType) {
                 event.preventDefault();  // 폼 제출을 막음
                 return;
             }
-            form.action = '/admin/search';       // search action
+
+            form.action = '/admin/event/apply/search';       // search action
             break;
 
         case 'adSearch':
@@ -63,8 +70,9 @@ function submitAction(actionType) {
                 event.preventDefault();  // 폼 제출을 막음
                 return;
             }
+
             //console.log(birthStart, birthEnd, hireStart, hireEnd);
-            form.action = '/admin/adSearch';       // search action
+            form.action = '/admin/event/apply/adSearch';       // search action
             break;
 
         case 'apply':
@@ -73,8 +81,6 @@ function submitAction(actionType) {
                 alert("한 개 이상의 행을 선택하세요")
                 return;
             }
-
-            hiddenInputs.forEach(input => input.remove());
 
             // 선택된 항목을 form에 hidden input으로 추가
             selectedMembers.forEach(checkbox => {
@@ -86,10 +92,31 @@ function submitAction(actionType) {
             });
             form.action = '/admin/event/apply/'+seasonId;
             break;
-
     }
     form.submit(); // Submit the form
 }
+
+    function cancelMember(button){
+        const form = document.forms['actionForm'];
+        // 폼에서 기존에 존재하는 hidden input들을 모두 제거
+        const hiddenInputs = form.querySelectorAll('input[type="hidden"]');
+        hiddenInputs.forEach(input => input.remove());
+        const seasonInput = document.createElement('input');
+        seasonInput.type = 'hidden';
+        seasonInput.name = 'seasonId';  // 서버에서 받을 이름
+        seasonInput.value = seasonId;    // 체크된 항목의 memberId 값을 추가
+        form.appendChild(seasonInput);
+
+        let memberId = button.getAttribute('data-member-id');
+        const memberInput = document.createElement('input');
+        memberInput.type = 'hidden';
+        memberInput.name = 'memberId';  // 서버에서 받을 이름
+        memberInput.value = memberId;    // 체크된 항목의 memberId 값을 추가
+        form.appendChild(memberInput);
+
+        form.action = '/admin/event/apply/cancel';
+        form.submit();
+    }
 
 // "모든 부서" 체크박스를 클릭하면 모든 부서 체크박스의 상태를 변경하는 함수
 function toggleAllDepartments() {
@@ -239,6 +266,17 @@ function toggleAdvancedSearch() {
     }
 }
 
+// 참가자 명단 보이기 숨기기 기능
+function toggleAttentionMember() {
+    var advancedSearchDiv = document.getElementById("attentionMember");
+    if (advancedSearchDiv.style.display === "none" || advancedSearchDiv.style.display === "") {
+        advancedSearchDiv.style.display = "block";
+    } else {
+        advancedSearchDiv.style.display = "none";
+    }
+}
+
+
 function resetBirthDates() {
     document.getElementById('birthStart').value = '';  // 생년월일 시작일 초기화
     document.getElementById('birthEnd').value = '';    // 생년월일 종료일 초기화
@@ -285,4 +323,8 @@ function filterHireMonth(){
                 row.style.display = 'none'; // 해당하지 않는 경우 숨김
             }
     });
+}
+
+function allMemberList(){
+    window.location.href = `/admin/event/apply/`+seasonId;
 }

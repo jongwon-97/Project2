@@ -40,19 +40,9 @@ public class BoardServiceImpl implements BoardService {
     }
     @Override
     public void updateNotification(NoticeDTO noticeDTO) {
-        // 기본값 설정
-        if (noticeDTO.getIsNotice() == null) {
-            noticeDTO.setIsNotice(false); // 공지 여부 기본값 설정
-        }
-
-        // 공지사항 여부에 따라 카테고리 변경
-        if (!noticeDTO.getIsNotice()) {
-            noticeDTO.setBoardCategory("일반글"); // 공지사항이 아니면 일반 글로 변경
-        }
         log.info("공지사항 수정: {}", noticeDTO);
         boardMapper.updateNotification(noticeDTO);
     }
-
     @Override
     public void increaseViewCount(int num) {
         log.info("조회수 증가 요청: {}", num);

@@ -178,6 +178,8 @@ function filterMembers() {
     // 선택된 부서 및 직급 가져오기
     const selectedDepartments = Array.from(document.querySelectorAll('[name="department"]:checked')).map(checkbox => checkbox.value);
     const selectedRanks = Array.from(document.querySelectorAll('[name="rank"]:checked')).map(checkbox => checkbox.value);
+    const birthMonth = document.getElementById('birthMonth').value;
+    const hireMonth = document.getElementById('hireMonth').value;
 
     // 테이블의 모든 행을 순회
     const rows = document.querySelectorAll('#memberTableBody tr');
@@ -185,10 +187,21 @@ function filterMembers() {
     rows.forEach(row => {
         const department = row.querySelector('[name="memberDepartment"]').value;
         const rank = row.querySelector('[name="memberRank"]').value;
+        const memberBirth = row.querySelector('[name="memberBirth"]').value;
+        const memberStart = row.querySelector('[name="memberStartDate"]').value;
+
+        const birthMonthFromDate = new Date(memberBirth).getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줘야 실제 월이 됨
+        const formattedBMonth = birthMonthFromDate.toString().padStart(2, '0'); // 두 자릿수로 포맷팅 (예: 9 → 09)
+
+        const startMonthFromDate = new Date(memberStart).getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줘야 실제 월이 됨
+        const formattedHMonth = startMonthFromDate.toString().padStart(2, '0'); // 두 자릿수로 포맷팅 (예: 9 → 09)
 
         // 부서와 직급이 선택된 항목에 맞는지 체크
-        if ((selectedDepartments.length === 0 || selectedDepartments.includes(department)) &&
-            (selectedRanks.length === 0 || selectedRanks.includes(rank))) {
+        if ((selectedDepartments.length != 0 && selectedDepartments.includes(department)) &&
+            (selectedRanks.length != 0 && selectedRanks.includes(rank)) &&
+            (birthMonth === '전체보기' || birthMonth === formattedBMonth) &&
+            (hireMonth === '전체보기' || hireMonth === formattedHMonth)
+            ) {
             row.style.display = ''; // 해당하는 경우 표시
         } else {
             row.style.display = 'none'; // 해당하지 않는 경우 숨김
@@ -288,42 +301,8 @@ function resetHireDates() {
     document.getElementById('hireEnd').value = '';    // 입사일 종료일 초기화
 }
 
-function filterBirthMonth(){
-    const birthMonth = document.getElementById('birthMonth').value;
-    const rows = document.querySelectorAll('#memberTableBody tr');
-
-    rows.forEach(row => {
-        const memberBirth = row.querySelector('[name="memberBirth"]').value;
-    // memberBirth에서 월을 추출 (2021-12-01 → 12)
-        const birthMonthFromDate = new Date(memberBirth).getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줘야 실제 월이 됨
-        const formattedMonth = birthMonthFromDate.toString().padStart(2, '0'); // 두 자릿수로 포맷팅 (예: 9 → 09)
 
 
-    if (birthMonth === '전체보기' || birthMonth === formattedMonth) {
-                row.style.display = ''; // 전체보기이거나 해당 월인 경우 표시
-            } else {
-                row.style.display = 'none'; // 해당하지 않는 경우 숨김
-            }
-
-    });
-}
-
-function filterHireMonth(){
-    const hireMonth = document.getElementById('hireMonth').value;
-    const rows = document.querySelectorAll('#memberTableBody tr');
-
-    rows.forEach(row => {
-        const memberStart = row.querySelector('[name="memberStartDate"]').value;
-        const startMonthFromDate = new Date(memberStart).getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줘야 실제 월이 됨
-        const formattedMonth = startMonthFromDate.toString().padStart(2, '0'); // 두 자릿수로 포맷팅 (예: 9 → 09)
-
-    if (hireMonth === '전체보기' || hireMonth === formattedMonth) {
-                row.style.display = ''; // 전체보기이거나 해당 월인 경우 표시
-            } else {
-                row.style.display = 'none'; // 해당하지 않는 경우 숨김
-            }
-    });
-}
 
 function allMemberList(){
     window.location.href = `/admin/event/apply/`+seasonId;

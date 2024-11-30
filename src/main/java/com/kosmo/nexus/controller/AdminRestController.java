@@ -13,6 +13,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -34,6 +36,46 @@ public class AdminRestController {
 
     @Autowired
     private ServletContext servletContext;
+
+
+    @PostMapping("/admin/checkMemberNum")
+    public Map<String, Boolean> checkMemberNum(@RequestBody Map<String, Object> request) {
+        String memberNum = (String) request.get("memberNum");
+        Long companyId = Long.valueOf(request.get("companyId").toString());
+        boolean isDuplicate = adminService.isMemberNumDuplicate(memberNum, companyId);
+        return Map.of("isDuplicate", isDuplicate);
+    }
+
+    @PostMapping("/admin/uploadMemberImage")
+    public Map<String, Object> uploadMemberImage(@RequestParam("image") MultipartFile imageFile,
+                                                 @RequestParam("memberNum") String memberNum,
+                                                 HttpSession ses, Model model) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // 회사 ID 확인 (보안)
+            Long sesCompanyId = getLoginUserCompanyId(ses, model);
+            if (sesCompanyId == null) {
+                response.put("success", false);
+                response.put("message", "로그인 정보가 유효하지 않습니다.");
+                return response;
+            }
+
+            // 이미지 저장
+            String savedImagePath = saveImage(imageFile);
+
+            // DB에 이미지 경로 업데이트
+            adminService.updateMemberImage(memberNum, sesCompanyId, savedImagePath);
+
+            response.put("success", true);
+            response.put("imagePath", savedImagePath); // 클라이언트에서 사용할 이미지 경로 반환
+        } catch (Exception e) {
+            log.error("이미지 업로드 중 오류 발생: {}", e.getMessage());
+            response.put("success", false);
+            response.put("message", "이미지 업로드 중 오류가 발생했습니다.");
+        }
+        return response;
+    }
+
 
     @PostMapping("/admin/addMember")
     public String addUser(@RequestParam("membersData") String membersDataJson,
@@ -165,5 +207,7 @@ public class AdminRestController {
     public static String hashPassword(String rawPassword) {
         return BCrypt.hashpw(rawPassword, BCrypt.gensalt());
     }
+
+
 
 }

@@ -3,14 +3,25 @@ package com.kosmo.nexus.service;
 import com.kosmo.nexus.dto.MemberDTO;
 import com.kosmo.nexus.dto.SignupDTO;
 import com.kosmo.nexus.mapper.MemberMapper;
+import jakarta.servlet.ServletContext;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class AdminServiceImpl implements AdminService{
     private final MemberMapper memberMapper;
+
+    @Autowired
+    private ServletContext servletContext;
 
     public AdminServiceImpl(MemberMapper memberMapper) {
         this.memberMapper = memberMapper;
@@ -74,6 +85,45 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public List<String> findImgNamebyIdList(List<String> memberIds, Long companyId) {
         return memberMapper.findImgNamebyIdList(memberIds, companyId);
+    }
+
+    @Override
+    public boolean isMemberNumDuplicate(String memberNum, Long companyId) {
+        return memberMapper.findMemberNumByCompanyId(memberNum, companyId) > 0;
+
+    }
+
+    @Override
+    public String findImagePathByMember(String memberNum, Long companyId) {
+        return memberMapper.findImagePathByMember(memberNum, companyId);
+    }
+
+    @Override
+    public void updateMemberImage(String memberNum, Long companyId, String newImagePath) {
+        // 기존 이미지 경로 조회
+        String oldImagePath = findImagePathByMember(memberNum, companyId);
+
+        // 기존 이미지 삭제
+        if (oldImagePath != null && !oldImagePath.isEmpty()) {
+            try {
+                deleteImage(oldImagePath);
+            } catch (IOException e) {
+                log.error("기존 이미지 삭제 실패: {}", e.getMessage());
+            }
+        }
+
+        // DB에 새 이미지 경로 업데이트
+        memberMapper.updateMemberImage(memberNum, companyId, newImagePath);
+    }
+
+    private void deleteImage(String imagePath) throws IOException {
+        Path path = Paths.get(servletContext.getRealPath(imagePath));
+        if (Files.exists(path)) {
+            Files.delete(path);
+            log.info("이미지 파일 삭제됨: {}", imagePath);
+        } else {
+            log.warn("이미지 파일을 찾을 수 없음: {}", imagePath);
+        }
     }
 
     @Override

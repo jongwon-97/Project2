@@ -1,5 +1,6 @@
 package com.kosmo.nexus.controller;
 
+import com.kosmo.nexus.common.util.FileHandler;
 import com.kosmo.nexus.dto.LoginDTO;
 import com.kosmo.nexus.dto.MemberDTO;
 import com.kosmo.nexus.service.AdminService;
@@ -33,6 +34,9 @@ public class AdminController {
 
     @Autowired
     private ServletContext servletContext;
+
+    @Autowired
+    private FileHandler fileHandler;
 
     @GetMapping("/memberList")
     public String findMemberList(HttpSession ses, Model model){
@@ -104,11 +108,8 @@ public class AdminController {
             model.addAttribute("loc", "/admin/memberList");
             return "message";
         }
-        // log.info("cid가 일치하는 경우");
-        // log.info("member==={}",member);
 
         int result = adminService.updateMemberByAdmin(member, sesCompanyId);
-
         log.info("수정된 데이터의 개수======{}", result);
         String url = "redirect:/admin/userPage?id="+memberId;
         return url;

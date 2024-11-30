@@ -6,10 +6,10 @@ export function searchAddress(postcodeId, addressId, detailAddressId) {
             let extraAddr = ''; // 참고항목
 
             // 사용자가 선택한 주소 타입에 따라 주소 값 결정
-            if (data.userSelectedType === 'R') { // 도로명 주소 선택
-                addr = data.roadAddress;
-            } else { // 지번 주소 선택
-                addr = data.jibunAddress;
+            if (data.userSelectedType === 'R') {
+                addr = data.roadAddress; // 도로명 주소
+            } else {
+                addr = data.jibunAddress; // 지번 주소
             }
 
             // 참고항목 설정 (도로명 주소일 경우)
@@ -31,7 +31,7 @@ export function searchAddress(postcodeId, addressId, detailAddressId) {
                 document.getElementById(detailAddressId).focus();
             }
         }
-    }).open();
+    }).open(); // 팝업 열기
 }
 
 // 전역 객체에 함수 등록

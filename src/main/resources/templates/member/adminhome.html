@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin Home</title>
-  <script src="/static/js/common.js"></script>
   <script>
     function checkSession() {
       fetch('/session-status', { method: 'GET' })
@@ -23,12 +22,9 @@
           document.getElementById('memberRole').innerText = "권한 정보를 확인할 수 없습니다.";
         });
     }
-
     window.onload = function() {
       checkSession();
-      enableBackButtonProtection("/adminhome");
     };
-
     function logout() {
       fetch('/logout', { method: 'POST' })
         .then(() => {

@@ -10,6 +10,8 @@ import java.util.List;
 
 @Mapper
 public interface BoardMapper {
+
+
     // 공지사항 관련
     List<BoardDTO> selectNotificationList();
     BoardDTO selectNotificationById(@Param("num") int num); // 공지사항 상세보기
@@ -37,6 +39,13 @@ public interface BoardMapper {
 
     void updateBoard(BoardDTO boardDTO);
 
+
     int getBoardIdBySeasonId(@Param("seasonId") int seasonId);
+
+
+    List<BoardDTO> selectNotificationListByCompanyId(
+            @Param("paging") PagingDTO paging,
+            @Param("companyId") Long companyId
+    );
 
 }

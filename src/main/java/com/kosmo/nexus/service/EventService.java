@@ -49,6 +49,8 @@ public interface EventService {
     List<MemberDTO> searchAbsenceMemberList(String search, String option, int seasonId, Long companyId);
     List<MemberDTO> searchAbsenceMemberListByDate(Map<String, Object> params);
     int deleteCancelMember(String memberId, int seasonId, Long companyId);
+    int findLimitCount(int seasonId);
+    int findAvailableCount(int seasonId);
 
 }
 

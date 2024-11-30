@@ -40,8 +40,12 @@ public class BoardController {
     private FileService fileService;
     @Autowired
     private CommentService commentService;
+
     @Autowired
     private EventService eventService;
+
+
+
 
     private String saveFileWithUUID(MultipartFile file, String uploadDir) throws IOException {
         Path path = Paths.get(uploadDir);

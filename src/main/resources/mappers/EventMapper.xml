@@ -303,6 +303,7 @@
         AND company_id = #{companyId}
     </delete>
 
+
     <select id="findSeasonsByBoardId" parameterType="int" resultType="Season">
         SELECT
         season_id AS seasonId,
@@ -320,5 +321,21 @@
         season_thumbnail AS seasonThumbnail
         FROM c_season
         WHERE board_id = #{boardId}
+
+    <select id="findLimitCount" resultType="_int">
+        SELECT season_limit
+        FROM c_season
+        WHERE season_id = #{seasonId}
+    </select>
+
+    <select id="findAvailableCount" resultType="_int">
+        SELECT season_limit - (
+        SELECT COUNT(*)
+        FROM c_attention
+        WHERE season_id = #{seasonId}
+        )
+        FROM c_season
+        WHERE season_id = #{seasonId}
+
     </select>
 </mapper>

@@ -26,6 +26,7 @@ public interface MemberMapper {
     int insertMemberList(List<SignupDTO> members);
     List<String> findImgNamebyIdList(List<String> memberIds, Long companyId);
 
-
-
+    int findMemberNumByCompanyId(String memberNum, Long companyId);
+    String findImagePathByMember(String memberNum, Long companyId);
+    int updateMemberImage(String memberNum, Long companyId, String imagePath);
 }

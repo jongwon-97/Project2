@@ -121,7 +121,7 @@
     </td>
     <!-- 제목 -->
     <td>
-      <a th:href="@{/dev/board/notificationDetail(num=${notification.boardId})}" th:text="${notification.boardTitle}"></a>
+      <a th:href="@{/admin/board/notificationDetail(num=${notification.boardId})}" th:text="${notification.boardTitle}"></a>
       <!-- 댓글 개수 표시 -->
       <span th:if="${notification.commentCount > 0}"
             th:text="' (' + ${notification.commentCount} + ')'"

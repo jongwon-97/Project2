@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Q&A 목록</title>
@@ -99,7 +101,7 @@
 <body>
 <h1>Q&A 목록</h1>
 <br>
-<form action="/board/qnaList" method="get">
+<form action="/user/board/qnaList" method="get">
     <select name="findType">
         <option value="title" th:selected="${paging.findType == 'title'}">제목</option>
         <option value="member" th:selected="${paging.findType == 'member'}">작성자</option>
@@ -124,7 +126,7 @@
         <td>
             <img th:if="${qna.disclosureStatus == '비공개'}" th:src="@{/images/lock.png}" alt="비공개"
                  style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;">
-            <a th:href="@{/board/qnaDetail(num=${qna.boardId})}" th:text="${qna.boardTitle}"></a>
+            <a th:href="@{/user/board/qnaDetail(num=${qna.boardId})}" th:text="${qna.boardTitle}"></a>
             <span th:if="${qna.commentCount > 0}" th:text="' (' + ${qna.commentCount} + ')'"></span>
         </td>
         <td th:text="${qna.memberId}"></td>
@@ -140,32 +142,31 @@
     </tbody>
 </table>
 <div>
-    <button th:if="${#authentication?.hasRole('ROLE_USER')}" onclick="location.href='/board/qna'">글쓰기</button>
-    <span th:if="${!#authentication?.hasRole('ROLE_USER')}" style="color: red;">글쓰기는 USER 권한만 가능합니다.</span>
+    <button onclick="location.href='/user/board/qna'">글쓰기</button>
 </div>
 <div class="pagination-container">
     <ul class="pagination">
         <li th:classappend="${paging.pageNum == 1} ? 'page-item disabled' : 'page-item'">
             <a class="page-link"
-               th:href="@{'/board/qnaList'(pageNum=1, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">처음</a>
+               th:href="@{'/user/board/qnaList'(pageNum=1, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">처음</a>
         </li>
         <li th:if="${paging.prevBlock > 0}" class="page-item">
             <a class="page-link"
-               th:href="@{'/board/qnaList'(pageNum=${paging.prevBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">&laquo; 이전</a>
+               th:href="@{'/user/board/qnaList'(pageNum=${paging.prevBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">&laquo; 이전</a>
         </li>
         <li th:each="i : ${#numbers.sequence(paging.prevBlock + 1, paging.nextBlock - 1)}"
             th:classappend="${i == paging.pageNum} ? 'page-item active' : 'page-item'">
             <a class="page-link"
-               th:href="@{'/board/qnaList'(pageNum=${i}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}"
+               th:href="@{'/user/board/qnaList'(pageNum=${i}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}"
                th:text="${i}"></a>
         </li>
         <li th:if="${paging.nextBlock <= paging.pageCount}" class="page-item">
             <a class="page-link"
-               th:href="@{'/board/qnaList'(pageNum=${paging.nextBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">다음 &raquo;</a>
+               th:href="@{'/user/board/qnaList'(pageNum=${paging.nextBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">다음 &raquo;</a>
         </li>
         <li th:classappend="${paging.pageNum == paging.pageCount} ? 'page-item disabled' : 'page-item'">
             <a class="page-link"
-               th:href="@{'/board/qnaList'(pageNum=${paging.pageCount}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">끝</a>
+               th:href="@{'/user/board/qnaList'(pageNum=${paging.pageCount}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">끝</a>
         </li>
     </ul>
 </div>

@@ -126,4 +126,9 @@ public class BoardServiceImpl implements BoardService {
     public void updateBoard(BoardDTO boardDTO) {
         boardMapper.updateBoard(boardDTO);
     }
+
+    @Override
+    public List<BoardDTO> selectNotificationListByCompanyId(PagingDTO paging, Long companyId) {
+        return boardMapper.selectNotificationListByCompanyId(paging, companyId);
+    }
 }

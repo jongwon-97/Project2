@@ -249,6 +249,19 @@
         </foreach>
     </update>
 
+    <update id="updateMemberImage">
+        UPDATE c_member
+        SET member_img = #{imagePath}
+        WHERE member_num = #{memberNum}
+        AND company_id = #{companyId};
+    </update>
+
+    <select id="findImagePathByMember" resultType="String">
+        SELECT member_img
+        FROM c_member
+        WHERE member_num = #{memberNum}
+        AND company_id = #{companyId};
+    </select>
 
     <select id ="findImgNamebyIdList" resultType="String">
         SELECT member_img FROM c_member
@@ -261,6 +274,12 @@
     <select id="findCompanyIdByMemberId" resultType="Long">
         SELECT company_id FROM c_member
         WHERE member_id = #{memberId}
+    </select>
+
+    <select id="findMemberNumByCompanyId" resultType="int">
+        SELECT COUNT(*)
+        FROM c_member
+        WHERE company_id = #{companyId}
     </select>
 
 

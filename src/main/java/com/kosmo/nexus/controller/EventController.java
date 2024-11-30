@@ -6,6 +6,7 @@ import com.kosmo.nexus.service.EventService;
 import com.kosmo.nexus.service.FileService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -657,5 +660,25 @@ public class EventController {
             }
         }
     }
+    public Long getLoginUserCompanyId(HttpSession ses, Model model){
+        // 세션에서 loginUser 객체 가져오기
+        LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");
+        if (loginUser == null) {
+            message(model, "정상적인 로그인 정보가 아닙니다.", "/logout");
+            return null;
+        }
+        Long companyId = loginUser.getCompanyId();
+        if (companyId == null) {     // memberId가 없는 경우
+            message(model, "정상적인 로그인 정보가 아닙니다.", "/logout");
+            return null;
+        }
+        return companyId;
+    }
 
+
+    public String message(Model model, String msg, String loc){
+        model.addAttribute("msg", msg);
+        model.addAttribute("loc", loc);
+        return "message";
+    }
 }

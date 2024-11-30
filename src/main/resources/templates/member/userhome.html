@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>User Home</title>
-  <script src="/static/js/common.js"></script>
   <script>
     function checkSession() {
       fetch('/session-status', { method: 'GET' })
@@ -26,7 +25,6 @@
 
     window.onload = function() {
       checkSession();
-      enableBackButtonProtection("/userhome");
     };
 
     function logout() {

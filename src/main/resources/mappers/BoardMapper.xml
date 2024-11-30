@@ -196,9 +196,9 @@
     <update id="updateQna" parameterType="com.kosmo.nexus.dto.BoardDTO">
         UPDATE c_board
         SET
-            board_title = #{boardTitle},
-            board_content = #{boardContent},
-            disclosure_status = #{disclosureStatus}
+        board_title = #{boardTitle},
+        board_content = #{boardContent},
+        disclosure_status = #{disclosureStatus}
         WHERE board_id = #{boardId};
     </update>
 
@@ -228,11 +228,11 @@
     <update id="updateBoard" parameterType="Board">
         UPDATE c_board
         SET
-            board_title = #{boardTitle},
-            board_content = #{boardContent},
-            board_category = #{boardCategory},
-            board_create_date = #{boardCreateDate},
-            disclosure_status = #{disclosureStatus}
+        board_title = #{boardTitle},
+        board_content = #{boardContent},
+        board_category = #{boardCategory},
+        board_create_date = #{boardCreateDate},
+        disclosure_status = #{disclosureStatus}
         WHERE board_id = #{boardId}
     </update>
 

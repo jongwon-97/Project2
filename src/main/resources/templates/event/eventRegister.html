@@ -108,7 +108,7 @@
 
     <button type="button" id="addText">글 추가</button>
     <button type="button" id="addImage">이미지 추가</button>
-    <!-- 동적 콘텐츠 추가 영역 -->
+
 
     <div class="form-actions">
       <div class="left-actions">
@@ -123,7 +123,7 @@
 <script>
   // 서버에서 이벤트 목록 가져와서 select에 추가하는 예제
   window.onload = function() {
-    fetch('/api/events')  // JSON 데이터를 가져오는 API 호출
+    fetch('/api/events') // JSON 데이터를 가져오는 API 호출
       .then(response => {
         if (!response.ok) {
           throw new Error('네트워크 응답에 문제가 있습니다.');
@@ -137,7 +137,7 @@
         if (data && data.length > 0) {
           data.forEach(event => {
             let option = document.createElement("option");
-            option.value = event.eventId;   // 실제로 서버에서 넘어온 eventId를 value로 설정
+            option.value = event.eventId; // 실제로 서버에서 넘어온 eventId를 value로 설정
             option.text = `${event.eventId} - ${event.eventTitle}`; // 드롭다운에 보이는 텍스트는 eventId와 eventTitle
             eventSelect.add(option);
           });
@@ -146,9 +146,9 @@
         }
       })
       .catch(error => console.error('Error:', error));
-  }
+  };
 
-    // 동적으로 글 추가
+  // 동적으로 글 추가
   document.getElementById('addText').addEventListener('click', function() {
     const container = document.getElementById('content-container');
     const textDiv = document.createElement('div');
@@ -165,29 +165,38 @@
     const container = document.getElementById('content-container');
     const imageDiv = document.createElement('div');
     imageDiv.className = 'content-item';
+
     imageDiv.innerHTML = `
-      <input type="file" name="images[]" accept="image/*" multiple>
+      <input type="file" name="images[]" accept="image/*">
       <button type="button" onclick="removeItem(this)">삭제</button>
     `;
     container.appendChild(imageDiv);
   });
 
-  // 항목 삭제
+  // 삭제
   function removeItem(button) {
     button.parentElement.remove();
   }
-  //확인용
-  document.querySelector('form').addEventListener('submit', function (event) {
-    const images = document.querySelectorAll('input[name="images[]"]');
-    images.forEach((input, index) => {
-        if (input.files.length > 0) {
-            console.log(`이미지 ${index + 1}:`, input.files[0].name);
-        } else {
-            console.log(`이미지 ${index + 1}: 파일이 선택되지 않음`);
-        }
-    });
-});
 
+  // 폼 제출 이벤트
+  document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // 폼 제출을 일시적으로 막음
+
+    const formData = new FormData(this);
+
+    // FormData 내용을 콘솔에 출력
+    console.log('폼 데이터 확인:');
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}: ${value.name} (파일)`);
+      } else {
+        console.log(`${key}: ${value}`);
+      }
+    }
+
+    // 폼을 실제로 서버로 제출
+    this.submit();
+  });
 </script>
 </body>
 </html>

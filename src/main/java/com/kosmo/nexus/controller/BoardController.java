@@ -56,6 +56,7 @@ public class BoardController {
 
         log.info("Logged in user ID: {}", loginDTO.getMemberId());
         return loginDTO.getMemberId();
+
     }
 
     private String saveFileWithUUID(MultipartFile file, String uploadDir) throws IOException {

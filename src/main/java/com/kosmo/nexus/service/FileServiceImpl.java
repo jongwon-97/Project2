@@ -80,5 +80,29 @@ public class FileServiceImpl implements FileService {
         return fileMapper.selectContentByBoardId(boardId);
     }
 
+    @Override
+    public List<ImageDTO> getImagesByBoardId(int boardId) {
+        return fileMapper.getImagesByBoardId(boardId);
+    }
+
+    @Override
+    public void deleteImagesByBoardId(int boardId) {
+        fileMapper.deleteImagesByBoardId(boardId);
+    }
+
+    @Override
+    public List<ImageDTO> getTextsByBoardId(int boardId) {
+        return fileMapper.getTextsByBoardId(boardId);
+    }
+
+    @Override
+    public void deleteTextsByBoardId(int boardId) {
+        fileMapper.deleteTextsByBoardId(boardId);
+    }
+    @Override
+    public void deleteOnlyImagesByBoardId(int boardId) {
+        fileMapper.deleteOnlyImagesByBoardId(boardId);
+    }
+
 }
 

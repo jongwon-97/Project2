@@ -1,7 +1,6 @@
 package com.kosmo.nexus.controller;
 
 import com.kosmo.nexus.dto.*;
-import com.kosmo.nexus.service.AdminService;
 import com.kosmo.nexus.service.BoardService;
 import com.kosmo.nexus.service.EventService;
 import com.kosmo.nexus.service.FileService;
@@ -23,10 +22,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 
 @Controller
 @Slf4j
@@ -40,8 +41,6 @@ public class EventController {
     private FileService fileService;
     @Autowired
     private ServletContext servletContext;
-    @Autowired
-    private AdminService adminService;
 
     // 이벤트 작성 폼
     @GetMapping("/board/event")
@@ -60,7 +59,7 @@ public class EventController {
             @RequestParam("fee") int fee,
             @RequestParam("season_info") String seasonInfo,
             @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
-            @RequestParam(value = "images", required = false) MultipartFile[] images, // 다중 이미지 업로드
+            @RequestParam(value = "images[]", required = false) MultipartFile[] images, // 다중 이미지 업로드
             @RequestParam(value = "texts", required = false) List<String> texts, // 텍스트 리스트
             @RequestParam(value = "file", required = false) MultipartFile file) {
 
@@ -287,42 +286,45 @@ public class EventController {
             // 1. c_season과 연결된 board_id 조회
             int boardId = eventService.getBoardIdBySeasonId(seasonId);
 
-            // 2. c_season과 연결된 파일 데이터 조회
-            List<FileDTO> files = fileService.getFilesBySeasonId(seasonId);
+            // 2. c_image 데이터 삭제
+            List<ImageDTO> images = fileService.getImagesByBoardId(boardId);
+            for (ImageDTO image : images) {
+                String imagePath = "src/main/resources/static" + image.getImgPath();
+                File targetImage = new File(imagePath);
 
-            // 3. 실제 파일 삭제
+                if (targetImage.exists()) {
+                    targetImage.delete();
+                }
+            }
+            fileService.deleteImagesByBoardId(boardId);
+
+            // 3. c_file 데이터 삭제
+            List<FileDTO> files = fileService.getFilesByBoardId(boardId);
             for (FileDTO file : files) {
                 String filePath = "src/main/resources/static" + file.getFilePath();
                 File targetFile = new File(filePath);
 
                 if (targetFile.exists()) {
-                    if (targetFile.delete()) {
-//                        log.info("파일 삭제 성공: {}", filePath);
-                    } else {
-//                        log.warn("파일 삭제 실패: {}", filePath);
-                    }
-                } else {
-//                    log.warn("파일을 찾을 수 없습니다: {}", filePath);
+                    targetFile.delete();
                 }
             }
+            fileService.deleteFilesByBoardId(boardId);
 
-            // 4. c_file 데이터 삭제
-            fileService.deleteFilesBySeasonId(seasonId);
-
-            // 5. c_board 데이터 삭제
+            // 4. c_board 데이터 삭제
             boardService.deleteBoardById(boardId);
 
-            // 6. c_season 데이터 삭제
+            // 5. c_season 데이터 삭제
             eventService.deleteSeason(seasonId);
 
-//            log.info("행사 및 관련 데이터 삭제 성공: 시즌 ID = {}", seasonId);
+            log.info("행사 및 관련 데이터 삭제 성공: 시즌 ID = {}", seasonId);
             return "redirect:/dev/board/eventList";
         } catch (Exception e) {
-//            log.error("행사 삭제 실패: 시즌 ID = {}, 에러: {}", seasonId, e.getMessage());
+            log.error("행사 삭제 실패: 시즌 ID = {}, 에러: {}", seasonId, e.getMessage());
             model.addAttribute("errorMessage", "행사를 삭제하는 중 문제가 발생했습니다.");
             return "event/devEventList";
         }
     }
+
     @GetMapping("/board/event/detail/{seasonId}")
     public String getEventDetail(@PathVariable("seasonId") int seasonId, Model model) {
         // 시즌 데이터 가져오기
@@ -362,8 +364,12 @@ public class EventController {
         eventService.increaseSeasonViews(seasonId);
         season.setSeasonViews(season.getSeasonViews() + 1); // 모델에 최신 조회수 반영
 
+        // 이미지 및 텍스트 데이터 가져오기
+        List<ImageDTO> contentList = fileService.getContentByBoardId(season.getBoardId());
+
         // 모델에 시즌 데이터 추가
         model.addAttribute("season", season);
+        model.addAttribute("contentList", contentList); // 이미지 및 텍스트 정보
 
         return "event/eventEndDetail"; // eventEndDetail.html로 이동
     }
@@ -380,10 +386,15 @@ public class EventController {
 
         // 이벤트 리스트 가져오기
         List<EventDTO> eventList = eventService.getAllEvents();
-        if (eventList == null || eventList.isEmpty()) {
-            eventList = new ArrayList<>(); // 비어 있는 리스트를 생성
-        }
         model.addAttribute("eventList", eventList);
+
+        // 텍스트 데이터 가져오기
+        List<ImageDTO> texts = fileService.getTextsByBoardId(season.getBoardId());
+        model.addAttribute("texts", texts);
+
+        // 이미지 데이터 가져오기
+        List<ImageDTO> images = fileService.getImagesByBoardId(season.getBoardId());
+        model.addAttribute("images", images);
 
         return "event/editEventForm";
     }
@@ -391,11 +402,28 @@ public class EventController {
     @PostMapping("/dev/board/updateEvent")
     public String updateEventPost(
             @ModelAttribute SeasonDTO seasonDTO,
+            @RequestParam(value = "roundNumber", required = false) Integer roundNumber,
             @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
-            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "texts", required = false) List<String> updatedTexts, // 수정된 텍스트 리스트
+            @RequestParam(value = "textIds", required = false) List<Integer> textIds, // 수정된 텍스트 ID
+            @RequestParam(value = "deletedTextIds", required = false) List<Integer> deletedTextIds, // 삭제할 텍스트 ID
+            @RequestParam(value = "images", required = false) MultipartFile[] newImages, // 새 이미지
+            @RequestParam(value = "deletedImageIds", required = false) List<Integer> deletedImageIds, // 삭제할 이미지 ID
             Model model) {
         try {
             log.info("SeasonDTO 초기 상태: {}", seasonDTO);
+
+            // 기존 roundNumber 유지
+            if (roundNumber == null) {
+                Integer existingRoundNumber = eventService.getRoundNumberBySeasonId(seasonDTO.getSeasonId());
+                if (existingRoundNumber != null) {
+                    seasonDTO.setRoundNumber(existingRoundNumber);
+                } else {
+                    log.warn("roundNumber가 null이며 기존 데이터에서도 조회되지 않았습니다.");
+                }
+            } else {
+                seasonDTO.setRoundNumber(roundNumber);
+            }
 
             // 데이터베이스에서 boardId 가져오기
             if (seasonDTO.getBoardId() == 0) {
@@ -407,12 +435,6 @@ public class EventController {
                 }
             }
 
-            // 데이터베이스에서 roundNumber 가져오기
-            if (seasonDTO.getRoundNumber() == 0) { // 기본값 0일 때만 가져옴
-                int roundNumber = eventService.getRoundNumberBySeasonId(seasonDTO.getSeasonId());
-                seasonDTO.setRoundNumber(roundNumber); // roundNumber 설정
-            }
-
             // 썸네일 업로드 처리
             if (thumbnail != null && !thumbnail.isEmpty()) {
                 deleteExistingFile(seasonDTO.getSeasonThumbnail());
@@ -420,37 +442,59 @@ public class EventController {
                 seasonDTO.setSeasonThumbnail(thumbnailPath);
             }
 
+            // 텍스트 삭제
+            if (deletedTextIds != null && !deletedTextIds.isEmpty()) {
+                for (Integer textId : deletedTextIds) {
+                    fileService.deleteTextsByBoardId(textId);
+                }
+            }
+
+            // 이미지 삭제
+            if (deletedImageIds != null && !deletedImageIds.isEmpty()) {
+                for (Integer imageId : deletedImageIds) {
+                    fileService.deleteOnlyImagesByBoardId(imageId);
+                }
+            }
+
+            // 텍스트 업데이트
+            if (updatedTexts != null && !updatedTexts.isEmpty()) {
+                int order = 1;
+                for (String text : updatedTexts) {
+                    if (text != null && !text.trim().isEmpty()) {
+                        ImageDTO textDTO = new ImageDTO();
+                        textDTO.setBoardId(seasonDTO.getBoardId());
+                        textDTO.setContentType("text");
+                        textDTO.setContentData(text.trim());
+                        textDTO.setContentOrder(order++);
+                        fileService.saveContent(textDTO);
+                    }
+                }
+            }
+
+            // 이미지 업데이트
+            if (newImages != null && newImages.length > 0) {
+                int order = 1;
+                for (MultipartFile image : newImages) {
+                    if (image != null && !image.isEmpty()) {
+                        String imagePath = saveFile(image, "images");
+                        ImageDTO imageDTO = new ImageDTO();
+                        imageDTO.setBoardId(seasonDTO.getBoardId());
+                        imageDTO.setContentType("image");
+                        imageDTO.setImgPath(imagePath);
+                        imageDTO.setImgOriginName(image.getOriginalFilename());
+                        imageDTO.setContentOrder(order++);
+                        fileService.saveContent(imageDTO);
+                    }
+                }
+            }
+
             // 시즌 정보 업데이트
             eventService.updateSeason(seasonDTO);
 
-            // 상태 업데이트: 현재 날짜와 종료 날짜 비교
+            // 상태 업데이트
             LocalDate endDate = LocalDate.parse(seasonDTO.getSeasonEndDate());
             LocalDate today = LocalDate.now();
-            if (!today.isBefore(endDate)) {
-                seasonDTO.setSeasonState("마감");
-            } else {
-                seasonDTO.setSeasonState("모집중");
-            }
-
-            // c_board 테이블 업데이트
-            if (seasonDTO.getBoardId() > 0) {
-                BoardDTO boardDTO = new BoardDTO();
-                boardDTO.setBoardId(seasonDTO.getBoardId());
-                boardDTO.setBoardTitle(seasonDTO.getSeasonTitle());
-                boardDTO.setBoardContent(seasonDTO.getSeasonInfo());
-                boardDTO.setBoardCategory("Event");
-                boardDTO.setBoardCreateDate(LocalDate.now().toString());
-                boardDTO.setDisclosureStatus("공개");
-
-                boardService.updateBoard(boardDTO);
-                log.info("Board 업데이트 완료: BoardId = {}", boardDTO.getBoardId());
-            } else {
-                log.warn("유효한 boardId가 없어 c_board 업데이트를 생략합니다.");
-            }
-
-            // 수정된 데이터를 다시 로드
-            List<SeasonDTO> seasonList = eventService.getAllSeasons();
-            model.addAttribute("seasonList", seasonList);
+            seasonDTO.setSeasonState(today.isBefore(endDate) ? "모집중" : "마감");
 
             return "redirect:/dev/board/eventList";
         } catch (Exception e) {
@@ -460,13 +504,15 @@ public class EventController {
         }
     }
 
+
     @GetMapping("/admin/event/apply/{seasonId}")
     private String getApplyForm(@PathVariable("seasonId") int seasonId, HttpSession ses, Model model){
         Long sesCompanyId = getLoginUserCompanyId(ses, model);
         String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
-        List<String> departmentsInCompany = adminService.findDepartmentByCompanyId(sesCompanyId);
-        List<String> ranksInCompany = adminService.findRankByCompanyId(sesCompanyId);
-        List<MemberDTO> listMember= adminService.findMemberList(sesCompanyId);
+        List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
+        List<MemberDTO> listMember=eventService.findAbsenceMemberList(seasonId, sesCompanyId);
+        int limitC = eventService.findLimitCount(seasonId);
+        int availC = eventService.findAvailableCount(seasonId);
         List<String> departments = listMember.stream()
                 .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
                 .distinct() // 중복 제거
@@ -478,13 +524,14 @@ public class EventController {
                 .sorted() // 오름차순 정렬
                 .collect(Collectors.toList()); // List<String>으로 수집
 
+        model.addAttribute("attentionMember",attentionMember);
         model.addAttribute("listMember", listMember);
         model.addAttribute("departments", departments);
         model.addAttribute("ranks", ranks);
-        model.addAttribute("departmentsInCompany", departmentsInCompany);
-        model.addAttribute("ranksInCompany", ranksInCompany);
         model.addAttribute("sesLoginId", sesLoginId);
         model.addAttribute("seasonId",seasonId);
+        model.addAttribute("limitC",limitC);
+        model.addAttribute("availC",availC);
 
         return "event/adminApplyForm";
     }
@@ -493,9 +540,122 @@ public class EventController {
     public String getApplyMember(@RequestParam List<String> memberIds,
                                  @PathVariable("seasonId") int seasonId,
                                  HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
         log.info("memberIds=={}",memberIds);
+
+        List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
+        // memberIds에서 attentionMember의 memberId와 일치하는 값을 삭제
+        memberIds.removeIf(memberId ->
+                attentionMember.stream()
+                        .anyMatch(attention -> attention.getMemberId().equals(memberId))
+        );
+
+        int result = eventService.applyEventByAdmin(memberIds, seasonId, sesCompanyId);
         return "redirect:/admin/event/apply/"+seasonId;
     }
+
+    @PostMapping("/admin/event/apply/search")
+    public String searchApplyMemberList(@RequestParam("simpleSearch") String search,
+                                        @RequestParam("searchOption") String option,
+                                        @RequestParam("seasonId") int seasonId,
+                                   HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
+        log.info("search========={}, option========{}",search, option);
+        List<MemberDTO> listMember= eventService.searchAbsenceMemberList(search, option, seasonId, sesCompanyId);
+        int limitC = eventService.findLimitCount(seasonId);
+        int availC = eventService.findAvailableCount(seasonId);
+        List<String> departments = listMember.stream()
+                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> ranks = listMember.stream()
+                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
+        model.addAttribute("attentionMember",attentionMember);
+        model.addAttribute("listMember", listMember);
+        model.addAttribute("departments", departments);
+        model.addAttribute("ranks", ranks);
+        model.addAttribute("simpleSearch", search);
+        model.addAttribute("searchOption", option);
+        model.addAttribute("sesLoginId", sesLoginId);
+        model.addAttribute("seasonId",seasonId);
+        model.addAttribute("limitC",limitC);
+        model.addAttribute("availC",availC);
+        log.info("SearchMemberList====={}", listMember);
+        return "event/adminApplyForm";
+    }
+
+    @PostMapping("/admin/event/apply/adSearch")
+    public String adSearchApplyMemberList(@RequestParam("birthStart") String birthStart,
+                                     @RequestParam("birthEnd") String birthEnd,
+                                     @RequestParam("hireStart") String hireStart,
+                                     @RequestParam("hireEnd") String hireEnd,
+                                     @RequestParam("seasonId") int seasonId,
+                                     HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
+        int limitC = eventService.findLimitCount(seasonId);
+        int availC = eventService.findAvailableCount(seasonId);
+
+        if (birthStart.isEmpty()) birthStart = null;
+        if (birthEnd.isEmpty()) birthEnd = null;
+        if (hireStart.isEmpty()) hireStart = null;
+        if (hireEnd.isEmpty())hireEnd = null;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("companyId", sesCompanyId);
+        params.put("birthStart", birthStart);
+        params.put("birthEnd", birthEnd);
+        params.put("hireStart", hireStart);
+        params.put("hireEnd", hireEnd);
+        params.put("seasonId", seasonId);
+        List<MemberDTO> listMember = eventService.searchAbsenceMemberListByDate(params);
+        log.info("이벤트 단 SearchMemberList====={}", listMember);
+        // List<MemberDTO>에서 memberDepartment 추출하여 List<String>으로 변환
+        List<String> departments = listMember.stream()
+                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+        List<String> ranks = listMember.stream()
+                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+                .distinct() // 중복 제거
+                .sorted() // 오름차순 정렬
+                .collect(Collectors.toList()); // List<String>으로 수집
+
+        List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
+        model.addAttribute("attentionMember",attentionMember);
+        model.addAttribute("listMember", listMember);
+        model.addAttribute("departments", departments);
+        model.addAttribute("ranks", ranks);
+        model.addAttribute("companyId", sesCompanyId);
+        model.addAttribute("birthStart", birthStart);
+        model.addAttribute("birthEnd", birthEnd);
+        model.addAttribute("hireStart", hireStart);
+        model.addAttribute("hireEnd", hireEnd);
+        model.addAttribute("sesLoginId", sesLoginId);
+        model.addAttribute("seasonId",seasonId);
+        model.addAttribute("limitC",limitC);
+        model.addAttribute("availC",availC);
+
+        return "event/adminApplyForm";
+    }
+
+    @PostMapping("/admin/event/apply/cancel")
+    private String deletecancelMember(@RequestParam("memberId") String memberId,
+                                     @RequestParam("seasonId") int seasonId,
+                                     HttpSession ses, Model model){
+        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+        //log.info("삭제할 아이디 ========{}", memberId);
+        int result = eventService.deleteCancelMember(memberId, seasonId, sesCompanyId);
+        return "redirect:/admin/event/apply/"+seasonId;
+    }
+
 
     private void deleteExistingFile(String filePath) {
         if (filePath != null && !filePath.isEmpty()) {
@@ -512,7 +672,6 @@ public class EventController {
             }
         }
     }
-
     public Long getLoginUserCompanyId(HttpSession ses, Model model){
         // 세션에서 loginUser 객체 가져오기
         LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");

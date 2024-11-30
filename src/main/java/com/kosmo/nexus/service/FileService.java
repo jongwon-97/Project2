@@ -11,6 +11,9 @@ public interface FileService {
     void deleteFile(int fileId);
     List<FileDTO> getFilesByBoardId(int boardId);
 
+//    List<ImageDTO> getImagesByBoardId(int boardId); // Board ID로 이미지 목록 조회
+//    void deleteImagesByBoardId(int boardId); // Board ID로 이미지 데이터 삭제
+
     List<FileDTO> getFilesBySeasonId(int seasonId); // 시즌 ID로 파일 데이터 조회
     void deleteFilesBySeasonId(int seasonId);       // 시즌 ID로 파일 데이터 삭제
 
@@ -19,4 +22,12 @@ public interface FileService {
     void saveContent(ImageDTO imageDTO); // 이미지 및 텍스트 저장
     List<ImageDTO> getContentByBoardId(int boardId); // 게시글 ID로 이미지 및 텍스트 조회
 
+    List<ImageDTO> getImagesByBoardId(int boardId); // 특정 board_id와 연결된 이미지 조회
+    void deleteImagesByBoardId(int boardId);       // 특정 board_id와 연결된 이미지 삭제
+
+
+    List<ImageDTO> getTextsByBoardId(int boardId);  // 특정 boardId로 텍스트 조회
+    void deleteTextsByBoardId(int boardId);         // 특정 boardId로 텍스트 삭제
+
+    void deleteOnlyImagesByBoardId(int boardId);
 }

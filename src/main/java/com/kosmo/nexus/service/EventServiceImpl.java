@@ -2,6 +2,7 @@ package com.kosmo.nexus.service;
 
 import com.kosmo.nexus.dto.BoardDTO;
 import com.kosmo.nexus.dto.EventDTO;
+import com.kosmo.nexus.dto.MemberDTO;
 import com.kosmo.nexus.dto.SeasonDTO;
 import com.kosmo.nexus.mapper.BoardMapper;
 import com.kosmo.nexus.mapper.EventMapper;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -138,6 +140,7 @@ public class EventServiceImpl implements EventService{
         Integer roundNumber = eventMapper.getRoundNumberBySeasonId(seasonId);
         return roundNumber != null ? roundNumber : 0; // null일 경우 기본값 0 반환
     }
+
     @Override
     public List<SeasonDTO> searchSeasons(String findKeyword, String status) {
         return eventMapper.searchSeasons(findKeyword, status);
@@ -153,7 +156,45 @@ public class EventServiceImpl implements EventService{
         eventMapper.updateSeasonViews(seasonId);
     }
 
+    @Override
+    public int applyEventByAdmin(List<String> memberIds, int seasonId, Long companyId) {
+        return eventMapper.applyEventByAdmin(memberIds, seasonId, companyId);
+    }
 
+    @Override
+    public List<MemberDTO> findAttentionMemberList(int seasonId, Long companyId) {
+        return eventMapper.findAttentionMemberList(seasonId, companyId);
+    }
+
+    @Override
+    public List<MemberDTO> findAbsenceMemberList(int seasonId, Long companyId) {
+        return eventMapper.findAbsenceMemberList(seasonId, companyId);
+    }
+
+    @Override
+    public List<MemberDTO> searchAbsenceMemberList(String search, String option, int seasonId, Long companyId) {
+        return eventMapper.searchAbsenceMemberList(search, option, seasonId, companyId);
+    }
+
+    @Override
+    public List<MemberDTO> searchAbsenceMemberListByDate(Map<String, Object> params) {
+        return eventMapper.searchAbsenceMemberListByDate(params);
+    }
+
+    @Override
+    public int deleteCancelMember(String memberId, int seasonId, Long companyId) {
+        return eventMapper.deleteCancelMember(memberId, seasonId, companyId);
+    }
+
+    @Override
+    public int findLimitCount(int seasonId) {
+        return eventMapper.findLimitCount(seasonId);
+    }
+
+    @Override
+    public int findAvailableCount(int seasonId) {
+        return eventMapper.findAvailableCount(seasonId);
+    }
 
 
 }

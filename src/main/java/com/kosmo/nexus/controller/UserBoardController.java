@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -41,16 +40,6 @@ public class UserBoardController {
     @Autowired
     private CommentService commentService;
 
-    // 공통 메서드: 로그인된 사용자 ID 가져오기
-    private String getLoggedInUserId(HttpSession session) {
-        if (session == null) {
-            log.warn("HttpSession is null, using default user ID.");
-            return "testUser"; // 기본 사용자 ID
-        }
-        String loggedInUserId = (String) session.getAttribute("loggedInUserId");
-        log.info("Logged in user ID: {}", loggedInUserId);
-        return (loggedInUserId != null) ? loggedInUserId : "testUser";
-    }
 
     private String saveFileWithUUID(MultipartFile file, String uploadDir) throws IOException {
         Path path = Paths.get(uploadDir);
@@ -72,9 +61,11 @@ public class UserBoardController {
                                    @RequestParam(required = false) String findType,
                                    @RequestParam(required = false) String findKeyword,
                                    PagingDTO paging,
+                                   HttpSession session,
                                    Model model) {
         paging.setFindType(findType);
         paging.setFindKeyword(findKeyword);
+        Long companyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
 
         int notificationCount = boardService.getTotalNotificationCount(paging);
         int generalCount = boardService.getTotalGeneralCount(paging);
@@ -84,7 +75,7 @@ public class UserBoardController {
         paging.setOneRecordPage(10);
         paging.init();
 
-        List<BoardDTO> list = boardService.selectNotificationList(paging);
+        List<BoardDTO> list = boardService.selectNotificationListByCompanyId(paging, companyId);
 
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("notificationCount", notificationCount);
@@ -92,12 +83,14 @@ public class UserBoardController {
         model.addAttribute("notifications", list);
         model.addAttribute("paging", paging);
 
-        return "notice/notificationList";
+
+        return "/notice/userNotificationList";
     }
 
     // 공지사항 상세보기
     @GetMapping("/board/notificationDetail")
-    public String notificationDetail(@RequestParam("num") int num, Model model) {
+    public String notificationDetail(@RequestParam("num") int num, Model model,
+                                     HttpSession session) {
         boardService.increaseViewCount(num);
 
         // 공지사항 데이터 가져오기
@@ -114,11 +107,10 @@ public class UserBoardController {
         List<CommentDTO> commentList = commentService.getCommentsByBoardId(num);
         model.addAttribute("commentList", commentList);
 
-        log.info("공지사항 상세보기 데이터 == {}", notification);
-        log.info("첨부파일 목록 데이터 == {}", attachedFiles);
-        log.info("댓글 목록 데이터 == {}", commentList);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+        model.addAttribute("loginUser", loggedInUserId);
 
-        return "notice/notificationDetail";
+        return "notice/userNotificationDetail";
     }
 
 
@@ -163,7 +155,7 @@ public class UserBoardController {
     @PostMapping("/board/addComment")
     public String addComment(@ModelAttribute CommentDTO comment, HttpSession session) {
         // 로그인된 사용자 ID 설정
-        String memberId = getLoggedInUserId(session);
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         comment.setMemberId(memberId);
 
         try {
@@ -175,7 +167,7 @@ public class UserBoardController {
         }//----------------------------------
 
         // 저장 후 상세보기 페이지로 리다이렉트
-        return "redirect:/board/notificationDetail?num=" + comment.getBoardId();
+        return "redirect:/user/board/notificationDetail?num=" + comment.getBoardId();
     }//----------------------------------------------------
 
     @PostMapping("/board/deleteComment")
@@ -184,7 +176,7 @@ public class UserBoardController {
                                 @RequestParam int boardId,
                                 Model model,
                                 HttpSession session) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 삭제 서비스 호출
@@ -192,7 +184,7 @@ public class UserBoardController {
             log.info("댓글 삭제 성공: {}", commentId);
 
             // 삭제 성공 후 상세보기 페이지로 리다이렉트
-            return "redirect:/board/notificationDetail?num=" + boardId;
+            return "redirect:/user/board/notificationDetail?num=" + boardId;
         } catch (IllegalAccessException e) {
             log.error("댓글 삭제 실패 - 권한 없음: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 권한 없음");
@@ -200,7 +192,7 @@ public class UserBoardController {
         } catch (Exception e) {
             log.error("댓글 삭제 실패 - 서버 오류: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 서버 오류");
-            return "redirect:/board/notificationDetail?num=" + boardId;
+            return "redirect:/user/board/notificationDetail?num=" + boardId;
         }
     }//---------------------------------
 
@@ -209,7 +201,7 @@ public class UserBoardController {
                               @RequestParam("commentContent") String commentContent,
                               @RequestParam("boardId") int boardId,
                               HttpSession session, Model model) {
-        String memberId = getLoggedInUserId(session); // 현재 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 수정 처리
@@ -222,7 +214,7 @@ public class UserBoardController {
             commentService.updateComment(comment, memberId);
             log.info("댓글 수정 성공: {}", comment);
 
-            return "redirect:/board/notificationDetail?num=" + boardId; // 댓글이 속한 공지로 리다이렉트
+            return "redirect:/user/board/notificationDetail?num=" + boardId; // 댓글이 속한 공지로 리다이렉트
         } catch (IllegalAccessException e) {
             log.error("댓글 수정 실패: 권한 없음", e);
             model.addAttribute("alertMessage", "수정 실패: 권한이 없습니다.");
@@ -230,7 +222,7 @@ public class UserBoardController {
         } catch (Exception e) {
             log.error("댓글 수정 실패: 서버 오류", e);
             model.addAttribute("alertMessage", "수정 실패: 서버 오류");
-            return "redirect:/board/notificationDetail?num=" + commentId;
+            return "redirect:/user/board/notificationDetail?num=" + commentId;
         }
     }
     //--------------------------------------------------------------------------------------------------------
@@ -262,22 +254,29 @@ public class UserBoardController {
         model.addAttribute("paging", paging); // 페이징 데이터
         model.addAttribute("findType", findType); // 검색 유형
         model.addAttribute("findKeyword", findKeyword); // 검색 키워드
-
-        return "qna/qnaList"; // Q&A 목록 페이지로 이동
+        log.info("qnaList, paging, findType, findKeyword======{},{},{},{}",qnaList, paging, findType, findKeyword);
+        return "qna/userQnaList"; // Q&A 목록 페이지로 이동
     }
 
     // QnA 상세보기
     @GetMapping("/board/qnaDetail")
     public String qnaDetail(@RequestParam("num") int num, Model model, HttpSession session) {
+        // QnA 데이터 가져오기
+        BoardDTO qna = boardService.findQnaById(num);
+
+//        // 비공개로 설정되어 있으면 login id확인
+//        if(qna.getDisclosureStatus().equals("비공개")){
+//            // 로그인된 사용자 ID 가져오기
+//            String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+//            if(!qna.getMemberId().equals(loggedInUserId)){
+//                message(model, msg);
+//            }
+//        }
         // 조회수 증가
         boardService.increaseQnaViewCount(num);
 
-        // 로그인된 사용자 ID 가져오기
-        String loggedInUserId = getLoggedInUserId(session);
-        model.addAttribute("loggedInUserId", loggedInUserId);
 
-        // QnA 데이터 가져오기
-        BoardDTO qna = boardService.findQnaById(num);
+
         model.addAttribute("qna", qna);
 
         // 댓글 및 대댓글 데이터 가져오기
@@ -287,7 +286,7 @@ public class UserBoardController {
         log.info("QnA 상세보기 데이터 == {}", qna);
         log.info("댓글 목록 데이터 == {}", commentList);
 
-        return "qna/qnaDetail";
+        return "qna/userQnaDetail";
     }
 
     // QnA 수정 폼 반환
@@ -312,7 +311,7 @@ public class UserBoardController {
     @PostMapping("/board/addQnaComment")
     public String addQnaComment(@ModelAttribute CommentDTO comment, HttpSession session) {
         // 로그인된 사용자 ID 설정
-        String memberId = getLoggedInUserId(session);
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         comment.setMemberId(memberId);
 
         try {
@@ -331,7 +330,7 @@ public class UserBoardController {
     public String deleteQnaComment(@RequestParam Long commentId,
                                    @RequestParam int boardId,
                                    HttpSession session, Model model) {
-        String loggedInUserId = getLoggedInUserId(session);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 삭제 서비스 호출
@@ -354,7 +353,7 @@ public class UserBoardController {
                                  @RequestParam("commentContent") String commentContent,
                                  @RequestParam("boardId") int boardId,
                                  HttpSession session, Model model) {
-        String memberId = getLoggedInUserId(session); // 현재 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
         try {
             // 댓글 수정 처리
@@ -382,7 +381,7 @@ public class UserBoardController {
     public String deleteQna(@RequestParam("boardId") int boardId, HttpSession session, Model model) {
         try {
             // QnA 삭제 처리
-            String loggedInUserId = getLoggedInUserId(session);
+            String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
             boardService.deleteQna(boardId);
             log.info("QnA 삭제 성공: {}", boardId);
 
@@ -394,4 +393,9 @@ public class UserBoardController {
         }
     }
 
+    public String message(Model model, String msg, String loc){
+        model.addAttribute("msg", msg);
+        model.addAttribute("loc", loc);
+        return "message";
+    }
 }

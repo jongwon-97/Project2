@@ -790,22 +790,6 @@ public class EventController {
         }
     }//-----------
 
-
-
-    public Long getLoginUserCompanyId(HttpSession ses, Model model){
-        // 세션에서 loginUser 객체 가져오기
-        LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");
-        if (loginUser == null) {
-            message(model, "정상적인 로그인 정보가 아닙니다.", "/logout");
-            return null;
-        }
-        Long companyId = loginUser.getCompanyId();
-        if (companyId == null) {     // memberId가 없는 경우
-            message(model, "정상적인 로그인 정보가 아닙니다.", "/logout");
-            return null;
-        }
-        return companyId;
-    }
     public Long getLoginUserCompanyId(HttpSession ses, Model model){
         // 세션에서 loginUser 객체 가져오기
         LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");

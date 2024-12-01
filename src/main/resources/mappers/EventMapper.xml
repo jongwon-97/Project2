@@ -303,7 +303,6 @@
         AND company_id = #{companyId}
     </delete>
 
-
     <select id="findSeasonsByBoardId" parameterType="int" resultType="Season">
         SELECT
         season_id AS seasonId,

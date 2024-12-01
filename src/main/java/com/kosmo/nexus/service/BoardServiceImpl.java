@@ -131,4 +131,9 @@ public class BoardServiceImpl implements BoardService {
     public List<BoardDTO> selectNotificationListByCompanyId(PagingDTO paging, Long companyId) {
         return boardMapper.selectNotificationListByCompanyId(paging, companyId);
     }
+
+    @Override
+    public List<BoardDTO> selectQnaListByCompanyID(PagingDTO paging, Long companyId) {
+        return boardMapper.selectQnaListByCompanyID(paging, companyId);
+    }
 }

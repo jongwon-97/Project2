@@ -10,8 +10,8 @@
     </style>
 </head>
 <body>
-    <h1>User Page</h1>
-    <div class="table-section">
+<h1>User Page</h1>
+<div class="table-section">
     <h2 th:text="${member.memberName}+'님의 상세페이지('+${member.memberRole}+')'">상세 페이지</h2>
     <form name="userMyPageForm" action="../dev/userPage" method="post" enctype = "multipart/form-data">
         <table>
@@ -90,7 +90,7 @@
         </div>
         <input id="companyId" name="companyId" type="hidden" th:value="${member.companyId}">
     </form>
-    </div>
+</div>
 </body>
 <script>
     function goToCompanyPage(){

@@ -104,5 +104,15 @@ public class FileServiceImpl implements FileService {
         fileMapper.deleteOnlyImagesByBoardId(boardId);
     }
 
+    @Override
+    public void deleteTextById(Integer textId) {
+        fileMapper.deleteTextById(textId);
+    }
+
+    @Override
+    public void deleteImageById(Integer imageId) {
+        fileMapper.deleteImageById(imageId);
+    }
+
 }
 

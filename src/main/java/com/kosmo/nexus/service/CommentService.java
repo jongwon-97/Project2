@@ -23,4 +23,7 @@ public interface CommentService {
     //공지 삭제 시 댓글 모두 삭제 처리
     void deleteCommentsByBoardId(int boardId);
 
+    // seasonId로 댓글 및 대댓글 가져오기
+    List<CommentDTO> getCommentsBySeasonId(int seasonId);
+
 }

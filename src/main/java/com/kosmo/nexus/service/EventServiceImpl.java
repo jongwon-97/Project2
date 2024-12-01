@@ -5,6 +5,7 @@ import com.kosmo.nexus.dto.EventDTO;
 import com.kosmo.nexus.dto.MemberDTO;
 import com.kosmo.nexus.dto.SeasonDTO;
 import com.kosmo.nexus.mapper.BoardMapper;
+import com.kosmo.nexus.mapper.CommentMapper;
 import com.kosmo.nexus.mapper.EventMapper;
 import com.kosmo.nexus.mapper.FileMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ public class EventServiceImpl implements EventService{
     private FileMapper fileMapper;
     @Autowired
     private BoardService boardService;
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Override
     public void registerEvent(EventDTO eventDTO) {
@@ -106,9 +109,11 @@ public class EventServiceImpl implements EventService{
 
         // 1. 파일 삭제
         fileMapper.deleteFilesByBoardId(boardId);
-        // 2. 게시판 삭제
+        // 2. 댓글 삭제
+        commentMapper.deleteCommentsByBoardId(boardId);
+        // 3. 게시판 삭제
         boardMapper.deleteBoardById(boardId);
-        // 3. 시즌 삭제
+        // 4. 시즌 삭제
         eventMapper.deleteSeason(seasonId);
     }
     @Override
@@ -120,6 +125,10 @@ public class EventServiceImpl implements EventService{
     @Override
     public SeasonDTO getSeasonById(int seasonId) {
         return eventMapper.getSeasonById(seasonId);
+    }
+    @Override
+    public List<SeasonDTO> getSeasonsByBoardId(int boardId) {
+        return eventMapper.findSeasonsByBoardId(boardId);
     }
 
     @Override
@@ -184,6 +193,25 @@ public class EventServiceImpl implements EventService{
     @Override
     public int deleteCancelMember(String memberId, int seasonId, Long companyId) {
         return eventMapper.deleteCancelMember(memberId, seasonId, companyId);
+    }
+
+    @Override
+    public int findLimitCount(int seasonId) {
+        return eventMapper.findLimitCount(seasonId);
+    }
+
+    @Override
+    public int findAvailableCount(int seasonId) {
+        return eventMapper.findAvailableCount(seasonId);
+    }
+
+    @Override
+    public List<SeasonDTO> getSeasonsByEventId(int eventId) {
+        return eventMapper.findSeasonsByEventId(eventId);
+    }
+    @Override
+    public int getEventIdBySeasonId(int seasonId) {
+        return eventMapper.findEventIdBySeasonId(seasonId);
     }
 
 

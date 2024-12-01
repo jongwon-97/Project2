@@ -152,9 +152,13 @@
   <tr th:each="season : ${seasonList}">
     <td>
       <div class="event-thumbnail">
-        <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}" alt="썸네일" />
+        <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}"
+             alt="썸네일" />
       </div>
-      <span th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></span>
+
+      <a th:href="@{/dev/board/event/detail/{seasonId}(seasonId=${season.seasonId})}"
+         th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></a>
+
     </td>
     <td th:text="${season.seasonInfo != null ? season.seasonInfo : '정보 없음'}"></td>
     <td th:text="${season.seasonLimit}"></td>

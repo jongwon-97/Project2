@@ -7,16 +7,14 @@ import com.kosmo.nexus.dto.LoginDTO;
 import com.kosmo.nexus.dto.SignupDTO;
 import com.kosmo.nexus.service.AdminService;
 import com.kosmo.nexus.service.SignupService;
+import com.kosmo.nexus.service.EventService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -38,7 +36,12 @@ public class AdminRestController {
     private ServletContext servletContext;
 
     @Autowired
+
     private  SignupService signupService;
+    @Autowired
+    private EventService eventService;
+
+
 
     @PostMapping("/admin/checkMemberNum")
     public Map<String, Boolean> checkMemberNum(@RequestBody Map<String, Object> request) {
@@ -279,6 +282,13 @@ public class AdminRestController {
         return BCrypt.hashpw(rawPassword, BCrypt.gensalt());
     }
 
-
+    @PostMapping("/admin/getAvailC")
+    public Map<String, Object> getAvailC(@RequestBody Map<String, String> req) {
+        int seasonId = Integer.parseInt(req.get("seasonId"));
+        Map<String, Object> response = new HashMap<>();
+        int availC = eventService.findAvailableCount(seasonId);
+        response.put("availC", availC);
+        return response;  // JSON 형태로 반환
+    }
 
 }

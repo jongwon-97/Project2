@@ -46,6 +46,10 @@
 <div class="container">
     <h2>이벤트 수정</h2>
     <form th:action="@{/dev/board/updateEvent}" method="post" enctype="multipart/form-data">
+        <!-- 숨겨진 삭제 ID -->
+        <input type="hidden" id="deletedTextIds" name="deletedTextIds">
+        <input type="hidden" id="deletedImageIds" name="deletedImageIds">
+        <input type="hidden" id="deletedItems" name="deletedItems">
         <!-- 시즌 ID -->
         <input type="hidden" name="seasonId" th:value="${season.seasonId}">
         <!-- 시즌 회차 (roundNumber) -->
@@ -98,15 +102,10 @@
         <div class="form-group">
             <label for="texts">텍스트 수정 및 추가</label>
             <div id="text-container">
-                <!-- 기존 텍스트 필드 표시 -->
-                <div th:each="text, iterStat : ${texts}">
-                    <input type="text"
-                           name="texts"
-                           th:value="${text.contentData}"
-                           placeholder="텍스트를 입력하세요"
-                           class="text-input">
+                <div th:each="text : ${texts}">
+                    <input type="text" name="texts" th:value="${text.contentData}" placeholder="텍스트를 입력하세요">
                     <input type="hidden" name="textIds" th:value="${text.imgId}">
-                    <button type="button" th:if="${iterStat.index > 0}" class="btn remove-text-btn" onclick="removeTextField(this)">삭제</button>
+                    <button type="button" class="btn remove-text-btn" onclick="removeTextField(this)">삭제</button>
                 </div>
             </div>
             <button type="button" id="add-text-btn" class="btn add-btn" onclick="addTextField()">텍스트 추가</button>
@@ -116,9 +115,8 @@
         <div class="form-group">
             <label>이미지 수정 및 추가</label>
             <div id="image-container">
-                <!-- 기존 이미지 표시 -->
                 <div th:each="image : ${images}">
-                    <img th:src="@{${image.imgPath}}" alt="이미지" style="width:100px; height:auto; margin-right: 10px;">
+                    <img th:src="@{${image.imgPath}}" alt="이미지">
                     <input type="hidden" name="existingImageIds" th:value="${image.imgId}">
                     <button type="button" class="btn remove-image-btn" onclick="removeImageField(this)">삭제</button>
                 </div>
@@ -142,34 +140,56 @@
         const container = document.getElementById('text-container');
         const newField = document.createElement('div');
         newField.innerHTML = `
-            <input type="text" name="texts" placeholder="텍스트를 입력하세요" class="text-input">
+            <input type="text" name="texts[]" placeholder="텍스트를 입력하세요">
             <button type="button" class="btn remove-text-btn" onclick="removeTextField(this)">삭제</button>
         `;
         container.appendChild(newField);
     }
 
-    // 텍스트 필드 삭제
-    function removeTextField(button) {
-        const container = button.parentElement;
-        container.remove();
+// 텍스트 필드 삭제
+function removeTextField(button) {
+    const deletedItemsInput = document.getElementById('deletedItems');
+    const textIdInput = button.previousElementSibling; // 숨겨진 input
+
+    // 삭제할 텍스트 ID 추가
+    if (textIdInput && textIdInput.name === "textIds") {
+        const deletedItems = deletedItemsInput.value ? JSON.parse(deletedItemsInput.value) : [];
+        deletedItems.push({ id: textIdInput.value, type: "text" }); // ID와 content_type 추가
+        deletedItemsInput.value = JSON.stringify(deletedItems);
     }
+
+    // 필드 제거
+    const container = button.parentElement;
+    container.remove();
+}
 
     // 이미지 필드 추가
     function addImageField() {
         const container = document.getElementById('new-image-container');
         const newField = document.createElement('div');
         newField.innerHTML = `
-            <input type="file" name="images" accept="image/*" class="image-input">
+            <input type="file" name="newImages[]" accept="image/*">
             <button type="button" class="btn remove-image-btn" onclick="removeImageField(this)">삭제</button>
         `;
         container.appendChild(newField);
     }
 
-    // 이미지 필드 삭제
-    function removeImageField(button) {
-        const container = button.parentElement;
-        container.remove();
+// 이미지 필드 삭제
+function removeImageField(button) {
+    const deletedItemsInput = document.getElementById('deletedItems');
+    const imageIdInput = button.previousElementSibling; // 숨겨진 input
+
+    // 삭제할 이미지 ID 추가
+    if (imageIdInput && imageIdInput.name === "existingImageIds") {
+        const deletedItems = deletedItemsInput.value ? JSON.parse(deletedItemsInput.value) : [];
+        deletedItems.push({ id: imageIdInput.value, type: "image" }); // ID와 content_type 추가
+        deletedItemsInput.value = JSON.stringify(deletedItems);
     }
+
+    // 필드 제거
+    const container = button.parentElement;
+    container.remove();
+}
 
 
 </script>

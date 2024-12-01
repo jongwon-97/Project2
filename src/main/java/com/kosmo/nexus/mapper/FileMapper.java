@@ -35,4 +35,8 @@ public interface FileMapper {
 
 
     void deleteOnlyImagesByBoardId(int boardId);
+
+    void deleteTextById(Integer textId);
+
+    void deleteImageById(Integer imageId);
 }

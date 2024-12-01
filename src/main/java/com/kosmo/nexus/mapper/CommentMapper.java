@@ -26,4 +26,8 @@ public interface CommentMapper {
 
     void deleteCommentsByBoardId(int boardId);
 
+    List<CommentDTO> selectCommentsBySeasonId(int seasonId);
+
+    List<CommentDTO> selectCommentsByBoardId(Integer boardId);
+
 }

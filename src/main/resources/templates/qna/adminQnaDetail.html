@@ -29,7 +29,7 @@
 
 <div>
   <a th:href="@{/admin/board/qnaList}">목록으로</a>
-  <a th:href="@{/admin/board/editQna(num=${qna.boardId})}">수정</a>
+  <a th:href="@{/admin/board/editQna(num=${qna.boardId})}" th:if="${qna.memberId == loginUser}">수정</a>
   <form th:action="@{/admin/board/deleteQna}" method="post" style="display:inline;"
         onsubmit="return confirm('게시물을 삭제하시겠습니까?');">
     <input type="hidden" name="boardId" th:value="${qna.boardId}">
@@ -58,14 +58,14 @@
         <p th:text="${comment.commentContent}"></p>
 
         <!-- 댓글 삭제 -->
-        <form th:action="@{/admin/board/deleteQnaComment}" method="post" th:if="${comment.memberId == loggedInUserId}">
+        <form th:action="@{/admin/board/deleteQnaComment}" method="post" th:if="${comment.memberId == loginUser}">
           <input type="hidden" name="commentId" th:value="${comment.commentId}">
           <input type="hidden" name="boardId" th:value="${qna.boardId}">
           <button type="submit">삭제</button>
         </form>
 
         <!-- 댓글 수정 -->
-        <button type="button" th:onclick="|toggleEditForm(${comment.commentId})|">수정</button>
+        <button type="button" th:onclick="|toggleEditForm(${comment.commentId})|" th:if="${comment.memberId == loginUser}">수정</button>
         <div th:id="'editForm_' + ${comment.commentId}" style="display:none;">
           <form th:action="@{/admin/board/editQnaComment}" method="post">
             <textarea name="commentContent" th:text="${comment.commentContent}" required></textarea>
@@ -96,14 +96,14 @@
             <p th:text="${reply.commentContent}"></p>
 
             <!-- 대댓글 삭제 -->
-            <form th:action="@{/admin/board/deleteQnaComment}" method="post" th:if="${reply.memberId == loggedInUserId}">
+            <form th:action="@{/admin/board/deleteQnaComment}" method="post" th:if="${reply.memberId == loginUser}">
               <input type="hidden" name="commentId" th:value="${reply.commentId}">
               <input type="hidden" name="boardId" th:value="${qna.boardId}">
               <button type="submit">삭제</button>
             </form>
 
             <!-- 대댓글 수정 -->
-            <button type="button" th:onclick="|toggleEditForm(${reply.commentId})|">수정</button>
+            <button type="button" th:onclick="|toggleEditForm(${reply.commentId})|" th:if="${reply.memberId == loginUser}">수정</button>
             <div th:id="'editForm_' + ${reply.commentId}" style="display:none;">
               <form th:action="@{/admin/board/editQnaComment}" method="post">
                 <textarea name="commentContent" th:text="${reply.commentContent}" required></textarea>

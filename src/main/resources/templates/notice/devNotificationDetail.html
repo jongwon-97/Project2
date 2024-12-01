@@ -92,13 +92,13 @@
     <script>
         function deleteNotification(notificationId) {
             if (confirm("게시물을 삭제할까요?")) {
-                fetch(`/admin/board/deleteNotification?num=${notificationId}`, {
+                fetch(`/dev/board/deleteNotification?num=${notificationId}`, {
                     method: 'DELETE'
                 })
                     .then(response => {
                         if (response.ok) {
                             alert("게시물이 삭제되었습니다.");
-                            window.location.href = "/admin/board/notificationList";
+                            window.location.href = "/dev/board/notificationList";
                         } else {
                             alert("게시물 삭제에 실패했습니다.");
                         }
@@ -146,7 +146,7 @@
     <ul>
         <li th:each="file : ${attachedFiles}">
             <span th:text="${file.fileOriginName}"></span>
-            <a th:href="@{/admin/board/download(filePath=${file.filePath})}" download>다운로드</a>
+            <a th:href="@{/dev/board/download(filePath=${file.filePath})}" download>다운로드</a>
         </li>
         <li th:each="file : ${newFiles}">
             <span th:text="${file.fileName}"></span>
@@ -156,16 +156,16 @@
 </div>
 
 <div>
-    <a th:href="@{/admin/board/notificationList}">목록으로</a>
-    <button type="button" th:onclick="|deleteNotification(${notification.boardId})|" th:if="${loginUser == notification.memberId}">삭제</button>
-    <a th:href="@{/admin/board/editNotification(num=${notification.boardId})}" th:if="${loginUser == notification.memberId}">
+    <a th:href="@{/dev/board/notificationList}">목록으로</a>
+    <button type="button" th:onclick="|deleteNotification(${notification.boardId})|">삭제</button>
+    <a th:href="@{/dev/board/editNotification(num=${notification.boardId})}" th:if="${loginUser == notification.memberId}">
         <button type="button">수정</button>
     </a>
 </div>
 <!-- --------------------------------------------------------------------------------------------- -->
 <!-- 댓글 작성 폼 -->
 <h2>댓글 작성</h2>
-<form action="/admin/board/addComment" method="POST" id="commentForm">
+<form action="/dev/board/addComment" method="POST" id="commentForm">
     <textarea id="commentContent" name="commentContent" placeholder="댓글을 입력하세요" required></textarea><br>
     <input type="hidden" name="boardId" th:value="${notification.boardId}">
     <button type="submit">등록하기</button>
@@ -191,8 +191,9 @@
             <!-- 댓글 관리 버튼 -->
             <div class="comment-actions">
                 <!-- 삭제 버튼 -->
-                <form action="/admin/board/deleteComment" method="POST" th:if="${loginUser == comment.memberId}">
+                <form action="/dev/board/deleteComment" method="POST">
                     <input type="hidden" name="commentId" th:value="${comment.commentId}">
+                    <input type="hidden" name="memberId" th:value="${comment.memberId}">
                     <input type="hidden" name="boardId" th:value="${notification.boardId}"> <!-- boardId 추가 -->
                     <button type="submit">삭제</button>
                 </form>
@@ -208,7 +209,7 @@
 
             <!-- 댓글 수정 폼 -->
             <div th:id="'editForm_' + ${comment.commentId}" class="edit-form" style="display:none;" th:if="${loginUser == comment.memberId}">
-                <form action="/admin/board/editComment" method="POST">
+                <form action="/dev/board/editComment" method="POST">
                     <textarea name="commentContent" th:text="${comment.commentContent}" required></textarea>
                     <input type="hidden" name="commentId" th:value="${comment.commentId}">
                     <input type="hidden" name="boardId" th:value="${notification.boardId}">
@@ -218,7 +219,7 @@
 
             <!-- 대댓글 작성 -->
             <div th:id="'replyForm_' + ${comment.commentId}" class="reply-form" style="display:none;">
-                <form action="/admin/board/addComment" method="POST">
+                <form action="/dev/board/addComment" method="POST">
                     <textarea name="commentContent" placeholder="대댓글을 입력하세요" required></textarea><br>
                     <input type="hidden" name="boardId" th:value="${notification.boardId}">
                     <input type="hidden" name="memberId" value="testUser">   <!-- 나중에 여기 수정 -->
@@ -241,7 +242,7 @@
 
                     <div class="comment-actions">
                         <!-- 대댓글 삭제 버튼 -->
-                        <form action="/admin/board/deleteComment" method="POST" th:if="${loginUser == reply.memberId}">
+                        <form action="/dev/board/deleteComment" method="POST">
                             <input type="hidden" name="commentId" th:value="${reply.commentId}">
                             <input type="hidden" name="memberId" value="testUser">
                             <input type="hidden" name="boardId" th:value="${notification.boardId}"> <!-- boardId 추가 -->
@@ -254,7 +255,7 @@
 
                     <!-- 대댓글 수정 폼 -->
                     <div th:id="'editForm_' + ${reply.commentId}" class="edit-form" style="display:none;" th:if="${loginUser == reply.memberId}">
-                        <form action="/admin/board/editComment" method="POST">
+                        <form action="/dev/board/editComment" method="POST">
                             <textarea name="commentContent" th:text="${reply.commentContent}" required></textarea>
                             <input type="hidden" name="commentId" th:value="${reply.commentId}">
                             <input type="hidden" name="memberId" value="testUser">

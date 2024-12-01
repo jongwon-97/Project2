@@ -24,11 +24,13 @@ public interface BoardService {
     int getTotalNotificationCount(PagingDTO pagingDTO);
     // 일반 글의 총 개수를 가져오는 메서드
     int getTotalGeneralCount(PagingDTO paging);
+    int getTotalCompanyCount(PagingDTO paging, Long companyId);
 
     void insertBoard(BoardDTO boardDTO);
 
     List<BoardDTO> selectQnaList(PagingDTO pagingDTO); // QnA 목록 조회
     int getTotalQnaCount(PagingDTO pagingDTO); // QnA 총 게시글 수 조회
+    int getTotalQnaCompanyCount(PagingDTO paging, Long companyId);
     BoardDTO findQnaById(int num); // QnA 상세보기
     void insertQna(BoardDTO boardDTO); // QnA 작성
     void updateQna(BoardDTO boardDTO); // QnA 수정

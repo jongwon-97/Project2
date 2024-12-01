@@ -6,62 +6,36 @@
   <link rel="stylesheet" href="/css/member/personal.css">
   <title>개인회원 로그인</title>
 
+  <link rel="stylesheet" href="/css/login.css">
+
 </head>
 <body>
 <div class="login-container">
+  <button class="close-button" onclick="parent.document.getElementById('iframeContainer').style.display='none';">
+    Close
+  </button>
   <h1>개인회원 로그인</h1>
   <form action="/pLogin" method="post" class="form-container">
-
-    <div class="form-fields">
-      <input type="text" name="memberId" placeholder="아이디" required>
-      <input type="password" name="memberPw" placeholder="비밀번호" required>
-    </div>
-    <div class="form-button">
-      <button type="submit">로그인</button>
-    </div>
+      <div class="form-row">
+          <div class="form-fields">
+            <input type="text" name="memberId" placeholder="아이디">
+            <input type="password" name="memberPw" placeholder="비밀번호">
+          </div>
+          <div class="form-button">
+            <button type="submit">로그인</button>
+          </div>
+      </div>
+      <!-- 아이디 저장 -->
+      <label class="save-id">
+        <input type="checkbox" name="saveId" value="true"> 아이디 저장
+      </label>
+      <div class="links">
+        <a onclick="navigateToFindAccount('/findAccount')">아이디 찾기</a> |
+        <a onclick="navigateToFindAccount('/findPassword')">비밀번호 찾기</a> |
+        <a onclick="navigateToSignup('/pSignup')">회원가입</a>
+      </div>
   </form>
-  <label >
-    아이디 저장<input type="checkbox" name="saveId" value="true">
-  </label>
-  <div class="links">
-
-    <a onclick="navigateToFindAccount('/findAccount')">아이디 찾기</a> |
-    <a onclick="navigateToFindAccount('/findPassword')">비밀번호 찾기</a> |
-    <a onclick="navigateToSignup('/pSignup')">회원가입</a>
-  </div>
 </div>
-
-<script>
-  function navigateToSignup(signupUrl) {
-      parent.document.getElementById('iframeContainer').style.display = 'none';
-      window.parent.location.href = signupUrl;
-  }
-  function navigateToFindAccount(findAccountUrl) {
-    parent.document.getElementById('iframeContainer').style.display = 'none';
-    window.parent.location.href = findAccountUrl;
-  }
-  function navigateToFindPassword(findPasswordUrl) {
-    parent.document.getElementById('iframeContainer').style.display = 'none';
-    window.parent.location.href = findPasswordUrl;
-  }
-  // 페이지 로드 시 실행
-  document.addEventListener('DOMContentLoaded', function () {
-      const memberIdInput = document.querySelector('input[name="memberId"]');
-      const saveIdCheckbox = document.querySelector('input[name="saveId"]');
-
-      // 쿠키에서 'uid' 값을 읽어옴
-      const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
-          const [key, value] = cookie.split('=');
-          acc[key] = value;
-          return acc;
-      }, {});
-
-      // 'uid' 쿠키가 존재하면 아이디 입력 필드에 값 설정
-      if (cookies['uid']) {
-          memberIdInput.value = cookies['uid'];
-          saveIdCheckbox.checked = true; // 체크박스도 활성화
-      }
-    });
-</script>
+<script src="/js/login.js"></script>
 </body>
 </html>

@@ -108,6 +108,7 @@
         season_start_date = #{seasonStartDate},
         season_end_date = #{seasonEndDate},
         season_thumbnail = #{seasonThumbnail}, <!-- 단일 파일 경로로 처리 -->
+        season_state = #{seasonState}, -- 상태 업데이트 포함
         round_number = #{roundNumber}
         WHERE season_id = #{seasonId}
     </update>
@@ -302,7 +303,26 @@
         AND season_id = #{seasonId}
         AND company_id = #{companyId}
     </delete>
-    
+
+    <select id="findSeasonsByBoardId" parameterType="int" resultType="Season">
+        SELECT
+        season_id AS seasonId,
+        season_title AS seasonTitle,
+        season_info AS seasonInfo,
+        season_limit AS seasonLimit,
+        season_fee AS seasonFee,
+        season_views AS seasonViews,
+        season_start_date AS seasonStartDate,
+        season_end_date AS seasonEndDate,
+        event_id AS eventId,
+        season_state AS seasonState,
+        board_id AS boardId,
+        round_number AS roundNumber,
+        season_thumbnail AS seasonThumbnail
+        FROM c_season
+        WHERE board_id = #{boardId}
+    </select>
+
     <select id="findLimitCount" resultType="_int">
         SELECT season_limit
         FROM c_season
@@ -318,4 +338,32 @@
         FROM c_season
         WHERE season_id = #{seasonId}
     </select>
+
+    <select id="findSeasonsByEventId" parameterType="int" resultType="Season">
+        SELECT
+        season_id AS seasonId,
+        season_title AS seasonTitle,
+        season_start_date AS seasonStartDate,
+        season_end_date AS seasonEndDate,
+        season_limit AS seasonLimit,
+        season_fee AS seasonFee,
+        season_info AS seasonInfo,
+        season_state AS seasonState,
+        round_number AS roundNumber,
+        event_id AS eventId,
+        board_id AS boardId,
+        season_views AS seasonViews,
+        season_thumbnail AS seasonThumbnail
+        FROM c_season
+        WHERE event_id = #{eventId}
+        ORDER BY round_number ASC
+    </select>
+
+    <select id="findEventIdBySeasonId" parameterType="int" resultType="int">
+        SELECT event_id
+        FROM c_season
+        WHERE season_id = #{seasonId}
+    </select>
+
+
 </mapper>

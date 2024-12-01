@@ -21,4 +21,5 @@ public class LoginDTO {
     private String memberName;         //이름
     private String memberPhone;        //전화번호
     private String memberEmail;        //이메일
+
 }

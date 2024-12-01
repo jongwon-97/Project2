@@ -133,4 +133,31 @@
         DELETE FROM c_image
         WHERE board_id = #{boardId} AND content_type = 'image'
     </delete>
+
+    <!-- 텍스트 또는 이미지 삭제 -->
+    <delete id="deleteContentByIdAndType">
+        DELETE FROM c_image
+        WHERE img_id = #{id}
+        AND content_type = #{type}
+    </delete>
+
+
+    <!-- 텍스트 또는 이미지 업데이트 -->
+    <update id="updateContent">
+        UPDATE c_image
+        SET
+        content_order = #{contentOrder},
+        content_data = #{contentData},
+        img_path = #{imgPath},
+        img_origin_name = #{imgOriginName},
+        img_size = #{imgSize}
+        WHERE img_id = #{imgId}
+    </update>
+
+    <select id="getMaxContentOrder" resultType="int">
+        SELECT COALESCE(MAX(content_order), 0)
+        FROM c_image
+        WHERE board_id = #{boardId} AND content_type = #{contentType}
+    </select>
+
 </mapper>

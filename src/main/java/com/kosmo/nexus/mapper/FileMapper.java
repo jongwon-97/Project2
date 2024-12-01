@@ -35,4 +35,14 @@ public interface FileMapper {
 
 
     void deleteOnlyImagesByBoardId(int boardId);
+
+    void deleteTextById(Integer textId);
+
+    void deleteImageById(Integer imageId);
+
+    void deleteContentByIdAndType(int textId, String text);
+
+    void updateContent(ImageDTO content);
+
+    int getMaxContentOrder(int boardId, String contentType);
 }

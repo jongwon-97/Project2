@@ -103,6 +103,23 @@ public class FileServiceImpl implements FileService {
     public void deleteOnlyImagesByBoardId(int boardId) {
         fileMapper.deleteOnlyImagesByBoardId(boardId);
     }
+    @Override
+    public void deleteTextById(int textId) {
+        fileMapper.deleteContentByIdAndType(textId, "text");
+    }
+    @Override
+    public void deleteImageById(int imageId) {
+        fileMapper.deleteContentByIdAndType(imageId, "image");
+    }
+    @Override
+    public void updateContent(ImageDTO content) {
+        fileMapper.updateContent(content);
+    }
+
+    @Override
+    public int getMaxContentOrder(int boardId, String contentType) {
+        return fileMapper.getMaxContentOrder(boardId, contentType);
+    }
 
 }
 

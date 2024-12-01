@@ -29,6 +29,8 @@ public interface EventService {
 
     SeasonDTO getSeasonById(int seasonId);
 
+    List<SeasonDTO> getSeasonsByBoardId(int boardId);
+
     void updateSeason(SeasonDTO seasonDTO); // 시즌 수정
 
     void updateBoard(BoardDTO boardDTO);
@@ -50,5 +52,8 @@ public interface EventService {
     int findLimitCount(int seasonId);
     int findAvailableCount(int seasonId);
 
+    List<SeasonDTO> getSeasonsByEventId(int eventId);
+
+    int getEventIdBySeasonId(int seasonId);
 }
 

@@ -94,8 +94,6 @@ public class UserBoardController {
     public String notificationDetail(@RequestParam("num") int num, Model model,
                                      HttpSession session) {
 
-
-
         // 공지사항 데이터 가져오기
         BoardDTO notification = boardService.findNotificationById(num);
 
@@ -283,9 +281,6 @@ public class UserBoardController {
         // QnA 데이터 가져오기
         BoardDTO qna = boardService.findQnaById(num);
 
-        // 비공개로 설정되어 있으면 login id확인
-//        log.info("공개 여부 ====={}", qna.getDisclosureStatus());
-//        log.info("작성자 id ====={}", qna.getMemberId());
         String boardMemberId = qna.getMemberId();
         Long logCompanyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
         Long boardCompanyID = adminService.findCompanyIdByMemberId(boardMemberId);

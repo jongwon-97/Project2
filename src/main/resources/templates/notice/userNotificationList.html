@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>공지사항 목록</title>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -148,7 +147,7 @@
     <!-- 이전 블럭 버튼 -->
     <li th:if="${paging.prevBlock > 0}" class="page-item">
       <a class="page-link"
-         th:href="@{'user/board/notificationList'(pageNum=${paging.prevBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
+         th:href="@{'/user/board/notificationList'(pageNum=${paging.prevBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
         &laquo; 이전 블럭
       </a>
     </li>
@@ -157,14 +156,14 @@
     <li th:each="i : ${#numbers.sequence(paging.prevBlock + 1, paging.nextBlock - 1)}"
         th:classappend="${i == paging.pageNum} ? 'page-item active' : 'page-item'">
       <a class="page-link"
-         th:href="@{'user/board/notificationList'(pageNum=${i}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}"
+         th:href="@{'/user/board/notificationList'(pageNum=${i}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}"
          th:text="${i}"></a>
     </li>
 
     <!-- 다음 블럭 버튼 -->
     <li th:if="${paging.nextBlock <= paging.pageCount}" class="page-item">
       <a class="page-link"
-         th:href="@{'user/board/notificationList'(pageNum=${paging.nextBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
+         th:href="@{'/user/board/notificationList'(pageNum=${paging.nextBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
         다음 블럭 &raquo;
       </a>
     </li>
@@ -172,7 +171,7 @@
     <!-- 맨 끝으로 버튼 -->
     <li th:classappend="${paging.pageNum == paging.pageCount} ? 'page-item disabled' : 'page-item'">
       <a class="page-link"
-         th:href="@{'user/board/notificationList'(pageNum=${paging.pageCount}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
+         th:href="@{'/adminuser/board/notificationList'(pageNum=${paging.pageCount}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
         끝
       </a>
     </li>

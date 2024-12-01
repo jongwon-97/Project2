@@ -173,7 +173,6 @@
                 <form action="/user/board/deleteComment" method="POST" th:if="${loginUser == comment.memberId}">
                     <input type="hidden" name="commentId" th:value="${comment.commentId}">
                     <input type="hidden" name="boardId" th:value="${notification.boardId}"> <!-- boardId 추가 -->
-                    <input type="hidden" name="memberId" value="testUser"> <!-- 나중에 수정 -->
                     <button type="submit">삭제</button>
                     <button type="button" th:onclick="'showEditForm(' + ${comment.commentId} + ')'">수정</button>
                 </form>
@@ -189,7 +188,6 @@
                 <form action="/user/board/editComment" method="POST">
                     <textarea name="commentContent" th:text="${comment.commentContent}" required></textarea>
                     <input type="hidden" name="commentId" th:value="${comment.commentId}">
-                    <input type="hidden" name="memberId" value="testUser"> <!--나중 수정-->
                     <input type="hidden" name="boardId" th:value="${notification.boardId}">
                     <button type="submit">수정 완료</button>
                 </form>

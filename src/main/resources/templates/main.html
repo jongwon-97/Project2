@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<!-- 배경 슬라이더 -->
+<div class="background-slider">
+    <img src="images/background1.jpg" alt="Background 1">
+    <img src="images/background2.jpg" alt="Background 2">
+    <img src="images/background3.jpg" alt="Background 3">
+</div>
+
+<!-- 메인 컨테이너 -->
+<div class="container">
+    <!-- 로고 -->
+    <div class="logo">Nexus</div>
+    <!-- 공지사항 -->
+    <div class="notice-container">
+        <div class="notice-text">공지사항: 오늘 18시까지 시스템 점검이 진행됩니다. 이용에 불편을 드려 죄송합니다.</div>
+    </div>
+    <!-- 버튼 컨테이너 -->
+    <div class="button-container">
+        <button class="login-button personal" onclick="showLogin('/pLogin')">개인회원</button>
+        <button class="login-button business" onclick="showLogin('/bLogin')">기업회원</button>
+    </div>
+</div>
+
+<!-- iframe 컨테이너 -->
+<div class="iframe-container" id="iframeContainer">
+    <div style="position: relative;">
+        <iframe id="loginIframe" src=""></iframe>
+    </div>
+</div>
+
+<!-- 외부 스크립트 -->
+<script src="/js/main.js"></script>
+</body>
+</html>

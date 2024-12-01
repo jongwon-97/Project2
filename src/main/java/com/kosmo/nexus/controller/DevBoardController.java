@@ -42,12 +42,12 @@ public class DevBoardController {
     private CommentService commentService;
 
     // 공통 메서드: 로그인된 사용자 ID 가져오기
-    private String getLoggedInUserId(HttpSession session) {
-        if (session == null) {
+    private String getLoggedInUserId(HttpSession ses) {
+        if (ses == null) {
             log.warn("HttpSession is null, using default user ID.");
             return "testUser"; // 기본 사용자 ID
         }
-        String loggedInUserId = (String) session.getAttribute("loggedInUserId");
+        String loggedInUserId = (String) ses.getAttribute("loggedInUserId");
         log.info("Logged in user ID: {}", loggedInUserId);
         return (loggedInUserId != null) ? loggedInUserId : "testUser";
     }

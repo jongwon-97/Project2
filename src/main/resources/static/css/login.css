@@ -1,35 +1,140 @@
-/* 아이디와 비밀번호를 나란히 배치하기 위한 스타일 */
-.login-row {
+/* 기본 설정 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #f4f4f4;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 10px; /* 각 줄 사이 간격 */
+    height: 100vh;
 }
 
-.login-row input[type="text"] {
-    flex: 2; /* 아이디 입력칸이 더 넓게 */
-    margin-right: 10px; /* 로그인 버튼과 간격 */
+/* 로그인 컨테이너 */
+.login-container {
+    position: relative; /* 닫기 버튼 위치를 위한 설정 */
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    width: 400px;
+    max-width: 90%;
 }
 
-.login-row button {
-    flex: 1; /* 버튼 크기를 줄임 */
-    height: 40px;
-    padding: 0; /* 버튼 내부 패딩 제거 */
+/* 닫기 버튼 */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* 회원가입, 아이디/비밀번호 찾기 링크 */
-.login-footer {
-    margin-top: 15px;
+.close-button:hover {
+    background: #d62839;
+}
+
+/* 제목 스타일 */
+.login-container h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* 아이디와 비밀번호 입력 필드 컨테이너 */
+.form-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 15px;
+    }
+
+.form-fields {
+    flex: 3; /* 입력 필드 영역 */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* 입력 필드 간 간격 */
+}
+
+.form-fields input {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.form-fields input:focus {
+    outline: none;
+    border-color: #005f8d;
+    background: #ffffff;
+    box-shadow: 0 0 5px rgba(0, 95, 141, 0.2);
+}
+
+/* 로그인 버튼 */
+.form-button {
+    flex: 1; /* 버튼이 오른쪽에 고정 */
+    display: flex;
+    align-items: center; /* 중앙 정렬 */
+    justify-content: center; /* 중앙 정렬 */
+}
+
+.form-button button {
+    width: 100%; /* 버튼이 영역을 채움 */
+    height: 85px; /* 입력 필드 두 줄 크기와 동일 */
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: #005f8d;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-button button:hover {
+    background: #0077b6;
+}
+
+/* 아이디 저장 체크박스 */
+.save-id {
+    display: flex;
+    align-items: center;
     font-size: 14px;
     color: #555;
+    margin-top: 10px;
 }
 
-.login-footer a {
+/* 하단 링크 스타일 */
+.links {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.links a {
     color: #005f8d;
     text-decoration: none;
-    margin: 0 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
-.login-footer a:hover {
+.links a:hover {
     text-decoration: underline;
+    color: #0077b6;
 }

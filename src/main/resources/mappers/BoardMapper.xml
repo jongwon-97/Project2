@@ -242,6 +242,7 @@
         SELECT board_id
         FROM c_season
         WHERE season_id = #{seasonId}
+    </select>
 
     <select id="selectNotificationListByCompanyId" parameterType="map" resultType="Board">
         (
@@ -300,7 +301,6 @@
         LIMIT #{paging.start}, #{paging.oneRecordPage}
         )
         ORDER BY priority ASC, boardId DESC;
-
     </select>
 
 

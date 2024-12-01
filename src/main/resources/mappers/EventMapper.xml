@@ -321,6 +321,7 @@
         season_thumbnail AS seasonThumbnail
         FROM c_season
         WHERE board_id = #{boardId}
+    </select>
 
     <select id="findLimitCount" resultType="_int">
         SELECT season_limit
@@ -336,6 +337,33 @@
         )
         FROM c_season
         WHERE season_id = #{seasonId}
-
     </select>
+
+    <select id="findSeasonsByEventId" parameterType="int" resultType="Season">
+        SELECT
+        season_id AS seasonId,
+        season_title AS seasonTitle,
+        season_start_date AS seasonStartDate,
+        season_end_date AS seasonEndDate,
+        season_limit AS seasonLimit,
+        season_fee AS seasonFee,
+        season_info AS seasonInfo,
+        season_state AS seasonState,
+        round_number AS roundNumber,
+        event_id AS eventId,
+        board_id AS boardId,
+        season_views AS seasonViews,
+        season_thumbnail AS seasonThumbnail
+        FROM c_season
+        WHERE event_id = #{eventId}
+        ORDER BY round_number ASC
+    </select>
+
+    <select id="findEventIdBySeasonId" parameterType="int" resultType="int">
+        SELECT event_id
+        FROM c_season
+        WHERE season_id = #{seasonId}
+    </select>
+
+
 </mapper>

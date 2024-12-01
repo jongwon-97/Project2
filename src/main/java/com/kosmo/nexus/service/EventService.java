@@ -52,5 +52,8 @@ public interface EventService {
     int findLimitCount(int seasonId);
     int findAvailableCount(int seasonId);
 
+    List<SeasonDTO> getSeasonsByEventId(int eventId);
+
+    int getEventIdBySeasonId(int seasonId);
 }
 

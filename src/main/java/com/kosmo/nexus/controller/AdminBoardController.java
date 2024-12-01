@@ -1,11 +1,7 @@
 package com.kosmo.nexus.controller;
 
 import com.kosmo.nexus.dto.*;
-import com.kosmo.nexus.service.AdminService;
-import com.kosmo.nexus.service.BoardService;
-import com.kosmo.nexus.service.CommentService;
-import com.kosmo.nexus.service.FileService;
-import jakarta.servlet.ServletContext;
+import com.kosmo.nexus.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +41,8 @@ public class AdminBoardController {
     private CommentService commentService;
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private EventService eventService;
 
 
     private String saveFileWithUUID(MultipartFile file, String uploadDir) throws IOException {
@@ -327,8 +325,7 @@ public class AdminBoardController {
 
     @PostMapping("/board/deleteComment")
     public String deleteComment(@RequestParam Long commentId,
-                                @RequestParam String memberId,
-                                @RequestParam int boardId,
+                                @RequestParam(value = "boardId", required = false) Integer boardId,
                                 Model model,
                                 HttpSession session) {
         String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
@@ -339,22 +336,22 @@ public class AdminBoardController {
             log.info("댓글 삭제 성공: {}", commentId);
 
             // 삭제 성공 후 상세보기 페이지로 리다이렉트
-            return "redirect:/board/notificationDetail?num=" + boardId;
+            return "redirect:/admin/board/notificationDetail?num=" + boardId;
         } catch (IllegalAccessException e) {
             log.error("댓글 삭제 실패 - 권한 없음: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 권한 없음");
-            return "redirect:/board/notificationDetail?num=" + boardId;
+            return "redirect:/admin/board/notificationDetail?num=" + boardId;
         } catch (Exception e) {
             log.error("댓글 삭제 실패 - 서버 오류: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 서버 오류");
-            return "redirect:/board/notificationDetail?num=" + boardId;
+            return "redirect:/admin/board/notificationDetail?num=" + boardId;
         }
     }//---------------------------------
 
     @PostMapping("/board/editComment")
     public String editComment(@RequestParam("commentId") Long commentId,
                               @RequestParam("commentContent") String commentContent,
-                              @RequestParam("boardId") int boardId,
+                              @RequestParam(value = "boardId", required = false) Integer boardId,
                               HttpSession session, Model model) {
         String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
 
@@ -369,15 +366,15 @@ public class AdminBoardController {
             commentService.updateComment(comment, memberId);
             log.info("댓글 수정 성공: {}", comment);
 
-            return "redirect:/board/notificationDetail?num=" + boardId; // 댓글이 속한 공지로 리다이렉트
+            return "redirect:/admin/board/notificationDetail?num=" + boardId; // 댓글이 속한 공지로 리다이렉트
         } catch (IllegalAccessException e) {
             log.error("댓글 수정 실패: 권한 없음", e);
             model.addAttribute("alertMessage", "수정 실패: 권한이 없습니다.");
-            return "redirect:/board/notificationDetail?num=" + commentId; // 실패 시에도 같은 페이지로 리다이렉트
+            return "redirect:/admin/board/notificationDetail?num=" + commentId; // 실패 시에도 같은 페이지로 리다이렉트
         } catch (Exception e) {
             log.error("댓글 수정 실패: 서버 오류", e);
             model.addAttribute("alertMessage", "수정 실패: 서버 오류");
-            return "redirect:/board/notificationDetail?num=" + commentId;
+            return "redirect:/admin/board/notificationDetail?num=" + commentId;
         }
     }
     //--------------------------------------------------------------------------------------------------------
@@ -540,6 +537,37 @@ public class AdminBoardController {
             return "redirect:/board/qnaDetail?num=" + boardId; // 실패 시 해당 QnA 상세 페이지로 리다이렉트
         }
     }
+
+    @PostMapping("/board/addCommentBySeason")
+    public String addCommentBySeason(@RequestParam("seasonId") int seasonId,
+                                     @RequestParam("commentContent") String commentContent,
+                                     @RequestParam(value = "parentId", required = false) Long parentId,
+                                     HttpSession session) {
+        // 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+        if (memberId == null) {
+            throw new RuntimeException("로그인이 필요합니다.");
+        }
+
+        // season_id로 board_id 조회
+        int boardId = eventService.getBoardIdBySeasonId(seasonId);
+        log.info("조회된 boardId: {}", boardId);
+
+        // 댓글 DTO 생성
+        CommentDTO comment = new CommentDTO();
+        comment.setBoardId(boardId); // board_id 설정
+        comment.setMemberId(memberId);
+        comment.setCommentContent(commentContent);
+        comment.setParentId(parentId); // 대댓글의 경우 parentId 설정
+
+        // 댓글 저장
+        commentService.saveComment(comment);
+        log.info("댓글 저장 완료: {}", comment);
+
+        // 댓글 작성 후 상세보기로 리다이렉트
+        return "redirect:/admin/board/event/detail/" + seasonId + "#commentsSection";
+    }
+
 
 }
 

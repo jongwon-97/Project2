@@ -29,4 +29,5 @@ public interface CommentMapper {
     List<CommentDTO> selectCommentsBySeasonId(int seasonId);
 
     List<CommentDTO> selectCommentsByBoardId(Integer boardId);
+
 }

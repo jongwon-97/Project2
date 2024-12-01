@@ -3,6 +3,7 @@ package com.kosmo.nexus.controller;
 import com.kosmo.nexus.dto.*;
 import com.kosmo.nexus.service.BoardService;
 import com.kosmo.nexus.service.CommentService;
+import com.kosmo.nexus.service.EventService;
 import com.kosmo.nexus.service.FileService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,8 @@ public class UserBoardController {
     private FileService fileService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private EventService eventService;
 
 
     private String saveFileWithUUID(MultipartFile file, String uploadDir) throws IOException {
@@ -174,6 +177,8 @@ public class UserBoardController {
     public String deleteComment(@RequestParam Long commentId,
                                 @RequestParam String memberId,
                                 @RequestParam int boardId,
+                                @RequestParam(required = false) Integer seasonId, // 이벤트의 경우 seasonId 사용
+                                @RequestParam String redirectType, // 리다이렉트 유형
                                 Model model,
                                 HttpSession session) {
         String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
@@ -183,18 +188,31 @@ public class UserBoardController {
             commentService.deleteCommentAndReplies(commentId, loggedInUserId);
             log.info("댓글 삭제 성공: {}", commentId);
 
-            // 삭제 성공 후 상세보기 페이지로 리다이렉트
-            return "redirect:/user/board/notificationDetail?num=" + boardId;
+            // 삭제 성공 후 리다이렉트 경로 설정
+            if ("event".equals(redirectType) && seasonId != null) {
+                return "redirect:/user/board/event/detail/" + seasonId + "#commentsSection";
+            } else {
+                return "redirect:/user/board/notificationDetail?num=" + boardId;
+            }
         } catch (IllegalAccessException e) {
             log.error("댓글 삭제 실패 - 권한 없음: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 권한 없음");
-            return "redirect:/board/notificationDetail?num=" + boardId;
+            if ("event".equals(redirectType) && seasonId != null) {
+                return "redirect:/user/board/event/detail/" + seasonId + "#commentsSection";
+            } else {
+                return "redirect:/user/board/notificationDetail?num=" + boardId;
+            }
         } catch (Exception e) {
             log.error("댓글 삭제 실패 - 서버 오류: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 서버 오류");
-            return "redirect:/user/board/notificationDetail?num=" + boardId;
+            if ("event".equals(redirectType) && seasonId != null) {
+                return "redirect:/user/board/event/detail/" + seasonId + "#commentsSection";
+            } else {
+                return "redirect:/user/board/notificationDetail?num=" + boardId;
+            }
         }
-    }//---------------------------------
+    }
+//---------------------------------
 
     @PostMapping("/board/editComment")
     public String editComment(@RequestParam("commentId") Long commentId,
@@ -397,5 +415,35 @@ public class UserBoardController {
         model.addAttribute("msg", msg);
         model.addAttribute("loc", loc);
         return "message";
+    }
+
+    @PostMapping("/board/addCommentBySeason")
+    public String addCommentBySeason(@RequestParam("seasonId") int seasonId,
+                                     @RequestParam("commentContent") String commentContent,
+                                     @RequestParam(value = "parentId", required = false) Long parentId,
+                                     HttpSession session) {
+        // 로그인된 사용자 ID 가져오기
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+        if (memberId == null) {
+            throw new RuntimeException("로그인이 필요합니다.");
+        }
+
+        // season_id로 board_id 조회
+        int boardId = eventService.getBoardIdBySeasonId(seasonId);
+        log.info("조회된 boardId: {}", boardId);
+
+        // 댓글 DTO 생성
+        CommentDTO comment = new CommentDTO();
+        comment.setBoardId(boardId); // board_id 설정
+        comment.setMemberId(memberId);
+        comment.setCommentContent(commentContent);
+        comment.setParentId(parentId); // 대댓글의 경우 parentId 설정
+
+        // 댓글 저장
+        commentService.saveComment(comment);
+        log.info("댓글 저장 완료: {}", comment);
+        log.info("화면 표시 조건 체크 - 댓글 ID: {}, 로그인 사용자 ID: {}", comment.getMemberId(), memberId);
+        // 댓글 작성 후 상세보기로 리다이렉트
+        return "redirect:/user/board/event/detail/" + seasonId + "#commentsSection";
     }
 }

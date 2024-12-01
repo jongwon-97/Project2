@@ -56,4 +56,7 @@ public interface EventMapper {
     int findLimitCount(int seasonId);
     int findAvailableCount(int seasonId);
 
+    List<SeasonDTO> findSeasonsByEventId(int eventId);
+
+    int findEventIdBySeasonId(int seasonId);
 }

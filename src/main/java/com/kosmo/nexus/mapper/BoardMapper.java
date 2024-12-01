@@ -48,4 +48,8 @@ public interface BoardMapper {
             @Param("companyId") Long companyId
     );
 
+    List<BoardDTO> selectQnaListByCompanyID(
+            @Param("paging") PagingDTO paging,
+            @Param("companyId") Long companyId
+    );
 }

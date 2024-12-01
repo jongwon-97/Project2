@@ -5,7 +5,6 @@ import com.kosmo.nexus.service.AdminService;
 import com.kosmo.nexus.service.BoardService;
 import com.kosmo.nexus.service.CommentService;
 import com.kosmo.nexus.service.FileService;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -410,31 +409,39 @@ public class AdminBoardController {
         model.addAttribute("findType", findType); // 검색 유형
         model.addAttribute("findKeyword", findKeyword); // 검색 키워드
 
-        return "qna/qnaList"; // Q&A 목록 페이지로 이동
+        return "qna/adminQnaList"; // Q&A 목록 페이지로 이동
     }
 
     // QnA 상세보기
     @GetMapping("/board/qnaDetail")
     public String qnaDetail(@RequestParam("num") int num, Model model, HttpSession session) {
+
+        BoardDTO qna = boardService.findQnaById(num);
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+        Long loggedInCompanyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
+        Long qnaCompanyID = adminService.findCompanyIdByMemberId(qna.getMemberId());
+        // 로그인된 사용자 ID로 companyID 확인하기
+        if(qna.getDisclosureStatus().equals("비공개")){
+            if(!qnaCompanyID.equals(loggedInCompanyId)){
+                String msg = "비공개 개시글 입니다.";
+                String loc = "/user/board/qnaList";
+                return message(model, msg, loc);
+            }
+        }
+
         // 조회수 증가
         boardService.increaseQnaViewCount(num);
 
-        // 로그인된 사용자 ID 가져오기
-        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
-        model.addAttribute("loggedInUserId", loggedInUserId);
-
-        // QnA 데이터 가져오기
-        BoardDTO qna = boardService.findQnaById(num);
-        model.addAttribute("qna", qna);
-
         // 댓글 및 대댓글 데이터 가져오기
         List<CommentDTO> commentList = commentService.getCommentsByBoardId(num);
+
+        model.addAttribute("qna", qna);
         model.addAttribute("commentList", commentList);
+        model.addAttribute("loginUser", loggedInUserId);
+        model.addAttribute("qnaCompanyID", qnaCompanyID);
+        model.addAttribute("loggedInCompanyId", loggedInCompanyId);
 
-        log.info("QnA 상세보기 데이터 == {}", qna);
-        log.info("댓글 목록 데이터 == {}", commentList);
-
-        return "qna/qnaDetail";
+        return "qna/adminQnaDetail";
     }
 
     // QnA 수정 폼 반환
@@ -540,7 +547,11 @@ public class AdminBoardController {
             return "redirect:/board/qnaDetail?num=" + boardId; // 실패 시 해당 QnA 상세 페이지로 리다이렉트
         }
     }
-
+    public String message(Model model, String msg, String loc){
+        model.addAttribute("msg", msg);
+        model.addAttribute("loc", loc);
+        return "message";
+    }
 }
 
 

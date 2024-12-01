@@ -41,5 +41,5 @@ public interface BoardService {
     void updateBoard(BoardDTO boardDTO); // 게시글 수정
 
     List<BoardDTO> selectNotificationListByCompanyId(PagingDTO paging, Long companyId);
-
+    List<BoardDTO> selectQnaListByCompanyID(PagingDTO paging, Long companyId);
 }

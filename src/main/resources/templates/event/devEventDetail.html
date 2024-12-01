@@ -236,25 +236,23 @@
                 </form>
             </div>
 
-            <!-- 댓글 관리 버튼 (로그인한 사용자만 표시) -->
-            <div class="comment-actions" th:if="${comment.memberId == loginUser}">
                 <!-- 댓글 수정 버튼 -->
                 <button type="button" th:onclick="'showEditForm(' + ${comment.commentId} + ')'">댓글 수정</button>
 
                 <!-- 댓글 삭제 버튼 -->
-                <form th:action="@{/dev/board/deleteComment}" method="POST" style="display: inline;">
+                <form th:action="@{/dev/board/deleteEventComment}" method="POST" style="display: inline;">
                     <input type="hidden" name="commentId" th:value="${comment.commentId}">
                     <input type="hidden" name="seasonId" th:value="${season.seasonId}">
                     <button type="submit">댓글 삭제</button>
                 </form>
-            </div>
+
 
             <!-- 댓글 수정 폼 -->
             <div th:id="'editForm_' + ${comment.commentId}" class="edit-form" style="display:none;">
-                <form th:action="@{/dev/board/editComment}" method="POST">
+                <form th:action="@{/dev/board/editEventComment}" method="POST">
                     <textarea name="commentContent" th:text="${comment.commentContent}" required></textarea>
                     <input type="hidden" name="commentId" th:value="${comment.commentId}">
-                    <input type="hidden" name="seasonId" th:value="${season.seasonId}">
+                    <input type="hidden" name="seasonId" th:value="${season.seasonId}"> <!-- seasonId 전달 -->
                     <button type="submit">수정 완료</button>
                 </form>
             </div>
@@ -272,25 +270,24 @@
                     </div>
 
                     <!-- 대댓글 관리 버튼 (로그인한 사용자만 표시) -->
-                    <div class="comment-actions"
-                         th:if="${comment.memberId == loginUser}">
+
                         <!-- 수정 버튼 -->
-                        <button type="button" th:onclick="'showEditForm(' + ${comment.commentId} + ')'">수정</button>
+                    <button type="button" th:onclick="'showEditReplyForm(' + ${reply.commentId} + ')'">수정</button>
 
                         <!-- 삭제 버튼 -->
-                        <form th:action="@{/dev/board/deleteComment}" method="POST" style="display: inline;">
-                            <input type="hidden" name="commentId" th:value="${comment.commentId}">
+                        <form th:action="@{/dev/board/deleteEventComment}" method="POST" style="display: inline;">
+                            <input type="hidden" name="commentId" th:value="${reply.commentId}"> <!-- 반드시 대댓글 ID -->
                             <input type="hidden" name="seasonId" th:value="${season.seasonId}">
                             <button type="submit">삭제</button>
                         </form>
-                    </div>
 
                     <!-- 대댓글 수정 폼 -->
-                    <div th:id="'editForm_' + ${reply.commentId}" class="edit-form" style="display:none;">
-                        <form th:action="@{/dev/board/editComment}" method="POST">
+
+                    <div th:id="'editReplyForm_' + ${reply.commentId}" class="edit-form" style="display:none;">
+                        <form th:action="@{/dev/board/editEventComment}" method="POST">
                             <textarea name="commentContent" th:text="${reply.commentContent}" required></textarea>
-                            <input type="hidden" name="commentId" th:value="${reply.commentId}">
-                            <input type="hidden" name="seasonId" th:value="${season.seasonId}">
+                            <input type="hidden" name="commentId" th:value="${reply.commentId}"> <!-- 대댓글 ID -->
+                            <input type="hidden" name="seasonId" th:value="${season.seasonId}"> <!-- 시즌 ID -->
                             <button type="submit">수정 완료</button>
                         </form>
                     </div>
@@ -301,79 +298,83 @@
 </div>
 
 <script>
-    // 수정 폼 표시/숨김 처리
-function showEditForm(commentId) {
-    const form = document.getElementById('editForm_' + commentId);
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
+    function showEditForm(commentId) {
+        // 기존 열려 있는 폼 모두 닫기
+        document.querySelectorAll('.edit-form').forEach(form => form.style.display = 'none');
 
-// 대댓글 작성 폼 표시/숨김 처리
-function showReplyForm(replyFormId) {
-    const form = document.getElementById(replyFormId);
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-
-// 페이지 로드 시 알림 메시지를 확인하고 표시
-window.onload = function() {
-    const alertMessage = /*[[${alertMessage}]]*/ null;  // Controller에서 전달한 메시지
-    if (alertMessage) {
-        alert(alertMessage);  // 메시지를 alert로 띄움
-    }
-};
-
-    //------------------------------------------
-document.addEventListener("DOMContentLoaded", function () {
-    // 현재 URL에서 seasonId 추출
-    const path = window.location.pathname;
-    const pathParts = path.split("/"); // URL을 "/"로 나눔
-    const currentSeasonId = pathParts[pathParts.length - 1]; // 마지막 부분이 seasonId
-
-    if (!currentSeasonId) {
-        console.error("현재 URL에서 seasonId를 찾을 수 없습니다.");
-        return; // seasonId가 없으면 중단
+        // 선택한 댓글의 수정 폼 열기
+        document.getElementById(`editForm_${commentId}`).style.display = 'block';
     }
 
-    const seasonSelect = document.getElementById("seasonSelect");
-    const goToDetailBtn = document.getElementById("goToDetailBtn");
+    function showEditReplyForm(replyId) {
+        // 기존 열려 있는 폼 모두 닫기
+        document.querySelectorAll('.edit-form').forEach(form => form.style.display = 'none');
 
-    // 현재 seasonId를 기반으로 eventId 및 시즌 정보를 가져오기
-    fetch(`/dev/board/event/getEventIdBySeason/${currentSeasonId}`)
-        .then(response => response.json())
-        .then(data => {
-            const eventId = data.eventId;
+        // 선택한 대댓글의 수정 폼 열기
+        document.getElementById(`editReplyForm_${replyId}`).style.display = 'block';
+    }
 
-            // 해당 eventId의 모든 시즌 가져오기
-            return fetch(`/dev/board/event/seasons/${eventId}`);
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.length > 0) {
-                data.forEach(season => {
-                    const option = document.createElement("option");
-                    option.value = season.seasonId; // 시즌 ID
-                    option.textContent = `${season.roundNumber}회차 - ${season.seasonTitle}`; // 회차 및 제목
-                    option.selected = season.seasonId == currentSeasonId; // 현재 시즌 선택
-                    seasonSelect.appendChild(option);
-                });
-            } else {
-                alert("해당 이벤트에 등록된 회차가 없습니다.");
-            }
-        })
-        .catch(error => console.error("회차 데이터 로드 실패:", error));
-
-    // 회차 선택 시 버튼 활성화
-    seasonSelect.addEventListener("change", function () {
-        goToDetailBtn.disabled = !seasonSelect.value; // 값이 선택되면 버튼 활성화
-    });
-
-    // 상세보기 버튼 클릭 시 상세 페이지로 이동
-    goToDetailBtn.addEventListener("click", function () {
-        const selectedSeasonId = seasonSelect.value;
-        if (selectedSeasonId) {
-            window.location.href = `/dev/board/event/detail/${selectedSeasonId}`;
+    // 페이지 로드 시 알림 메시지를 확인하고 표시
+    window.onload = function() {
+        const alertMessage = /*[[${alertMessage}]]*/ null;  // Controller에서 전달한 메시지
+        if (alertMessage) {
+            alert(alertMessage);  // 메시지를 alert로 띄움
         }
+    };
+
+        //------------------------------------------
+    document.addEventListener("DOMContentLoaded", function () {
+        // 현재 URL에서 seasonId 추출
+        const path = window.location.pathname;
+        const pathParts = path.split("/"); // URL을 "/"로 나눔
+        const currentSeasonId = pathParts[pathParts.length - 1]; // 마지막 부분이 seasonId
+
+        if (!currentSeasonId) {
+            console.error("현재 URL에서 seasonId를 찾을 수 없습니다.");
+            return; // seasonId가 없으면 중단
+        }
+
+        const seasonSelect = document.getElementById("seasonSelect");
+        const goToDetailBtn = document.getElementById("goToDetailBtn");
+
+        // 현재 seasonId를 기반으로 eventId 및 시즌 정보를 가져오기
+        fetch(`/dev/board/event/getEventIdBySeason/${currentSeasonId}`)
+            .then(response => response.json())
+            .then(data => {
+                const eventId = data.eventId;
+
+                // 해당 eventId의 모든 시즌 가져오기
+                return fetch(`/dev/board/event/seasons/${eventId}`);
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    data.forEach(season => {
+                        const option = document.createElement("option");
+                        option.value = season.seasonId; // 시즌 ID
+                        option.textContent = `${season.roundNumber}회차 - ${season.seasonTitle}`; // 회차 및 제목
+                        option.selected = season.seasonId == currentSeasonId; // 현재 시즌 선택
+                        seasonSelect.appendChild(option);
+                    });
+                } else {
+                    alert("해당 이벤트에 등록된 회차가 없습니다.");
+                }
+            })
+            .catch(error => console.error("회차 데이터 로드 실패:", error));
+
+        // 회차 선택 시 버튼 활성화
+        seasonSelect.addEventListener("change", function () {
+            goToDetailBtn.disabled = !seasonSelect.value; // 값이 선택되면 버튼 활성화
+        });
+
+        // 상세보기 버튼 클릭 시 상세 페이지로 이동
+        goToDetailBtn.addEventListener("click", function () {
+            const selectedSeasonId = seasonSelect.value;
+            if (selectedSeasonId) {
+                window.location.href = `/dev/board/event/detail/${selectedSeasonId}`;
+            }
+        });
     });
-});
 
 
 </script>

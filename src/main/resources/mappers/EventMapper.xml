@@ -108,6 +108,7 @@
         season_start_date = #{seasonStartDate},
         season_end_date = #{seasonEndDate},
         season_thumbnail = #{seasonThumbnail}, <!-- 단일 파일 경로로 처리 -->
+        season_state = #{seasonState}, -- 상태 업데이트 포함
         round_number = #{roundNumber}
         WHERE season_id = #{seasonId}
     </update>

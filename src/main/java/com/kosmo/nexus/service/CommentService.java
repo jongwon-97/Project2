@@ -26,4 +26,7 @@ public interface CommentService {
     // seasonId로 댓글 및 대댓글 가져오기
     List<CommentDTO> getCommentsBySeasonId(int seasonId);
 
+    void devDeleteCommentAndReplies(Long commentId);
+
+    void devUpdateComment(CommentDTO comment);
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kosmo.nexus.dto.LoginDTO;
 import com.kosmo.nexus.dto.SignupDTO;
 import com.kosmo.nexus.service.AdminService;
+import com.kosmo.nexus.service.SignupService;
 import com.kosmo.nexus.service.EventService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
@@ -20,10 +21,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @Slf4j
@@ -36,7 +36,12 @@ public class AdminRestController {
     private ServletContext servletContext;
 
     @Autowired
+
+    private  SignupService signupService;
+    @Autowired
     private EventService eventService;
+
+
 
     @PostMapping("/admin/checkMemberNum")
     public Map<String, Boolean> checkMemberNum(@RequestBody Map<String, Object> request) {
@@ -95,6 +100,15 @@ public class AdminRestController {
                 member.setMemberStatus("활동");
                 member.setCompanyId(sesCompanyId);
 
+                // 현재 사번 정보를 가져와 유효성 검사 수행
+                String currentMemberNum = member.getMemberNum(); // 기존 사번 정보
+                String validationError = validateMemberData(member, currentMemberNum);
+                if (validationError != null) {
+                    log.error("유효성 검증 실패: {}", validationError);
+                    return "{\"status\":\"error\", \"message\":\"" + validationError + "\"}";
+                }
+
+
                 // memberPhone이 null이 아니고 길이가 4 이상일 경우, 마지막 4글자를 비밀번호로 설정
                 String memberPhone = member.getMemberPhone();  // 전화번호 가져오기
                 String memberPw = "";
@@ -148,6 +162,66 @@ public class AdminRestController {
             return "Error: " + e.getMessage();
         }
     }
+    private String validateMemberData(SignupDTO member, String currentMemberNum) {
+        // 공백 및 null 체크
+        if (member.getMemberNum() == null || member.getMemberNum().trim().isEmpty()) {
+            return "사번이 비어 있습니다.";
+        }
+        // 중복 검증 시 자기 자신 제외
+        if (!member.getMemberNum().equals(currentMemberNum) &&
+                adminService.isMemberNumDuplicate(member.getMemberNum(), member.getCompanyId())) {
+            return "중복된 사번이 있습니다: " + member.getMemberNum();
+        }
+        if (member.getMemberId() == null || member.getMemberId().trim().isEmpty()) {
+            return "회원 ID가 비어 있습니다.";
+        }
+        if (signupService.isIdExists(member.getMemberId())) {
+            return "중복된 회원 ID가 있습니다: " + member.getMemberId();
+        }
+        if (member.getMemberName() == null || member.getMemberName().trim().isEmpty()) {
+            return "이름이 비어 있습니다.";
+        }
+        if (member.getMemberRank() == null || member.getMemberRank().trim().isEmpty()) {
+            return "직급이 비어 있습니다.";
+        }
+        if (member.getMemberDepartment() == null || member.getMemberDepartment().trim().isEmpty()) {
+            return "부서가 비어 있습니다.";
+        }
+        if (member.getMemberPhone() == null || !member.getMemberPhone().matches("^010-\\d{3,4}-\\d{4}$")) {
+            return "전화번호 형식이 올바르지 않습니다.";
+        }
+        if (member.getMemberPostcode() <= 0 || String.valueOf(member.getMemberPostcode()).length() != 5) {
+            return "우편번호는 5자리여야 합니다.";
+        }
+        if (member.getMemberEmail() == null || !member.getMemberEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            return "이메일 형식이 올바르지 않습니다.";
+        }
+        // 날짜 유효성 검증
+        if (!isDateValid(member.getMemberBirth(), "1900-01-01", "2023-12-31")) {
+            return "생년월일이 유효하지 않습니다.";
+        }
+        if (!isDateValid(member.getMemberStartDate(), "1900-01-01", null)) {
+            return "입사일이 유효하지 않습니다.";
+        }
+        return null; // 유효성 검증 통과
+    }
+
+    private boolean isDateValid(Date date, String minDate, String maxDate) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date min = sdf.parse(minDate);
+            Date max = maxDate != null && !maxDate.isEmpty() ? sdf.parse(maxDate) : null; // 최대값이 없으면 null 처리
+
+            // 날짜가 null이 아니고 최소값 이후이고, 최대값이 설정된 경우 최대값 이전인지 확인
+            return date != null && !date.before(min) && (max == null || !date.after(max));
+        } catch (ParseException e) {
+            log.error("날짜 형식 오류: {}", e.getMessage());
+            return false;
+        }
+    }
+
+
+
 
     public String saveImage(MultipartFile imageFile) throws IOException {
         // 스프링의 Resource로 파일 경로 지정

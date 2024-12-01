@@ -1,4 +1,4 @@
-/* 공통 스타일 */
+/* 기본 스타일 */
 body {
     margin: 0;
     padding: 0;
@@ -7,11 +7,11 @@ body {
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    align-items: center; /* 화면 중앙 정렬 */
+    overflow: hidden; /* 스크롤 방지 */
 }
 
-/* 배경 슬라이더 */
+/* 슬라이드 배경 */
 .background-slider {
     position: absolute;
     top: 0;
@@ -30,90 +30,129 @@ body {
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    animation: fade 12s infinite;
+    animation: fade 21s infinite; /* 총 18초 루프 */
 }
 
-.background-slider img:nth-child(1) { animation-delay: 0s; }
-.background-slider img:nth-child(2) { animation-delay: 4s; }
-.background-slider img:nth-child(3) { animation-delay: 8s; }
+.background-slider img:nth-child(1) {
+    opacity: 1;
+    animation: none;
+}
+
+.background-slider img:nth-child(2) {
+    animation-delay: 9s; /* 1번 -> 2번 전환 */
+}
+
+.background-slider img:nth-child(3) {
+    animation-delay: 15s; /* 2번 -> 3번 전환 */
+}
 
 @keyframes fade {
-    0%, 100% { opacity: 0; }
-    33%, 66% { opacity: 1; }
+    0% { opacity: 0; }
+    10% { opacity: 1; } /* 전환 시간 */
+    50% { opacity: 2; } /* 표시 시간 */
+    60% { opacity: 0; } /* 전환 시작 */
+    100% { opacity: 0; }
 }
 
-/* 컨테이너 스타일 */
+/* 로고 스타일 */
+.logo {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #005f8d;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
 .container {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 40px;
+    background: rgba(255, 255, 255, 0.9); /* 약간 투명한 흰색 */
+    padding: 40px 30px;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
     max-width: 600px;
-    position: relative;
+    position: relative; /* iframe 컨테이너 위치를 위해 추가 */
 }
 
-/* 버튼 스타일 */
+/* 공지사항 컨테이너 */
+.notice-container {
+    width: 100%;
+    overflow: hidden;
+    background: #f9f9f9;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+/* 공지사항 텍스트 */
+.notice-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scroll 10s linear infinite;
+    font-size: 14px;
+    color: red;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* 버튼 컨테이너 */
 .button-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
+    gap: 50px;
+    margin-top: 30px;
 }
 
-.login-button {
-    width: 120px;
-    height: 120px;
-    font-size: 16px;
+/* 버튼 스타일 */
+button.login-button {
+    width: 160px;
+    height: 140px;
+    font-size: 20px;
     font-weight: bold;
     color: white;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(to bottom, #003f6b, #005f8d);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 부드러운 그림자 */
+    background: #180c79;
     transition: all 0.3s ease;
 }
 
-.login-button:hover {
-    background: linear-gradient(to bottom, #007bff, #003f6b);
-    transform: scale(1.1);
+button.login-button:hover {
+    background: #0077b6; /* 밝아지는 파랑과 어두운 파랑의 조화 */
+    transform: translateY(-3px); /* 살짝 떠오르는 효과 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 강조 */
+}
+button.login-button:active {
+    transform: translateY(1px); /* 눌렀을 때 살짝 작아짐 */
+    background: #004970;
 }
 
-/* iframe 스타일 */
+/* iframe 컨테이너 */
 .iframe-container {
-    display: none;
-    position: fixed;
+    display: none; /* 초기 상태: 숨김 */
+    position: fixed; /* 화면 전체 기준으로 고정 */
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 100;
-    justify-content: center;
-    align-items: center;
+    width: 100vw; /* 전체 화면 너비 */
+    height: 100vh; /* 전체 화면 높이 */
+    background: rgba(0, 0, 0, 0.6); /* 어두운 반투명 배경 */
+    z-index: 100; /* 다른 요소 위에 표시 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
 }
 
-.iframe-container iframe {
-    width: 90%;
-    height: 80%; /* 크기 조정 */
+
+/* iframe */
+iframe {
     border: none;
     border-radius: 10px;
     background: white;
-}
-
-.close-button {
-    position: absolute;
-    top: 5%;
-    right: 5%;
-    background: #ff5c5c;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    font-weight: bold;
-    text-align: center;
-    line-height: 40px;
+    width: 540px; /* 고정된 너비 */
+    height: 380px; /* 고정된 높이 */
+    position: relative; /* 닫기 버튼 기준 위치 */
 }

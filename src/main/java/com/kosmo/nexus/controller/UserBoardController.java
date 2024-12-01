@@ -71,8 +71,8 @@ public class UserBoardController {
         Long companyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
 
         int notificationCount = boardService.getTotalNotificationCount(paging);
-        int generalCount = boardService.getTotalGeneralCount(paging);
-        int totalCount = notificationCount + generalCount;
+        int generalCount = boardService.getTotalCompanyCount(paging, companyId);
+//        int totalCount = notificationCount + generalCount;
 
         paging.setTotalCount(generalCount);
         paging.setOneRecordPage(10);
@@ -80,7 +80,7 @@ public class UserBoardController {
 
         List<BoardDTO> list = boardService.selectNotificationListByCompanyId(paging, companyId);
 
-        model.addAttribute("totalCount", totalCount);
+//        model.addAttribute("totalCount", totalCount);
         model.addAttribute("notificationCount", notificationCount);
         model.addAttribute("generalCount", generalCount);
         model.addAttribute("notifications", list);
@@ -107,14 +107,15 @@ public class UserBoardController {
             String loc = "/user/board/notificationList";
             return message(model, msg, loc);
         }
-
+        boardService.increaseViewCount(num);
+        notification = boardService.findNotificationById(num);
         model.addAttribute("notification", notification);
 
         // 여러 첨부파일 데이터 가져오기
         List<FileDTO> attachedFiles = fileService.getFilesByBoardId(num);
         model.addAttribute("attachedFiles", attachedFiles);
 
-        log.info("첨부파일 목록 데이터: {}", attachedFiles);
+        //log.info("첨부파일 목록 데이터: {}", attachedFiles);
 
         // 댓글 데이터 가져오기
         List<CommentDTO> commentList = commentService.getCommentsByBoardId(num);
@@ -123,7 +124,7 @@ public class UserBoardController {
         String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
         model.addAttribute("loginUser", loggedInUserId);
 
-        boardService.increaseViewCount(num);
+
         return "notice/userNotificationDetail";
     }
 
@@ -175,9 +176,9 @@ public class UserBoardController {
         try {
             // 댓글 또는 대댓글 저장
             commentService.saveComment(comment);
-            log.info("댓글/대댓글 작성 성공: {}", comment);
+            //info("댓글/대댓글 작성 성공: {}", comment);
         } catch (Exception e) {
-            log.error("댓글/대댓글 작성 실패: {}", e.getMessage());
+            //log.error("댓글/대댓글 작성 실패: {}", e.getMessage());
         }//----------------------------------
 
         // 저장 후 상세보기 페이지로 리다이렉트
@@ -197,7 +198,7 @@ public class UserBoardController {
         try {
             // 댓글 삭제 서비스 호출
             commentService.deleteCommentAndReplies(commentId, loggedInUserId);
-            log.info("댓글 삭제 성공: {}", commentId);
+            //log.info("댓글 삭제 성공: {}", commentId);
 
             // 삭제 성공 후 리다이렉트 경로 설정
             if ("event".equals(redirectType) && seasonId != null) {
@@ -206,7 +207,7 @@ public class UserBoardController {
                 return "redirect:/user/board/notificationDetail?num=" + boardId;
             }
         } catch (IllegalAccessException e) {
-            log.error("댓글 삭제 실패 - 권한 없음: {}", e.getMessage());
+            //log.error("댓글 삭제 실패 - 권한 없음: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 권한 없음");
 
             if ("event".equals(redirectType) && seasonId != null) {
@@ -216,7 +217,7 @@ public class UserBoardController {
             }
 
         } catch (Exception e) {
-            log.error("댓글 삭제 실패 - 서버 오류: {}", e.getMessage());
+            //log.error("댓글 삭제 실패 - 서버 오류: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 서버 오류");
             if ("event".equals(redirectType) && seasonId != null) {
                 return "redirect:/user/board/event/detail/" + seasonId + "#commentsSection";
@@ -243,15 +244,15 @@ public class UserBoardController {
             comment.setMemberId(memberId);
 
             commentService.updateComment(comment, memberId);
-            log.info("댓글 수정 성공: {}", comment);
+            //log.info("댓글 수정 성공: {}", comment);
 
             return "redirect:/user/board/notificationDetail?num=" + boardId; // 댓글이 속한 공지로 리다이렉트
         } catch (IllegalAccessException e) {
-            log.error("댓글 수정 실패: 권한 없음", e);
+            //log.error("댓글 수정 실패: 권한 없음", e);
             model.addAttribute("alertMessage", "수정 실패: 권한이 없습니다.");
             return "redirect:/user/board/notificationDetail?num=" + commentId; // 실패 시에도 같은 페이지로 리다이렉트
         } catch (Exception e) {
-            log.error("댓글 수정 실패: 서버 오류", e);
+            //log.error("댓글 수정 실패: 서버 오류", e);
             model.addAttribute("alertMessage", "수정 실패: 서버 오류");
             return "redirect:/user/board/notificationDetail?num=" + commentId;
         }
@@ -260,25 +261,22 @@ public class UserBoardController {
     // QnA 목록 페이지 반환
     @GetMapping("/board/qnaList")
     public String qnaList(
-            @RequestParam(defaultValue = "title") String findType, // 검색 유형 (기본값: 제목)
+            @RequestParam(required = false) String findType, // 검색 유형 (기본값: 제목)
             @RequestParam(required = false) String findKeyword, // 검색 키워드
-            @RequestParam(defaultValue = "1") int page, // 현재 페이지 (기본값: 1)
-            @RequestParam(defaultValue = "10") int pageSize, // 페이지당 게시글 수 (기본값: 10)
             HttpSession session,
+            PagingDTO paging,
             Model model) {
         // 페이징 DTO 설정
-        PagingDTO paging = new PagingDTO();
         paging.setFindType(findType);
         paging.setFindKeyword(findKeyword);
-        paging.setPageNum(page);
-        paging.setOneRecordPage(pageSize);
+        paging.setOneRecordPage(10);
+        Long companyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
 
         // 전체 게시글 수 및 페이징 계산
-        int totalCount = boardService.getTotalQnaCount(paging); // QnA 게시글 총 개수 조회
+        int totalCount = boardService.getTotalQnaCompanyCount(paging, companyId); // QnA 게시글 총 개수 조회
         paging.setTotalCount(totalCount);
         paging.init();
 
-        Long companyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
         // Q&A 게시글 목록 조회
 //        List<BoardDTO> qnaList = boardService.selectQnaList(paging);
         List<BoardDTO> qnaList = boardService.selectQnaListByCompanyID(paging, companyId);
@@ -289,7 +287,7 @@ public class UserBoardController {
         model.addAttribute("paging", paging); // 페이징 데이터
         model.addAttribute("findType", findType); // 검색 유형
         model.addAttribute("findKeyword", findKeyword); // 검색 키워드
-        log.info("qnaList, paging, findType, findKeyword======{},{},{},{}",qnaList, paging, findType, findKeyword);
+        //log.info("qnaList, paging, findType, findKeyword======{},{},{},{}",qnaList, paging, findType, findKeyword);
         return "qna/userQnaList"; // Q&A 목록 페이지로 이동
     }
 
@@ -304,7 +302,7 @@ public class UserBoardController {
         Long boardCompanyID = adminService.findCompanyIdByMemberId(boardMemberId);
         if (!logCompanyId.equals(boardCompanyID)){
             String msg = "접근 권한이 없는 게시글 입니다.";
-            String loc = "/board/qnaList";
+            String loc = "/user/board/qnaList";
             return message(model, msg, loc);
         }
 
@@ -313,21 +311,21 @@ public class UserBoardController {
             // 로그인된 사용자 ID 가져오기
             if(!qna.getMemberId().equals(loggedInUserId)){
                 String msg = "비공개 게시글 입니다.";
-                String loc = "/board/qnaList";
+                String loc = "/user/board/qnaList";
                 return message(model, msg, loc);
             }
         }
         // 조회수 증가
         boardService.increaseQnaViewCount(num);
-
+        qna = boardService.findQnaById(num);
         model.addAttribute("qna", qna);
         model.addAttribute("loginUser", loggedInUserId);
         // 댓글 및 대댓글 데이터 가져오기
         List<CommentDTO> commentList = commentService.getCommentsByBoardId(num);
         model.addAttribute("commentList", commentList);
 
-        log.info("QnA 상세보기 데이터 == {}", qna);
-        log.info("댓글 목록 데이터 == {}", commentList);
+        //log.info("QnA 상세보기 데이터 == {}", qna);
+        //log.info("댓글 목록 데이터 == {}", commentList);
 
         return "qna/userQnaDetail";
     }
@@ -374,9 +372,9 @@ public class UserBoardController {
         try {
             // 댓글 또는 대댓글 저장
             commentService.saveComment(comment);
-            log.info("QnA 댓글/대댓글 작성 성공: {}", comment);
+            //log.info("QnA 댓글/대댓글 작성 성공: {}", comment);
         } catch (Exception e) {
-            log.error("QnA 댓글/대댓글 작성 실패: {}", e.getMessage());
+            //log.error("QnA 댓글/대댓글 작성 실패: {}", e.getMessage());
         }
 
         // 저장 후 QnA 상세보기 페이지로 리다이렉트
@@ -392,14 +390,14 @@ public class UserBoardController {
         try {
             // 댓글 삭제 서비스 호출
             commentService.deleteCommentAndReplies(commentId, loggedInUserId);
-            log.info("QnA 댓글 삭제 성공: {}", commentId);
+            //log.info("QnA 댓글 삭제 성공: {}", commentId);
             return "redirect:/user/board/qnaDetail?num=" + boardId;
         } catch (IllegalAccessException e) {
-            log.error("QnA 댓글 삭제 실패 - 권한 없음: {}", e.getMessage());
+            //log.error("QnA 댓글 삭제 실패 - 권한 없음: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 권한 없음");
             return "redirect:/user/board/qnaDetail?num=" + boardId;
         } catch (Exception e) {
-            log.error("QnA 댓글 삭제 실패 - 서버 오류: {}", e.getMessage());
+            //log.error("QnA 댓글 삭제 실패 - 서버 오류: {}", e.getMessage());
             model.addAttribute("alertMessage", "삭제 실패: 서버 오류");
             return "redirect:/user/board/qnaDetail?num=" + boardId;
         }
@@ -421,15 +419,15 @@ public class UserBoardController {
             comment.setMemberId(memberId);
 
             commentService.updateComment(comment, memberId);
-            log.info("QnA 댓글 수정 성공: {}", comment);
+            //log.info("QnA 댓글 수정 성공: {}", comment);
 
             return "redirect:/user/board/qnaDetail?num=" + boardId; // 댓글이 속한 QnA로 리다이렉트
         } catch (IllegalAccessException e) {
-            log.error("QnA 댓글 수정 실패: 권한 없음", e);
+            //log.error("QnA 댓글 수정 실패: 권한 없음", e);
             model.addAttribute("alertMessage", "수정 실패: 권한이 없습니다.");
             return "redirect:/user/board/qnaDetail?num=" + boardId; // 실패 시에도 같은 페이지로 리다이렉트
         } catch (Exception e) {
-            log.error("QnA 댓글 수정 실패: 서버 오류", e);
+            //log.error("QnA 댓글 수정 실패: 서버 오류", e);
             model.addAttribute("alertMessage", "수정 실패: 서버 오류");
             return "redirect:/user/board/qnaDetail?num=" + boardId;
         }
@@ -440,11 +438,11 @@ public class UserBoardController {
             // QnA 삭제 처리
             String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
             boardService.deleteQna(boardId);
-            log.info("QnA 삭제 성공: {}", boardId);
+            //log.info("QnA 삭제 성공: {}", boardId);
 
             return "redirect:/user/board/qnaList"; // 삭제 후 QnA 목록으로 리다이렉트
         } catch (Exception e) {
-            log.error("QnA 삭제 실패", e);
+            //log.error("QnA 삭제 실패", e);
             model.addAttribute("alertMessage", "QnA 삭제에 실패했습니다.");
             return "redirect:/user/board/qnaDetail?num=" + boardId; // 실패 시 해당 QnA 상세 페이지로 리다이렉트
         }
@@ -469,7 +467,7 @@ public class UserBoardController {
 
         // season_id로 board_id 조회
         int boardId = eventService.getBoardIdBySeasonId(seasonId);
-        log.info("조회된 boardId: {}", boardId);
+        //log.info("조회된 boardId: {}", boardId);
 
         // 댓글 DTO 생성
         CommentDTO comment = new CommentDTO();
@@ -480,8 +478,8 @@ public class UserBoardController {
 
         // 댓글 저장
         commentService.saveComment(comment);
-        log.info("댓글 저장 완료: {}", comment);
-        log.info("화면 표시 조건 체크 - 댓글 ID: {}, 로그인 사용자 ID: {}", comment.getMemberId(), memberId);
+        //log.info("댓글 저장 완료: {}", comment);
+        //log.info("화면 표시 조건 체크 - 댓글 ID: {}, 로그인 사용자 ID: {}", comment.getMemberId(), memberId);
         // 댓글 작성 후 상세보기로 리다이렉트
         return "redirect:/user/board/event/detail/" + seasonId + "#commentsSection";
     }//-----------------

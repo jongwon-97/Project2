@@ -21,6 +21,7 @@ public interface AdminService {
     int updateMemberRank(List<String> memberIds, String selRank, Long companyId);
     int updateMemberStatus(List<String> memberIds, String selStatus, Long companyId);
     List<String> findImgNamebyIdList(List<String> memberIds, Long companyId);
+
     boolean isMemberNumDuplicate(String memberNum, Long companyId);
     String findImagePathByMember(String memberNum, Long companyId);
     void updateMemberImage(String memberNum, Long companyId, String newImagePath);

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Q&A 작성</title>
+</head>
+<body>
+<h1>Q&A 작성</h1>
+<form th:action="@{/admin/board/qna}" th:method="post">
+    <!-- 제목 -->
+    <div>
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="boardTitle" required>
+    </div>
+
+    <!-- 내용 -->
+    <div>
+        <label for="content">내용:</label>
+        <textarea id="content" name="boardContent" required></textarea>
+    </div>
+
+    <!-- 공개 여부 선택 -->
+    <div>
+        <p><strong>공개 여부:</strong></p>
+        <input type="radio" id="public" name="disclosureStatus" value="공개" checked>
+        <label for="public">공개</label>
+        <input type="radio" id="private" name="disclosureStatus" value="비공개">
+        <label for="private">비공개</label>
+    </div>
+
+    <!-- 등록 버튼 -->
+    <div>
+        <button type="submit">등록</button>
+    </div>
+</form>
+</body>
+</html>

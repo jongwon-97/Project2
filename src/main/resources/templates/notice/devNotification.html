@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>공지사항 작성 (Admin)</title>
+    <title>공지사항 작성 (Dev)</title>
 </head>
 <body>
 <!-- 공지사항 작성 폼 -->
 <div>
     <h1>공지사항 작성</h1>
-    <form th:action="@{/admin/board/notification}" th:method="post" enctype="multipart/form-data">
+    <form th:action="@{/dev/board/notification}" th:method="post" enctype="multipart/form-data">
         <!-- 제목 입력 -->
         <div class="form-group">
             <label for="boardTitle">제목</label>

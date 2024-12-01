@@ -26,7 +26,7 @@ public class SignupDTO {
     private String memberGender;            //성별
     private Date memberBirth;               //생년월일
 
-    private Integer memberPostcode;         //우편번호  (api 연동용 우편번호 int)
+    private int memberPostcode;         //우편번호  (api 연동용 우편번호 int)
     private String memberAddress;           //주소
     private String memberDAddress;          //상세 주소
 

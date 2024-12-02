@@ -1,11 +1,7 @@
 package com.kosmo.nexus.controller;
 
 import com.kosmo.nexus.dto.*;
-import com.kosmo.nexus.service.AdminService;
-import com.kosmo.nexus.service.BoardService;
-import com.kosmo.nexus.service.CommentService;
-import com.kosmo.nexus.service.EventService;
-import com.kosmo.nexus.service.FileService;
+import com.kosmo.nexus.service.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import java.io.IOException;
@@ -487,5 +484,63 @@ public class UserBoardController {
         log.info("화면 표시 조건 체크 - 댓글 ID: {}, 로그인 사용자 ID: {}", comment.getMemberId(), memberId);
         // 댓글 작성 후 상세보기로 리다이렉트
         return "redirect:/user/board/event/detail/" + seasonId + "#commentsSection";
+    }//-----------------
+
+    @PostMapping("/board/deleteEventComment")
+    public String deleteEventComment(@RequestParam("commentId") Long commentId,
+                                     @RequestParam("seasonId") int seasonId,
+                                     HttpSession session,
+                                     RedirectAttributes redirectAttributes) {
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+
+        try {
+            // 댓글 삭제 로직 호출
+            commentService.deleteCommentAndReplies(commentId, loggedInUserId);
+            redirectAttributes.addFlashAttribute("alertMessage", "댓글이 성공적으로 삭제되었습니다.");
+        } catch (IllegalAccessException e) {
+            redirectAttributes.addFlashAttribute("alertMessage", "댓글 삭제 실패: 권한이 없습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("alertMessage", "댓글 삭제 실패: 서버 오류가 발생했습니다.");
+        }
+
+
+        // 시즌 상세 페이지로 리다이렉트
+        return "redirect:/user/board/event/detail/" + seasonId;
     }
+
+    @PostMapping("/board/editEventComment")
+    public String editEventComment(@RequestParam("commentId") Long commentId,
+                                   @RequestParam("commentContent") String commentContent,
+                                   @RequestParam("seasonId") int seasonId, // seasonId를 사용
+                                   HttpSession session, Model model) {
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+
+        try {
+            // 댓글 수정 처리
+            CommentDTO comment = new CommentDTO();
+            comment.setCommentId(commentId);
+            comment.setCommentContent(commentContent);
+            comment.setSeasonId(seasonId); // season_id 설정
+            comment.setMemberId(memberId);
+
+            commentService.updateComment(comment, memberId);
+            log.info("댓글 수정 성공: {}", comment);
+
+            // 성공적으로 수정된 후 해당 시즌 상세 페이지로 리다이렉트
+            return "redirect:/user/board/event/detail/" + seasonId;
+        } catch (IllegalAccessException e) {
+            log.error("댓글 수정 실패: 권한 없음", e);
+            model.addAttribute("alertMessage", "수정 실패: 권한이 없습니다.");
+            // 실패 시에도 같은 시즌 상세 페이지로 리다이렉트
+            return "redirect:/user/board/event/detail/" + seasonId;
+        } catch (Exception e) {
+            log.error("댓글 수정 실패: 서버 오류", e);
+            model.addAttribute("alertMessage", "수정 실패: 서버 오류");
+            // 서버 오류 시에도 같은 시즌 상세 페이지로 리다이렉트
+            return "redirect:/user/board/event/detail/" + seasonId;
+        }
+    }
+
+
+
 }

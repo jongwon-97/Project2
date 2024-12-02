@@ -102,5 +102,18 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.selectCommentsByBoardId(boardId);
     }
 
+    @Override
+    public void devDeleteCommentAndReplies(Long commentId) {
+        // 작성자 검증 로직 제거
+        commentMapper.deleteReplies(commentId); // 대댓글 삭제
+        commentMapper.deleteComment(commentId); // 댓글 삭제
+    }
+
+    @Override
+    public void devUpdateComment(CommentDTO comment) {
+        // 작성자 검증 로직 제거
+        commentMapper.updateComment(comment);
+    }
+
 
 }

@@ -30,6 +30,12 @@ public interface FileService {
     void deleteTextsByBoardId(int boardId);         // 특정 boardId로 텍스트 삭제
     void deleteOnlyImagesByBoardId(int boardId);
 
-    void deleteTextById(Integer textId);
-    void deleteImageById(Integer imageId);
+
+    void deleteTextById(int textId);
+
+    void deleteImageById(int imageId);
+
+    void updateContent(ImageDTO content);
+
+    int getMaxContentOrder(int boardId, String contentType);
 }

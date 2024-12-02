@@ -1,0 +1,178 @@
+/* admin/addUserPage.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1, h3 {
+    text-align: center;
+    color: #444;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* 열별 너비 설정 */
+th:nth-child(1), td:nth-child(1) {
+    width: 3%; /* 번호 열 */
+}
+
+th:nth-child(2), td:nth-child(2) {
+    width: 5%; /* 체크박스 열 */
+}
+
+th:nth-child(3), td:nth-child(3) {
+    width: 6%; /* 사번 열 */
+}
+
+th:nth-child(4), td:nth-child(4) {
+    width: 12%; /* 회원 ID 열 */
+}
+
+th:nth-child(5), td:nth-child(5) {
+    width: 12%; /* 이름 열 */
+}
+
+th:nth-child(6), td:nth-child(6) {
+    width: 8%; /* 직급 열 */
+}
+
+th:nth-child(7), td:nth-child(7) {
+    width: 8%; /* 부서 열 */
+}
+
+th:nth-child(8), td:nth-child(8) {
+    width: 20%; /* 전화번호 열 */
+}
+
+th:nth-child(9), td:nth-child(9) {
+    width: 17%; /* 생년월일 열 */
+}
+
+th:nth-child(10), td:nth-child(10) {
+    width: 13%; /* 성별 열 */
+}
+
+th:nth-child(11), td:nth-child(11) {
+    width: 25%; /* 이메일 열 */
+}
+
+th:nth-child(12), td:nth-child(12) {
+    width: 12%; /* 우편번호 열 */
+}
+
+th:nth-child(13), td:nth-child(13) {
+    width: 35%; /* 주소 열 */
+}
+
+th:nth-child(14), td:nth-child(14) {
+    width: 45%; /* 상세주소 열 */
+}
+
+th:nth-child(15), td:nth-child(15) {
+    width: 15%; /* 입사일 열 */
+}
+
+table td input[type="text"],
+table td input[type="number"],
+table td input[type="email"],
+table td input[type="date"],
+table td select {
+    width: 95%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+table td input[type="checkbox"] {
+    transform: scale(1.2);
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+input[type="file"] {
+    margin: 10px 0;
+    display: block;
+}
+
+#addMemberForm {
+    margin-top: 20px;
+}
+
+button[type="button"] {
+    margin-right: 10px;
+}
+
+#selectAll {
+    transform: scale(1.2);
+}
+
+input[type="checkbox"]:focus {
+    outline: 2px solid #007BFF;
+}
+
+input[type="file"]:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+select:focus {
+    outline: 2px solid #007BFF;
+}
+
+button[type="button"]:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+    table {
+        font-size: 12px;
+    }
+
+    button {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    table td input[type="text"],
+    table td input[type="number"],
+    table td input[type="email"],
+    table td input[type="date"],
+    table td select {
+        width: 90%;
+        font-size: 12px;
+    }
+}

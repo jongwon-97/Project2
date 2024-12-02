@@ -1,0 +1,153 @@
+/* 공통 스타일 */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #444;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* 페이지 컨테이너 */
+div {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* 게시물 상세 스타일 */
+p strong {
+    font-weight: bold;
+    color: #555;
+}
+
+p {
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+ul {
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+/* 첨부파일 스타일 */
+ul li {
+    margin: 5px 0;
+}
+
+ul li a {
+    font-size: 14px;
+    color: #555;
+    background: #f1f1f1;
+    padding: 6px 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+ul li a:hover {
+    background: #e2e2e2;
+}
+
+/* 댓글 스타일 */
+.comment-list {
+    margin-top: 20px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.comment-item, .reply-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.comment-info strong {
+    font-size: 14px;
+    color: #444;
+}
+
+.comment-info small {
+    font-size: 12px;
+    color: #777;
+    margin-left: 5px;
+}
+
+.comment-text {
+    margin: 8px 0;
+    color: #333;
+}
+
+.comment-actions button {
+    margin-right: 5px;
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+.edit-form, .reply-form {
+    margin-top: 10px;
+    background: #f8f8f8;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 8px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: none;
+}
+
+/* 상단 버튼 스타일 */
+button[type="button"] {
+    margin-right: 5px;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}

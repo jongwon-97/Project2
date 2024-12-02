@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import java.io.File;
@@ -564,7 +565,58 @@ public class DevBoardController {
 
         // 댓글 작성 후 상세보기로 리다이렉트
         return "redirect:/dev/board/event/detail/" + seasonId + "#commentsSection";
+    }//===========
+
+    @PostMapping("/board/deleteEventComment")
+    public String deleteEventComment(@RequestParam("commentId") Long commentId,
+                                     @RequestParam("seasonId") int seasonId,
+                                     HttpSession session,
+                                     RedirectAttributes redirectAttributes) {
+        String loggedInUserId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+        boolean isDev = ((LoginDTO) session.getAttribute("loginUser")).getMemberRole().equals("DEV"); // DEV 권한 확인
+
+        try {
+            // 댓글 삭제 로직 호출
+            commentService.devDeleteCommentAndReplies(commentId);
+            redirectAttributes.addFlashAttribute("alertMessage", "댓글이 성공적으로 삭제되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("alertMessage", "댓글 삭제 실패: 서버 오류가 발생했습니다.");
+        }
+
+
+        // 시즌 상세 페이지로 리다이렉트
+        return "redirect:/dev/board/event/detail/" + seasonId;
     }
+
+
+    @PostMapping("/board/editEventComment")
+    public String editEventComment(@RequestParam("commentId") Long commentId,
+                              @RequestParam("commentContent") String commentContent,
+                              @RequestParam("seasonId") int seasonId, // seasonId를 사용
+                              HttpSession session, Model model) {
+        String memberId = ((LoginDTO) session.getAttribute("loginUser")).getMemberId();
+
+        try {
+            // 댓글 수정 처리
+            CommentDTO comment = new CommentDTO();
+            comment.setCommentId(commentId);
+            comment.setCommentContent(commentContent);
+            comment.setSeasonId(seasonId); // season_id 설정
+            comment.setMemberId(memberId);
+
+            commentService.devUpdateComment(comment);
+            log.info("댓글 수정 성공: {}", comment);
+
+            // 성공적으로 수정된 후 해당 시즌 상세 페이지로 리다이렉트
+            return "redirect:/dev/board/event/detail/" + seasonId;
+        } catch (Exception e) {
+            log.error("댓글 수정 실패: 서버 오류", e);
+            model.addAttribute("alertMessage", "수정 실패: 서버 오류");
+            // 서버 오류 시에도 같은 시즌 상세 페이지로 리다이렉트
+            return "redirect:/dev/board/event/detail/" + seasonId;
+        }
+    }
+
 
 }
 

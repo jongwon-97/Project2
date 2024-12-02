@@ -4,6 +4,7 @@ import com.kosmo.nexus.dto.BoardDTO;
 import com.kosmo.nexus.dto.EventDTO;
 import com.kosmo.nexus.dto.MemberDTO;
 import com.kosmo.nexus.dto.SeasonDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -55,5 +56,8 @@ public interface EventService {
     List<SeasonDTO> getSeasonsByEventId(int eventId);
 
     int getEventIdBySeasonId(int seasonId);
+
+    List<MemberDTO> findAllAttentionMemberList(@Param("seasonId") int seasonId, @Param("companyId") Long companyId);
+
 }
 

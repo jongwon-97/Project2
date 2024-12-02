@@ -291,8 +291,11 @@ public class DevEventController {
             return "event/adminEventList";
         }
     }
+
     @GetMapping("/board/event/detail/{seasonId}")
-    public String getEventDetail(@PathVariable("seasonId") int seasonId, Model model, HttpSession session) {
+    public String getEventDetail(@PathVariable("seasonId") int seasonId,
+                                  @RequestParam(value = "companyId", required = false) Long companyId,
+                                 Model model, HttpSession session) {
         // 시즌 데이터 가져오기
         SeasonDTO season = eventService.getSeasonById(seasonId);
 
@@ -304,7 +307,6 @@ public class DevEventController {
         if (boardId == null) {
             throw new RuntimeException("해당 seasonId에 연결된 boardId를 찾을 수 없습니다: " + seasonId);
         }
-
 
         // 조회수 증가
         eventService.increaseSeasonViews(seasonId);
@@ -318,16 +320,19 @@ public class DevEventController {
         List<CommentDTO> commentList = commentService.getCommentsByBoardId(boardId);
         model.addAttribute("commentList", commentList);
 
-
         // 이미지 및 텍스트 데이터 가져오기
         List<ImageDTO> contentList = fileService.getContentByBoardId(season.getBoardId());
         model.addAttribute("contentList", contentList);
 
-        // 모델에 시즌 데이터 추가
+
+        // 참여자 명단 가져오기
+        // 참여자 명단 가져오기
+        List<MemberDTO> attentionList = eventService.findAllAttentionMemberList(seasonId, companyId);
+
+        // 모델에 데이터 추가
         model.addAttribute("season", season);
-        model.addAttribute("isDev", false); // 일반 유저
-
-
+        model.addAttribute("attentionList", attentionList);
+        log.info("===================={}", attentionList);
         log.info("Season 상세보기 데이터 == {}", season);
 
         return "event/devEventDetail"; // eventDetail.html로 이동
@@ -374,8 +379,7 @@ public class DevEventController {
         model.addAttribute("isDev", false); // 일반 유저
 
         return "event/devEventEndDetail"; // eventEndDetail.html로 이동
-    }
-
+    }//------------------------------------
 
     @GetMapping("/board/editEvent/{seasonId}")
     public String editEventForm(@PathVariable("seasonId") int seasonId, Model model) {
@@ -385,29 +389,53 @@ public class DevEventController {
             throw new RuntimeException("Season 데이터를 찾을 수 없습니다: ID = " + seasonId);
         }
         model.addAttribute("season", season);
-
+        log.info("Season 데이터: {}", season); // season 데이터를 로그로 출력
         // 이벤트 리스트 가져오기
         List<EventDTO> eventList = eventService.getAllEvents();
-        if (eventList == null || eventList.isEmpty()) {
-            eventList = new ArrayList<>(); // 비어 있는 리스트를 생성
-        }
         model.addAttribute("eventList", eventList);
-
+        // 텍스트 데이터 가져오기
+        List<ImageDTO> texts = fileService.getTextsByBoardId(season.getBoardId());
+        model.addAttribute("texts", texts);
+        // 이미지 데이터 가져오기
+        List<ImageDTO> images = fileService.getImagesByBoardId(season.getBoardId());
+        model.addAttribute("images", images);
         return "event/editEventForm";
     }
+
 
     @PostMapping("/board/updateEvent")
     public String updateEventPost(
             @ModelAttribute SeasonDTO seasonDTO,
+            @RequestParam(value = "seasonId", required = false) Integer seasonId,
             @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
             @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "texts[]", required = false) List<String> updatedTexts,
+            @RequestParam(value = "textIds", required = false) List<Integer> textIds,
+            @RequestParam(value = "deletedTextIds", required = false) List<Integer> deletedTextIds,
+            @RequestParam(value = "newImages[]", required = false) MultipartFile[] newImages,
+            @RequestParam(value = "deletedImageIds", required = false) List<Integer> deletedImageIds,
             Model model) {
+
+        log.info("수신된 데이터 - Thumbnail: {}, File: {}, UpdatedTexts: {}, TextIds: {}, DeletedTextIds: {}, NewImages: {}, DeletedImageIds: {}",
+                thumbnail, file, updatedTexts, textIds, deletedTextIds, newImages, deletedImageIds);
+        log.info("Deleted Text IDs: {}", deletedTextIds);
+        log.info("Deleted Image IDs: {}", deletedImageIds);
+
+
+
+        // 1. 기존 시즌 데이터에서 round_number 가져오기
+        SeasonDTO existingSeason = eventService.getSeasonById(seasonDTO.getSeasonId());
+        if (existingSeason != null) {
+            seasonDTO.setRoundNumber(existingSeason.getRoundNumber());
+        }
+
         try {
             log.info("SeasonDTO 초기 상태: {}", seasonDTO);
-
-            // 데이터베이스에서 boardId 가져오기
+            Integer boardId = eventService.getBoardIdBySeasonId(seasonDTO.getSeasonId());
+            log.info("{}", thumbnail, file, updatedTexts, textIds, deletedTextIds, newImages, deletedImageIds);
+            // 1. 데이터베이스에서 boardId 가져오기
             if (seasonDTO.getBoardId() == 0) {
-                Integer boardId = eventService.getBoardIdBySeasonId(seasonDTO.getSeasonId());
+
                 if (boardId != null) {
                     seasonDTO.setBoardId(boardId);
                 } else {
@@ -415,23 +443,23 @@ public class DevEventController {
                 }
             }
 
-            // 데이터베이스에서 roundNumber 가져오기
-            if (seasonDTO.getRoundNumber() == 0) { // 기본값 0일 때만 가져옴
-                int roundNumber = eventService.getRoundNumberBySeasonId(seasonDTO.getSeasonId());
-                seasonDTO.setRoundNumber(roundNumber); // roundNumber 설정
+            // 4. 텍스트 삭제 처리
+            if (deletedTextIds != null && !deletedTextIds.isEmpty()) {
+                for (Integer textId : deletedTextIds) {
+                    fileService.deleteTextById(textId); // 텍스트 삭제 서비스 호출
+                    log.info("텍스트 삭제 성공: ID = {}", textId);
+                }
             }
 
-            // 썸네일 업로드 처리
-            if (thumbnail != null && !thumbnail.isEmpty()) {
-                deleteExistingFile(seasonDTO.getSeasonThumbnail());
-                String thumbnailPath = saveFile(thumbnail, "thumbnails");
-                seasonDTO.setSeasonThumbnail(thumbnailPath);
+            // 5. 이미지 삭제 처리
+            if (deletedImageIds != null && !deletedImageIds.isEmpty()) {
+                for (Integer imageId : deletedImageIds) {
+                    fileService.deleteImageById(imageId); // 이미지 삭제 서비스 호출
+                    log.info("이미지 삭제 성공: ID = {}", imageId);
+                }
             }
 
-            // 시즌 정보 업데이트
-            eventService.updateSeason(seasonDTO);
-
-            // 상태 업데이트: 현재 날짜와 종료 날짜 비교
+            // 2. 상태 업데이트: 현재 날짜와 종료 날짜 비교
             LocalDate endDate = LocalDate.parse(seasonDTO.getSeasonEndDate());
             LocalDate today = LocalDate.now();
             if (!today.isBefore(endDate)) {
@@ -439,8 +467,79 @@ public class DevEventController {
             } else {
                 seasonDTO.setSeasonState("모집중");
             }
+            log.info("상태 업데이트 완료: {}", seasonDTO.getSeasonState());
 
-            // c_board 테이블 업데이트
+            // 3. 썸네일 업로드 처리
+            if (thumbnail != null && !thumbnail.isEmpty()) {
+                deleteExistingFile(seasonDTO.getSeasonThumbnail());
+                String thumbnailPath = saveFile(thumbnail, "thumbnails");
+                seasonDTO.setSeasonThumbnail(thumbnailPath);
+            }
+
+            // 6. 텍스트 추가 및 수정
+            if (updatedTexts != null && !updatedTexts.isEmpty()) {
+                for (int i = 0; i < updatedTexts.size(); i++) {
+                    String text = updatedTexts.get(i);
+                    if (text != null && !text.isBlank()) {
+                        ImageDTO textContent = new ImageDTO();
+                        textContent.setBoardId(seasonDTO.getBoardId());
+                        textContent.setContentType("text");
+                        textContent.setContentOrder(i + 1); // 순서 부여
+                        textContent.setContentData(text.trim());
+
+                        if (textIds != null && i < textIds.size()) {
+                            // 기존 텍스트 업데이트
+                            textContent.setImgId(textIds.get(i));
+                            fileService.updateContent(textContent);
+                            log.info("텍스트 수정 성공: {}", textContent);
+                        } else {
+                            // 새로운 텍스트 추가
+                            fileService.saveContent(textContent);
+                            log.info("새 텍스트 추가 성공: {}", textContent);
+                        }
+                    }
+                }
+            }
+
+            // 7. 새 이미지 추가
+            if (newImages != null && newImages.length > 0) {
+                log.info("이미지 추가 갯수: {}", newImages.length);
+                int contentOrder = fileService.getMaxContentOrder(seasonDTO.getBoardId(), "image") + 1;
+                for (MultipartFile image : newImages) {
+                    if (image != null && !image.isEmpty()) {
+                        String originalFilename = image.getOriginalFilename();
+                        String fileName = UUID.randomUUID() + "_" + originalFilename;
+                        String basePath = "src/main/resources/static/images";
+
+                        try {
+                            Path folderPath = Paths.get(basePath);
+                            if (!Files.exists(folderPath)) {
+                                Files.createDirectories(folderPath);
+                            }
+                            Path filePath = folderPath.resolve(fileName);
+                            Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                            ImageDTO imageContent = new ImageDTO();
+                            imageContent.setBoardId(seasonDTO.getBoardId());
+                            imageContent.setContentType("image");
+                            imageContent.setContentOrder(contentOrder++);
+                            imageContent.setImgPath("/images/" + fileName);
+                            imageContent.setImgOriginName(originalFilename);
+                            imageContent.setImgSize((int) image.getSize());
+                            fileService.saveContent(imageContent);
+                            log.info("새로운 이미지 추가 성공: {}", imageContent);
+                        } catch (IOException e) {
+                            log.error("이미지 저장 실패: {}", e.getMessage());
+                            throw new RuntimeException("이미지 저장 실패", e);
+                        }
+                    }
+                }
+            }
+
+            // 8. 시즌 정보 업데이트
+            eventService.updateSeason(seasonDTO);
+
+            // 9. c_board 테이블 업데이트
             if (seasonDTO.getBoardId() > 0) {
                 BoardDTO boardDTO = new BoardDTO();
                 boardDTO.setBoardId(seasonDTO.getBoardId());
@@ -450,15 +549,12 @@ public class DevEventController {
                 boardDTO.setBoardCreateDate(LocalDate.now().toString());
                 boardDTO.setDisclosureStatus("공개");
 
+
                 boardService.updateBoard(boardDTO);
                 log.info("Board 업데이트 완료: BoardId = {}", boardDTO.getBoardId());
             } else {
                 log.warn("유효한 boardId가 없어 c_board 업데이트를 생략합니다.");
             }
-
-            // 수정된 데이터를 다시 로드
-            List<SeasonDTO> seasonList = eventService.getAllSeasons();
-            model.addAttribute("seasonList", seasonList);
 
             return "redirect:/dev/board/eventList";
         } catch (Exception e) {
@@ -499,9 +595,6 @@ public class DevEventController {
     public List<SeasonDTO> getSeasonsByEventId(@PathVariable("eventId") int eventId) {
         return eventService.getSeasonsByEventId(eventId);
     }
-
-
-
 
 
 }

@@ -198,7 +198,43 @@
     <a href="/dev/board/eventList"><button type="button">목록으로</button></a>
 </div>
 <!-- -------------------------------------------------------------------------------- -->
+<hr>
+<div class="container">
+    <h2>참여자 명단</h2>
+    <!-- companyId를 표시 -->
+    <p th:if="${attentionList != null && !attentionList.isEmpty()}" th:text="'회사 ID: ' + ${attentionList[0].companyId}"></p>
 
+    <!-- 참여자 명단 테이블 -->
+    <table>
+        <thead>
+        <tr>
+            <th>회원 ID</th>
+            <th>회원 이름</th>
+            <th>역할</th>
+            <th>이메일</th>
+            <th>전화번호</th>
+            <th>참여 상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 참여자가 있는 경우 -->
+        <tr th:each="member : ${attentionList}">
+            <td th:text="${member.memberId}"></td>
+            <td th:text="${member.memberName}"></td>
+            <td th:text="${member.memberRole}"></td>
+            <td th:text="${member.memberEmail}"></td>
+            <td th:text="${member.memberPhone}"></td>
+            <td th:text="${member.attentionStatus}"></td>
+        </tr>
+        <!-- 참여자가 없는 경우 -->
+        <tr th:if="${attentionList == null || attentionList.isEmpty()}">
+            <td colspan="6" style="text-align: center;">참여자가 존재하지 않습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
 <h2>댓글 작성</h2>
 <form action="/dev/board/addCommentBySeason" method="POST">
     <textarea name="commentContent" placeholder="댓글을 입력하세요" required></textarea><br>

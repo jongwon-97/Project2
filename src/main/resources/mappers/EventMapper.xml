@@ -26,6 +26,7 @@
         <result property="memberStatus" column="member_status"/>
         <result property="memberStartDate" column="member_start_date"/>
         <result property="memberLastDate" column="member_last_date"/>
+        <result property="attentionStatus" column="attention_status"/>
     </resultMap>
 
     <insert id="insertEvent" parameterType="Event" useGeneratedKeys="true" keyProperty="eventId">
@@ -34,8 +35,8 @@
     </insert>
 
     <insert id="insertSeason" parameterType="Season">
-        INSERT INTO c_season (season_title, season_info, season_limit, season_fee, season_views, season_start_date, season_end_date, event_id, season_state, board_id, round_number, season_thumbnail)
-        VALUES (#{seasonTitle}, #{seasonInfo}, #{seasonLimit}, #{seasonFee}, #{seasonViews}, #{seasonStartDate}, #{seasonEndDate}, #{eventId}, #{seasonState}, #{boardId}, #{roundNumber}, #{seasonThumbnail})
+        INSERT INTO c_season (season_id, season_title, season_info, season_limit, season_fee, season_views, season_start_date, season_end_date, event_id, season_state, board_id, round_number, season_thumbnail)
+        VALUES (#{seasonId}#{seasonTitle}, #{seasonInfo}, #{seasonLimit}, #{seasonFee}, #{seasonViews}, #{seasonStartDate}, #{seasonEndDate}, #{eventId}, #{seasonState}, #{boardId}, #{roundNumber}, #{seasonThumbnail})
     </insert>
 
     <!-- 모든 회차를 조회하는 쿼리 -->
@@ -102,6 +103,7 @@
     <update id="updateSeason" parameterType="Season">
         UPDATE c_season
         SET season_title = #{seasonTitle},
+        season_id = #{seasonId}
         season_info = #{seasonInfo},
         season_limit = #{seasonLimit},
         season_fee = #{seasonFee},
@@ -364,6 +366,23 @@
         FROM c_season
         WHERE season_id = #{seasonId}
     </select>
+
+    <select id="findAllAttentionMemberList" resultMap="MemberResultMap">
+        SELECT
+        m.member_id,
+        m.member_name,
+        m.member_email,
+        m.member_phone,
+        m.company_id,
+        a.attention_status
+        FROM
+        c_member m
+        INNER JOIN
+        c_attention a ON m.member_id = a.member_id
+        WHERE
+        a.season_id = #{seasonId}
+    </select>
+
 
 
 </mapper>

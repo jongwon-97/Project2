@@ -672,6 +672,44 @@
 //    }
 //
 
+////    @PostMapping("/admin/event/apply/search")
+////    public String searchApplyMemberList(@RequestParam("simpleSearch") String search,
+////                                        @RequestParam("searchOption") String option,
+////                                        @RequestParam("seasonId") int seasonId,
+////                                   HttpSession ses, Model model){
+////        Long sesCompanyId = getLoginUserCompanyId(ses, model);
+////        String sesLoginId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
+////        log.info("search========={}, option========{}",search, option);
+////        List<MemberDTO> listMember= eventService.searchAbsenceMemberList(search, option, seasonId, sesCompanyId);
+////        int limitC = eventService.findLimitCount(seasonId);
+////        int availC = eventService.findAvailableCount(seasonId);
+////        List<String> departments = listMember.stream()
+////                .map(MemberDTO::getMemberDepartment) // 단일 값을 추출
+////                .distinct() // 중복 제거
+////                .sorted() // 오름차순 정렬
+////                .collect(Collectors.toList()); // List<String>으로 수집
+////        List<String> ranks = listMember.stream()
+////                .map(MemberDTO::getMemberRank) // 단일 값을 추출
+////                .distinct() // 중복 제거
+////                .sorted() // 오름차순 정렬
+////                .collect(Collectors.toList()); // List<String>으로 수집
+////        List<MemberDTO> attentionMember = eventService.findAttentionMemberList(seasonId, sesCompanyId);
+////        model.addAttribute("attentionMember",attentionMember);
+////        model.addAttribute("listMember", listMember);
+////        model.addAttribute("departments", departments);
+////        model.addAttribute("ranks", ranks);
+////        model.addAttribute("simpleSearch", search);
+////        model.addAttribute("searchOption", option);
+////        model.addAttribute("sesLoginId", sesLoginId);
+////        model.addAttribute("seasonId",seasonId);
+////        model.addAttribute("limitC",limitC);
+////        model.addAttribute("availC",availC);
+////        log.info("SearchMemberList====={}", listMember);
+////        return "event/adminApplyForm";
+////    }
+//
+
+
 //    @PostMapping("/admin/event/apply/adSearch")
 //    public String adSearchApplyMemberList(@RequestParam("birthStart") String birthStart,
 //                                     @RequestParam("birthEnd") String birthEnd,

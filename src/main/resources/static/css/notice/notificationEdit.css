@@ -1,10 +1,10 @@
-/* 전체 페이지 스타일 */
+/* =============== 전체 페이지 스타일 =============== */
 body {
+    font-family: 'Roboto', 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    font-family: 'Roboto', Arial, sans-serif;
-    background: #f4f4f9;
-    color: #333;
+    background-color: #0d1b2a;
+    color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,71 +13,77 @@ body {
 
 /* 컨테이너 스타일 */
 .container {
-    background: white;
-    width: 90%;
-    max-width: 800px;
+    background: #1b263b;
+    width: 600px;
     padding: 30px 40px;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    text-align: left;
 }
 
-/* 헤더 스타일 */
 .container h1 {
-    font-size: 28px;
-    color: #007bff;
+    font-size: 2rem;
+    color: #e0e1dd;
+    margin-bottom: 25px;
+    font-weight: bold;
     text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #007bff;
-    display: inline-block;
-    padding-bottom: 5px;
 }
 
-/* 폼 그룹 스타일 */
+/* =============== 폼 스타일 =============== */
 form div {
     margin-bottom: 20px;
 }
 
 form label {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 8px;
     display: block;
-    color: #555;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #a9b4c2;
+    margin-bottom: 8px;
 }
 
-form input[type="text"],
-form textarea,
-form input[type="file"] {
+input[type="text"], textarea, input[type="file"] {
     width: 100%;
+    font-size: 1rem;
     padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: all 0.3s ease;
+    border: 1px solid #3e5060;
+    border-radius: 6px;
+    background-color: #2e3b4e;
+    color: #ffffff;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-form input[type="text"]:focus,
-form textarea:focus,
-form input[type="file"]:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+input[type="text"]:focus, textarea:focus, input[type="file"]:focus {
+    border-color: #00b4d8;
     outline: none;
+    box-shadow: 0 0 8px rgba(0, 180, 216, 0.7);
 }
 
 textarea {
     resize: none;
-    height: 150px;
+    height: 120px;
 }
 
 /* 체크박스 스타일 */
-form input[type="checkbox"] {
+input[type="checkbox"] {
     margin-right: 10px;
     transform: scale(1.2);
+    accent-color: #00b4d8;
+    vertical-align: middle;
 }
 
-/* 기존 첨부파일 리스트 */
-#existing-file-list ul,
-#new-file-list ul {
+/* 파일 첨부 섹션 */
+#existing-file-list, #new-file-list {
+    margin-top: 10px;
+    background: #2e3b4e;
+    border: 1px solid #3e5060;
+    padding: 10px;
+    border-radius: 6px;
+    color: #a9b4c2;
+}
+
+#existing-file-list ul, #new-file-list ul {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -87,91 +93,72 @@ form input[type="checkbox"] {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    padding: 8px 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #f9f9f9;
+    padding: 5px 0;
+    border-bottom: 1px solid #3e5060;
 }
 
-.file-item span {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.file-item:last-child {
+    border-bottom: none;
 }
 
 .file-item .remove-btn {
-    background: #ff4d4f;
-    color: white;
+    background-color: #ff6b6b;
     border: none;
-    padding: 5px 10px;
-    font-size: 12px;
-    border-radius: 5px;
+    border-radius: 4px;
+    padding: 5px 12px;
+    color: white;
+    font-size: 0.8rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .file-item .remove-btn:hover {
-    background: #d9363e;
+    background-color: #d90429;
+    transform: scale(1.05);
 }
 
-/* 버튼 스타일 */
+/* =============== 버튼 스타일 =============== */
 .actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap: 10px;
     margin-top: 20px;
 }
 
-.actions button,
-.actions a button {
+.actions button {
     padding: 12px 20px;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
+    background-color: #00b4d8;
+    color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-.actions button[type="submit"] {
-    background: #007bff;
-    color: white;
+.actions button:hover {
+    background-color: #0077b6;
+    transform: scale(1.05);
 }
 
-.actions button[type="submit"]:hover {
-    background: #0056b3;
+.actions button:active {
+    transform: scale(1);
 }
 
-.actions button[type="button"] {
-    background: #6c757d;
-    color: white;
+.actions button:last-child {
+    background-color: #adb5bd;
 }
 
-.actions button[type="button"]:hover {
-    background: #495057;
+.actions button:last-child:hover {
+    background-color: #868e96;
 }
 
-.actions a button {
-    background: transparent;
-    border: 2px solid #6c757d;
-}
-
-.actions a button:hover {
-    background: #6c757d;
-    color: white;
-}
-
-/* 반응형 디자인 */
+/* 반응형 스타일 */
 @media (max-width: 600px) {
     .container {
+        width: 90%;
         padding: 20px;
-    }
-
-    .actions {
-        flex-direction: column;
-        gap: 10px;
     }
 
     .actions button {

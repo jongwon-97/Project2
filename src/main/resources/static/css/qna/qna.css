@@ -1,0 +1,121 @@
+/* =============== 전체 페이지 스타일 =============== */
+body {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0d1b2a;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* 헤더 스타일 */
+.header {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    color: #e0e1dd;
+    margin: 0;
+}
+
+/* 컨테이너 스타일 */
+.container {
+    background: #1b263b;
+    width: 600px;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+    text-align: left;
+}
+
+/* =============== 폼 스타일 =============== */
+form .form-group {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #a9b4c2;
+    margin-bottom: 8px;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px;
+    border: 1px solid #3e5060;
+    border-radius: 6px;
+    background-color: #2e3b4e;
+    color: #ffffff;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus, textarea:focus {
+    border-color: #00b4d8;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 180, 216, 0.7);
+}
+
+textarea {
+    resize: none;
+    height: 120px;
+}
+
+/* 라디오 버튼 스타일 */
+input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    accent-color: #00b4d8;
+    vertical-align: middle;
+}
+
+form p {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #a9b4c2;
+    margin-bottom: 8px;
+}
+
+/* =============== 버튼 스타일 =============== */
+form button {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #00b4d8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+form button:hover {
+    background-color: #0077b6;
+    transform: scale(1.05);
+}
+
+form button:active {
+    transform: scale(1);
+}
+
+/* 반응형 스타일 */
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    form button {
+        width: 100%;
+    }
+}

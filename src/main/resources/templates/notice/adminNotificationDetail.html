@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/notice/notificationDetail.css">
     <title>공지사항 상세보기</title>
     <style>
         body {
@@ -156,7 +157,7 @@
 </div>
 
 <div>
-    <a th:href="@{/admin/board/notificationList}">목록으로</a>
+    <button type="button" onclick="location.href='/admin/board/notificationList'">목록으로</button>
     <button type="button" th:onclick="|deleteNotification(${notification.boardId})|" th:if="${loginUser == notification.memberId}">삭제</button>
     <a th:href="@{/admin/board/editNotification(num=${notification.boardId})}" th:if="${loginUser == notification.memberId}">
         <button type="button">수정</button>

@@ -76,6 +76,7 @@
             <div th:if="${season.seasonThumbnail}">
                 <p>현재 이미지:</p>
                 <img th:src="@{${season.seasonThumbnail}}" alt="썸네일">
+
             </div>
         </div>
 
@@ -88,10 +89,12 @@
                         <input type="hidden" name="textIds[]" th:value="${text.imgId}">
                         <button type="button" th:onclick="'removeTextField(this, ' + ${text.imgId} + ')'" >삭제</button>
                     </div>
+
                 </div>
                 <button type="button" onclick="addTextField()">텍스트 추가</button>
                 <input type="hidden" id="deletedTextIds" name="deletedTextIds[]" value="">
             </div>
+
 
             <!-- 이미지 관리 -->
             <div class="form-group">
@@ -106,6 +109,7 @@
                 <input type="file" name="newImages[]" accept="image/*">
                 <input type="hidden" id="deletedImageIds" name="deletedImageIds[]" value="">
             </div>
+
 
         <!-- 버튼 -->
         <div class="form-actions">
@@ -123,9 +127,11 @@
         newField.innerHTML = `
             <input type="text" name="texts[]" placeholder="새 텍스트를 입력하세요">
             <button type="button" onclick="removeTextField(this, null)">삭제</button>
+
         `;
         container.appendChild(newField);
     }
+
 
     // 텍스트 필드 삭제
     function removeTextField(button, textId) {

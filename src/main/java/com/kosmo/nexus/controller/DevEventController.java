@@ -381,7 +381,8 @@ public class DevEventController {
         return "event/devEventEndDetail"; // eventEndDetail.html로 이동
     }//------------------------------------
 
-    @GetMapping("/board/editEvent/{seasonId}")
+
+        @GetMapping("/board/editEvent/{seasonId}")
     public String editEventForm(@PathVariable("seasonId") int seasonId, Model model) {
         // 시즌 데이터 가져오기
         SeasonDTO season = eventService.getSeasonById(seasonId);
@@ -393,12 +394,15 @@ public class DevEventController {
         // 이벤트 리스트 가져오기
         List<EventDTO> eventList = eventService.getAllEvents();
         model.addAttribute("eventList", eventList);
+
         // 텍스트 데이터 가져오기
         List<ImageDTO> texts = fileService.getTextsByBoardId(season.getBoardId());
         model.addAttribute("texts", texts);
+
         // 이미지 데이터 가져오기
         List<ImageDTO> images = fileService.getImagesByBoardId(season.getBoardId());
         model.addAttribute("images", images);
+
         return "event/editEventForm";
     }
 
@@ -434,7 +438,8 @@ public class DevEventController {
             Integer boardId = eventService.getBoardIdBySeasonId(seasonDTO.getSeasonId());
             log.info("{}", thumbnail, file, updatedTexts, textIds, deletedTextIds, newImages, deletedImageIds);
             // 1. 데이터베이스에서 boardId 가져오기
-            if (seasonDTO.getBoardId() == 0) {
+
+            if (seasonDTO.getBoardId() != 0) {
 
                 if (boardId != null) {
                     seasonDTO.setBoardId(boardId);
@@ -442,6 +447,7 @@ public class DevEventController {
                     log.warn("SeasonDTO의 boardId가 데이터베이스에서 조회되지 않았습니다.");
                 }
             }
+
 
             // 4. 텍스트 삭제 처리
             if (deletedTextIds != null && !deletedTextIds.isEmpty()) {
@@ -563,6 +569,9 @@ public class DevEventController {
             return "event/editEventForm";
         }
     }
+
+
+
 
 
     private void deleteExistingFile(String filePath) {

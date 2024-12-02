@@ -75,11 +75,27 @@
         SELECT COUNT(*)
         FROM c_board
         WHERE is_notice = false
+        AND board_category = "공지사항"
         <if test="findType != null and findType == 'title'">
             AND board_title LIKE CONCAT('%', #{findKeyword}, '%')
         </if>
         <if test="findType != null and findType == 'member'">
             AND member_id LIKE CONCAT('%', #{findKeyword}, '%')
+        </if>
+    </select>
+
+    <select id="getTotalCompanyCount" parameterType="Paging" resultType="int">
+        SELECT COUNT(*)
+        FROM c_board b
+        JOIN c_member m ON b.member_id = m.member_id
+        WHERE b.is_notice = false
+        AND m.company_id IN (#{companyId}, 0)
+        AND b.board_category = "공지사항"
+        <if test="paging.findType != null and paging.findType == 'title'">
+            AND b.board_title LIKE CONCAT('%', #{paging.findKeyword}, '%')
+        </if>
+        <if test="paging.findType != null and paging.findType == 'member'">
+            AND b.member_id LIKE CONCAT('%', #{paging.findKeyword}, '%')
         </if>
     </select>
 
@@ -158,19 +174,36 @@
     <!-- QnA 총 게시물 수 -->
     <select id="getTotalQnaCount" parameterType="Paging" resultType="int">
         SELECT COUNT(*)
-        FROM c_board b
-        WHERE b.board_category = 'QnA'
-        <if test="findType != null and findType == 'title'">
-            AND b.board_title LIKE CONCAT('%', #{findKeyword}, '%')
+        FROM c_board
+        WHERE board_category = "QnA"
+        <if test="findType != null and findKeyword != null and findType == 'title'">
+            AND board_title LIKE CONCAT('%', #{findKeyword}, '%')
         </if>
-        <if test="findType != null and findType == 'content'">
-            AND b.board_content LIKE CONCAT('%', #{findKeyword}, '%')
+        <if test="findType != null and findKeyword != null and findType == 'content'">
+            AND board_content LIKE CONCAT('%', #{findKeyword}, '%')
         </if>
-        <if test="findType != null and findType == 'member'">
-            AND b.member_id LIKE CONCAT('%', #{findKeyword}, '%')
+        <if test="findType != null and findKeyword != null and findType == 'member'">
+            AND member_id LIKE CONCAT('%', #{findKeyword}, '%')
         </if>
     </select>
 
+    <!-- QnA 총 게시물 수 -->
+    <select id="getTotalQnaCompanyCount" parameterType="Paging" resultType="int">
+        SELECT COUNT(*)
+        FROM c_board b
+        JOIN c_member m ON b.member_id = m.member_id
+        WHERE b.board_category = "QnA"
+        AND m.company_id IN (#{companyId}, 0)
+        <if test="paging.findType != null and paging.findKeyword != null and paging.findType == 'title'">
+            AND b.board_title LIKE CONCAT('%', #{paging.findKeyword}, '%')
+        </if>
+        <if test="paging.findType != null and paging.findKeyword != null and paging.findType == 'content'">
+            AND b.board_content LIKE CONCAT('%', #{paging.findKeyword}, '%')
+        </if>
+        <if test="paging.findType != null and paging.findKeyword != null and paging.findType == 'member'">
+            AND b.member_id LIKE CONCAT('%', #{paging.findKeyword}, '%')
+        </if>
+    </select>
     <!-- QnA 상세보기 -->
     <select id="selectQnaById" resultType="Board">
         SELECT

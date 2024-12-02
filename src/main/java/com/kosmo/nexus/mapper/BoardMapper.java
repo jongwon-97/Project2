@@ -22,10 +22,16 @@ public interface BoardMapper {
     List<BoardDTO> selectNotificationList(PagingDTO pagingDTO);
     int getTotalNotificationCount(PagingDTO pagingDTO);
     int getTotalGeneralCount(PagingDTO pagingDTO);
+    int getTotalCompanyCount(
+            @Param("paging") PagingDTO paging,
+            @Param("companyId") Long companyId);
     void insertBoard(BoardDTO boardDTO);
 
     List<BoardDTO> selectQnaList(PagingDTO pagingDTO); // QnA 목록 조회
     int getTotalQnaCount(PagingDTO pagingDTO); // QnA 총 게시글 수 조회
+    int getTotalQnaCompanyCount(@Param("paging") PagingDTO paging,
+                                @Param("companyId") Long companyId);
+
     BoardDTO selectQnaById(int num); // QnA 상세보기
     void insertQna(BoardDTO boardDTO); // QnA 작성
     void updateQna(BoardDTO boardDTO); // QnA 수정

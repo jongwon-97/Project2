@@ -671,6 +671,7 @@
 //        return "redirect:/admin/event/apply/"+seasonId;
 //    }
 //
+
 ////    @PostMapping("/admin/event/apply/search")
 ////    public String searchApplyMemberList(@RequestParam("simpleSearch") String search,
 ////                                        @RequestParam("searchOption") String option,
@@ -707,6 +708,8 @@
 ////        return "event/adminApplyForm";
 ////    }
 //
+
+
 //    @PostMapping("/admin/event/apply/adSearch")
 //    public String adSearchApplyMemberList(@RequestParam("birthStart") String birthStart,
 //                                     @RequestParam("birthEnd") String birthEnd,

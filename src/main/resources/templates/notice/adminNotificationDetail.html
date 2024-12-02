@@ -191,7 +191,7 @@
             <!-- 댓글 관리 버튼 -->
             <div class="comment-actions">
                 <!-- 삭제 버튼 -->
-                <form action="/admin/board/deleteComment" method="POST">
+                <form action="/admin/board/deleteComment" method="POST" th:if="${loginUser == comment.memberId}">
                     <input type="hidden" name="commentId" th:value="${comment.commentId}">
                     <input type="hidden" name="boardId" th:value="${notification.boardId}"> <!-- boardId 추가 -->
                     <button type="submit">삭제</button>
@@ -241,7 +241,7 @@
 
                     <div class="comment-actions">
                         <!-- 대댓글 삭제 버튼 -->
-                        <form action="/admin/board/deleteComment" method="POST">
+                        <form action="/admin/board/deleteComment" method="POST" th:if="${loginUser == reply.memberId}">
                             <input type="hidden" name="commentId" th:value="${reply.commentId}">
                             <input type="hidden" name="memberId" value="testUser">
                             <input type="hidden" name="boardId" th:value="${notification.boardId}"> <!-- boardId 추가 -->

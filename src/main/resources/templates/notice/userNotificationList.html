@@ -171,7 +171,7 @@
     <!-- 맨 끝으로 버튼 -->
     <li th:classappend="${paging.pageNum == paging.pageCount} ? 'page-item disabled' : 'page-item'">
       <a class="page-link"
-         th:href="@{'/adminuser/board/notificationList'(pageNum=${paging.pageCount}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
+         th:href="@{'/user/board/notificationList'(pageNum=${paging.pageCount}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
         끝
       </a>
     </li>

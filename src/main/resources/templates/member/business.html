@@ -3,149 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/member/business.css">
     <title>기업회원 로그인</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f9f9f9;
-            font-family: Arial, sans-serif;
-        }
 
-        .login-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-        }
+    <link rel="stylesheet" href="/css/login.css">
 
-        .login-container h1 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #333;
-        }
-
-        .form-container {
-            display: flex;
-        }
-
-        .form-fields {
-            display: flex;
-            flex-direction: column;
-            flex: 2;
-            margin-right: 10px;
-        }
-
-        .form-fields input {
-            width: 100%;
-            padding: 10px;
-            height: 40px; /* 입력 필드 높이 */
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        .form-button {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .form-button button {
-            width: 85%;
-            height: 85px; /* 버튼 높이: 입력 필드와 동일 */
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .form-button button:hover {
-            background-color: #218838;
-        }
-
-        .links {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .links a {
-            text-decoration: none;
-            color: #28a745;
-            margin: 0 10px;
-        }
-
-        .links a:hover {
-            text-decoration: underline;
-        }
-
-    </style>
 </head>
 <body>
 <div class="login-container">
+    <button class="close-button" onclick="parent.document.getElementById('iframeContainer').style.display='none';">
+        Close
+    </button>
     <h1>기업회원 로그인</h1>
     <form action="/bLogin" method="post" class="form-container">
-        <div class="form-fields">
-            <input type="text" name="memberId" placeholder="아이디" required>
-            <input type="password" name="memberPw" placeholder="비밀번호" required>
+        <div class="form-row">
+            <div class="form-fields">
+                <input type="text" name="memberId" placeholder="아이디">
+                <input type="password" name="memberPw" placeholder="비밀번호">
+            </div>
+            <div class="form-button">
+                <button type="submit">로그인</button>
+            </div>
         </div>
-        <div class="form-button">
-            <button type="submit">로그인</button>
+        <label >
+            아이디 저장<input type="checkbox" name="saveId" value="true">
+        </label>
+        <div class="links">
+            <a onclick="navigateToFindAccount('/findAccount')">아이디 찾기</a> |
+            <a onclick="navigateToFindAccount('/findPassword')">비밀번호 찾기</a> |
+            <a onclick="navigateToSignup('/bSignup')">회원가입</a>
         </div>
     </form>
-    <label >
-        아이디 저장<input type="checkbox" name="saveId" value="true">
-    </label>
-    <div class="links">
-        <a onclick="navigateToFindAccount('/findAccount')">아이디 찾기</a> |
-        <a onclick="navigateToFindAccount('/findPassword')">비밀번호 찾기</a> |
-        <a onclick="navigateToSignup('/bSignup')">회원가입</a>
-    </div>
 </div>
-<script>
-    function navigateToSignup(signupUrl) {
-        parent.document.getElementById('iframeContainer').style.display = 'none';
-        window.parent.location.href = signupUrl;
-    }
-    function navigateToFindAccount(findAccountUrl) {
-      parent.document.getElementById('iframeContainer').style.display = 'none';
-      window.parent.location.href = findAccountUrl;
-    }
-    function navigateToFindPassword(findPasswordUrl) {
-      parent.document.getElementById('iframeContainer').style.display = 'none';
-      window.parent.location.href = findPasswordUrl;
-    }
-    // 페이지 로드 시 실행
-    document.addEventListener('DOMContentLoaded', function () {
-        const memberIdInput = document.querySelector('input[name="memberId"]');
-        const saveIdCheckbox = document.querySelector('input[name="saveId"]');
-
-        // 쿠키에서 'uid' 값을 읽어옴
-        const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
-            const [key, value] = cookie.split('=');
-            acc[key] = value;
-            return acc;
-        }, {});
-
-        // 'uid' 쿠키가 존재하면 아이디 입력 필드에 값 설정
-        if (cookies['uid']) {
-            memberIdInput.value = cookies['uid'];
-            saveIdCheckbox.checked = true; // 체크박스도 활성화
-        }
-    });
-</script>
+<script src="/js/login.js"></script>
 </body>
 </html>

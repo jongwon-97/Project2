@@ -10,6 +10,7 @@ body {
 
 h1, h2, h3 {
     color: #222;
+    margin-bottom: 15px;
 }
 
 a {
@@ -52,45 +53,8 @@ button:hover {
     font-weight: bold;
 }
 
-/* 게시물 카드 스타일 */
-.post-card {
-    margin-bottom: 20px;
-    padding: 20px;
-    background: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.post-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-.post-card h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.post-card p {
-    color: #555;
-    font-size: 14px;
-    margin-bottom: 15px;
-}
-
-.post-card a {
-    font-size: 14px;
-    color: #007bff;
-    text-decoration: underline;
-}
-
-.post-card a:hover {
-    color: #0056b3;
-}
-
-/* 공지사항 상세 정보 스타일 */
-.notification-detail {
+/* Q&A 상세 정보 스타일 */
+.qna-detail {
     margin-bottom: 20px;
     padding: 20px;
     background: #ffffff;
@@ -99,50 +63,28 @@ button:hover {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.notification-detail p {
+.qna-detail p {
     margin: 10px 0;
     font-size: 16px;
     color: #333;
 }
 
-.notification-detail p strong {
+.qna-detail p strong {
     font-weight: bold;
     margin-right: 10px;
 }
 
-.notification-detail p span {
+.qna-detail p span {
     color: #555;
-}
-
-/* 첨부파일 스타일 */
-.attachments ul {
-    padding-left: 0;
-    list-style: none;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.attachments ul li {
-    margin: 5px 0;
-}
-
-.attachments ul li a {
-    font-size: 14px;
-    color: #555;
-    background: #f1f1f1;
-    padding: 6px 10px;
-    border-radius: 4px;
-    display: inline-block;
-}
-
-.attachments ul li a:hover {
-    background: #e2e2e2;
 }
 
 /* 댓글 섹션 */
 .comment-list {
     margin-top: 30px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
 }
 
 .comment-item {
@@ -169,6 +111,7 @@ button:hover {
 .comment-actions {
     display: flex;
     gap: 10px;
+    margin-top: 10px;
 }
 
 .comment-actions button {
@@ -193,6 +136,21 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 6px;
     resize: none;
+}
+
+/* 대댓글 섹션 */
+.reply-list {
+    margin-top: 10px;
+    padding-left: 20px;
+    border-left: 2px solid #ddd;
+}
+
+.reply-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
 }
 
 /* 반응형 스타일 */

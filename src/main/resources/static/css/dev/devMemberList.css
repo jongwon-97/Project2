@@ -147,11 +147,12 @@ button:last-child:hover {
 /* =============== 테이블 스타일 =============== */
 .table-container {
     margin-top: 20px;
-    overflow-x: auto;
+    overflow-x: visible; /* 스크롤 제거 */
 }
 
 table {
     width: 100%;
+    table-layout: fixed; /* 고정된 레이아웃으로 각 열 너비 조정 가능 */
     border-collapse: collapse;
     background-color: #ffffff;
     border-radius: 8px;
@@ -170,22 +171,64 @@ th, td {
     font-size: 0.9rem;
 }
 
-th {
-    font-weight: bold;
-    cursor: pointer;
+/* 각 열의 너비 설정 */
+th:nth-child(1), td:nth-child(1) { /* 첫 번째 열 (체크박스) */
+    width: 3%;
 }
 
-th:hover {
-    background-color: #495057;
+th:nth-child(2), td:nth-child(2) { /* 사번 */
+    width: 5%;
 }
 
+th:nth-child(3), td:nth-child(3) { /* 증명사진 */
+    width: 10%;
+}
+
+th:nth-child(4), td:nth-child(4) { /* 이름 */
+    width: 10%;
+}
+
+th:nth-child(5), td:nth-child(5) { /* 부서 */
+    width: 10%;
+}
+
+th:nth-child(6), td:nth-child(6) { /* 직급 */
+    width: 10%;
+}
+
+th:nth-child(7), td:nth-child(7) { /* 생년월일 */
+    width: 10%;
+}
+
+th:nth-child(8), td:nth-child(8) { /* 입사일 */
+    width: 10%;
+}
+
+th:nth-child(9), td:nth-child(9) { /* 휴대폰 번호 */
+    width: 10%;
+}
+
+th:nth-child(10), td:nth-child(10) { /* 이메일 */
+    width: 20%;
+}
+
+th:nth-child(11), td:nth-child(11) { /* 상태 */
+    width: 5%;
+}
+
+th:nth-child(12), td:nth-child(12) { /* 상세보기 */
+    width: 10%;
+}
+
+/* 짝수 행 배경색 설정 */
 tr:nth-child(even) {
     background-color: #f8f9fa;
 }
 
+/* 커서 올려도 색 변화를 제거 */
 tr:hover {
-    background-color: #e9f5ff;
-    transition: background-color 0.3s;
+    background-color: inherit; /* 기존 색상 유지 */
+    transition: none; /* 색상 전환 효과 제거 */
 }
 
 /* 테이블에 표시되는 이미지 */
@@ -196,7 +239,7 @@ img {
     object-fit: cover;
 }
 
-/* 텍스트만 남기기 (둥근 사각형 제거) */
+/* 텍스트 입력 상자의 크기를 해당 열에 맞게 조정 */
 table td input[type="text"],
 table td input[readonly] {
     border: none;
@@ -207,7 +250,10 @@ table td input[readonly] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100%; /* 열 너비에 맞게 확장 */
+    box-sizing: border-box; /* 열의 padding과 border를 포함한 너비 계산 */
 }
+
 
 /* =============== 체크박스 스타일 =============== */
 input[type="checkbox"] {
@@ -248,3 +294,5 @@ input[type="checkbox"] {
 .view-btn:hover {
     background-color: #218838;
 }
+
+

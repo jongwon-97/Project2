@@ -30,7 +30,7 @@ body {
 }
 
 /* =============== 폼 스타일 =============== */
-form .form-group {
+form div {
     margin-bottom: 20px;
 }
 
@@ -73,8 +73,8 @@ input[type="checkbox"] {
     vertical-align: middle;
 }
 
-/* 파일 첨부 섹션 */
-#file-list {
+/* 기존 파일 및 새 파일 첨부 스타일 */
+#existing-file-list, #new-file-list {
     margin-top: 10px;
     background: #2e3b4e;
     border: 1px solid #3e5060;
@@ -83,7 +83,7 @@ input[type="checkbox"] {
     color: #a9b4c2;
 }
 
-#file-names {
+#existing-file-list ul, #new-file-list ul {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -118,14 +118,14 @@ input[type="checkbox"] {
 }
 
 /* =============== 버튼 스타일 =============== */
-.form-actions {
+.actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 10px;
     margin-top: 20px;
 }
 
-button {
+.actions button {
     padding: 12px 20px;
     font-size: 1rem;
     font-weight: bold;
@@ -137,20 +137,20 @@ button {
     transition: background-color 0.3s, transform 0.2s;
 }
 
-button:hover {
+.actions button:hover {
     background-color: #0077b6;
     transform: scale(1.05);
 }
 
-button:active {
+.actions button:active {
     transform: scale(1);
 }
 
-button:last-child {
+.actions button:last-child {
     background-color: #adb5bd;
 }
 
-button:last-child:hover {
+.actions button:last-child:hover {
     background-color: #868e96;
 }
 
@@ -161,7 +161,12 @@ button:last-child:hover {
         padding: 20px;
     }
 
-    .form-actions button {
+    .actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .actions button {
         width: 100%;
     }
 }

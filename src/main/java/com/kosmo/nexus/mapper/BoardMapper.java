@@ -58,4 +58,7 @@ public interface BoardMapper {
             @Param("paging") PagingDTO paging,
             @Param("companyId") Long companyId
     );
+
+    int selectUnansByCompanyID(Long companyId);
+    public int selectUnans();
 }

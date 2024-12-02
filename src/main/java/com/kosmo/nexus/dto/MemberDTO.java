@@ -25,6 +25,8 @@ public class MemberDTO {
 
     private Date memberBirth;        //생년월일
 
+    private String attentionStatus; // 참여 상태
+
     private int memberPostcode;        //우편번호  (api 연동용 우편번호 int)
     private String memberAddress;      //주소
     private String memberDAddress;    //상세 주소

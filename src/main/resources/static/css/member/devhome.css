@@ -138,10 +138,14 @@ button:hover {
     opacity: 1;
 }
 
+<<<<<<< HEAD
 .container .card:hover {
     transform: translateY(-10px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
+=======
+
+>>>>>>> 367bfa9686eeeda0823eb79b5866d6a166a55ebb
 
 .container .card h3 {
     font-size: 22px;
@@ -174,3 +178,102 @@ button:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
+
+/* 테이블 스타일링 */
+table {
+    width: 100%;
+    border-collapse: collapse; /* 테이블 셀 간격 제거 */
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+}
+
+thead {
+    background-color: #f4f4f9; /* 헤더 배경색 */
+    font-weight: bold;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* 행 구분선 */
+}
+
+th {
+    background-color: #f9fafb; /* 헤더 배경색 */
+    color: #333; /* 헤더 텍스트 색 */
+}
+
+td {
+    background-color: #fff; /* 셀 배경색 */
+    color: #555; /* 셀 텍스트 색 */
+}
+
+/* "모집중인 행사가 없습니다" 메시지 */
+td[colspan="9"] {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 20px;
+}
+
+/* 상태 칸 스타일 */
+td.status {
+    font-weight: bold;
+}
+
+td.status.open {
+    color: #28a745; /* 모집중 상태는 초록색 */
+}
+
+td.status.closed {
+    color: #dc3545; /* 마감된 상태는 빨간색 */
+}
+
+/* 이벤트 제목 링크 스타일 */
+.event-title a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    display: block;
+    position: relative; /* position을 relative로 설정 */
+    z-index: 1; /* z-index를 설정하여 다른 요소 위로 배치 */
+}
+
+.event-title a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* 테이블 행 hover 효과 */
+tbody tr:hover {
+    background-color: #f1f1f1; /* 마우스를 올리면 배경색 변경 */
+}
+
+/* 테이블의 마지막 행 밑줄 제거 */
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 기본적인 테이블 크기 및 레이아웃 */
+table {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+td, th {
+    vertical-align: middle;
+}
+
+/* 날짜 포맷에 맞는 스타일 */
+td.season-end-date {
+    color: #ff6347; /* 종료 날짜는 빨간색 */
+}
+
+/* 여백 추가 */
+tbody tr {
+    transition: background-color 0.3s ease;
+}
+

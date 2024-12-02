@@ -8,7 +8,7 @@
 /* 페이지 레이아웃 */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f5f7;
+    background-color: #f1f3f5;
     color: #333;
     padding: 20px;
     line-height: 1.6;
@@ -17,10 +17,10 @@ body {
 /* 헤더 스타일 */
 h1 {
     text-align: center;
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 700;
-    margin-bottom: 25px;
-    color: #2c3e50;
+    margin-bottom: 30px;
+    color: #0056b3;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -29,13 +29,13 @@ h1 {
     text-align: center;
     font-size: 16px;
     margin-bottom: 20px;
-    color: #95a5a6;
+    color: #666;
 }
 
 /* 로그아웃 버튼 스타일 */
 button {
-    padding: 15px 30px;
-    background: linear-gradient(180deg, #e74c3c, #c0392b);
+    padding: 12px 25px;
+    background: linear-gradient(180deg, #dc3545, #c82333);
     color: white;
     border: none;
     font-size: 16px;
@@ -43,92 +43,187 @@ button {
     cursor: pointer;
     border-radius: 8px;
     width: auto;
-    margin: 40px auto;
+    margin: 30px auto;
     display: block;
-    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
     transition: all 0.3s ease;
 }
 
 button:hover {
-    background: linear-gradient(180deg, #c0392b, #a02920);
+    background: linear-gradient(180deg, #c82333, #a71d2a);
     box-shadow: 0 6px 15px rgba(192, 57, 43, 0.3);
+    transform: scale(1.05);
 }
 
 /* 대시보드 레이아웃 스타일 */
 .container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-top: 50px;
+    gap: 25px;
+    margin-top: 40px;
+    margin-left: 240px;
     padding-bottom: 40px;
 }
 
 /* 카드 스타일 */
 .container .card {
-    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    background-color: white;
     border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
     text-align: center;
     font-size: 18px;
-    color: #34495e;
-    transition: all 0.3s ease;
+    color: #444;
     position: relative;
     overflow: hidden;
+    transition: all 0.3s ease;
 }
 
-.container .card::after {
-    content: "";
+.container .card::before {
+    content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: rgba(41, 128, 185, 0.1);
-    transform: rotate(45deg);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 123, 255, 0.05);
+    z-index: -1;
     transition: opacity 0.3s ease;
     opacity: 0;
 }
 
-.container .card:hover::after {
+.container .card:hover::before {
     opacity: 1;
 }
 
+
+
 .container .card h3 {
-    font-size: 24px;
-    color: #2c3e50;
-    margin-bottom: 20px;
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 15px;
     font-weight: 700;
-    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.05);
 }
 
 .container .card p {
     font-size: 15px;
-    color: #7f8c8d;
-    line-height: 1.5;
-}
-
-.container .card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    color: #777;
+    line-height: 1.6;
 }
 
 .container .card .card-button {
-    margin-top: 20px;
-    padding: 12px 25px;
-    background: linear-gradient(180deg, #3498db, #2980b9);
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: linear-gradient(180deg, #007bff, #0056b3);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 15px;
     text-decoration: none;
-    font-weight: 700;
+    font-weight: 600;
     display: inline-block;
     transition: all 0.3s ease;
 }
 
 .container .card .card-button:hover {
-    background: linear-gradient(180deg, #2980b9, #1e6080);
+    background: linear-gradient(180deg, #0056b3, #004494);
     transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(41, 128, 185, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+/* 테이블 스타일링 */
+table {
+    width: 100%;
+    border-collapse: collapse; /* 테이블 셀 간격 제거 */
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+}
+
+thead {
+    background-color: #f4f4f9; /* 헤더 배경색 */
+    font-weight: bold;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* 행 구분선 */
+}
+
+th {
+    background-color: #f9fafb; /* 헤더 배경색 */
+    color: #333; /* 헤더 텍스트 색 */
+}
+
+td {
+    background-color: #fff; /* 셀 배경색 */
+    color: #555; /* 셀 텍스트 색 */
+}
+
+/* "모집중인 행사가 없습니다" 메시지 */
+td[colspan="9"] {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 20px;
+}
+
+/* 상태 칸 스타일 */
+td.status {
+    font-weight: bold;
+}
+
+td.status.open {
+    color: #28a745; /* 모집중 상태는 초록색 */
+}
+
+td.status.closed {
+    color: #dc3545; /* 마감된 상태는 빨간색 */
+}
+
+/* 이벤트 제목 링크 스타일 */
+.event-title a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    display: block;
+    position: relative; /* position을 relative로 설정 */
+    z-index: 1; /* z-index를 설정하여 다른 요소 위로 배치 */
+}
+
+.event-title a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* 테이블 행 hover 효과 */
+tbody tr:hover {
+    background-color: #f1f1f1; /* 마우스를 올리면 배경색 변경 */
+}
+
+/* 테이블의 마지막 행 밑줄 제거 */
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 기본적인 테이블 크기 및 레이아웃 */
+table {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+td, th {
+    vertical-align: middle;
+}
+
+/* 날짜 포맷에 맞는 스타일 */
+td.season-end-date {
+    color: #ff6347; /* 종료 날짜는 빨간색 */
+}
+
+/* 여백 추가 */
+tbody tr {
+    transition: background-color 0.3s ease;
 }

@@ -152,4 +152,10 @@ public class BoardServiceImpl implements BoardService {
     public int selectUnansByCompanyID(Long companyId) {
         return boardMapper.selectUnansByCompanyID(companyId);
     }
+
+
+    @Override
+    public int selectUnans() {
+        return boardMapper.selectUnans();
+    }
 }

@@ -33,6 +33,12 @@ public class LoginController {
     private final LoginService loginService;
 
     @Autowired
+    private BoardService boardService;
+
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
     public LoginController(LoginService loginService) { // 생성자 주입
         this.loginService = loginService;
     }
@@ -183,6 +189,7 @@ public class LoginController {
 
     // User 홈
     @GetMapping("/user/home")
+
     public String userHome(HttpSession ses,Model model) {
         /*String roleValidationResult = validateRole(ses, "User", null);
         if (roleValidationResult != null) {
@@ -204,27 +211,34 @@ public class LoginController {
     // 권한 확인 메서드 (공통화)
     private String validateRole(HttpSession session, String requiredRole, String successPage
             , Model model) {
+
         LoginDTO loginUser = (LoginDTO) session.getAttribute("loginUser");
         if (loginUser == null || !requiredRole.equalsIgnoreCase(loginUser.getMemberRole())) {
             return "redirect:/accessDenied";
         }
         model.addAttribute("member", loginUser);
+        Long companyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
+        PagingDTO paging = new PagingDTO();
+        paging.setTotalCount(5);
+        paging.setOneRecordPage(5);
+        paging.init();
+
         if(successPage.equals("member/adminhome")){
-            Long companyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
             int qna = boardService.selectUnansByCompanyID(companyId);
             model.addAttribute("qna", qna);
-            PagingDTO paging = new PagingDTO();
-            paging.setTotalCount(5);
-            paging.setOneRecordPage(5);
-            paging.init();
-            List<BoardDTO> list = boardService.selectNotificationListByCompanyId(paging, companyId);
-            model.addAttribute("notifications", list);
-            List<SeasonDTO> seasonList = eventService.searchSeasons("", "모집중");
-            if (seasonList.size() > 5) {
-                seasonList = seasonList.subList(0, 5); // 0부터 5번째 전까지의 항목만 반환
-            }
-            model.addAttribute("seasonList", seasonList);
+
+        } else if (successPage.equals("member/devhome")){
+            int qna = boardService.selectUnans();
+            model.addAttribute("qna", qna);
         }
+        List<SeasonDTO> seasonList = eventService.searchSeasons("", "모집중");
+        if (seasonList.size() > 5) {
+            seasonList = seasonList.subList(0, 5); // 0부터 5번째 전까지의 항목만 반환
+        }
+        model.addAttribute("seasonList", seasonList);
+
+        List<BoardDTO> list = boardService.selectNotificationListByCompanyId(paging, companyId);
+        model.addAttribute("notifications", list);
         return successPage;
     }
 

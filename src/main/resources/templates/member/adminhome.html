@@ -7,16 +7,16 @@
   <title>Admin Home</title>
 
   <script>
-    function logout() {
-      fetch('/logout', { method: 'POST' })
-              .then(() => {
-                window.location.href = '/';
-              });
-    }
+
+function logout() {
+  fetch('/logout', { method: 'POST' })
+          .then(() => {
+            window.location.href = '/';
+          });
+}
   </script>
 </head>
 <body>
-
 <h1>Admin Home</h1>
 <!-- 상단 네비게이션 바 -->
 <!--<div class="navbar">

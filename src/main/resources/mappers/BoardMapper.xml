@@ -372,4 +372,12 @@
         AND b.answer_status ='N'
     </select>
 
+
+    <select id="selectUnans">
+        SELECT COUNT(*)
+        FROM c_board b
+        WHERE b.board_category = 'QnA'
+        AND b.answer_status ='N'
+    </select>
+
 </mapper>

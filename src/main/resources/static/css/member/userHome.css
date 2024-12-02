@@ -5,143 +5,150 @@
     box-sizing: border-box;
 }
 
-/* 페이지 배경 및 기본 설정 */
+/* 페이지 레이아웃 */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f5f7;
     color: #333;
+    padding: 20px;
     line-height: 1.6;
-    padding: 0;
-    display: flex;
 }
 
 /* 헤더 스타일 */
 h1 {
-    text-align: center;
-    font-size: 30px;
-    font-weight: 700;
-    color: #2c3e50;
-    margin: 20px 0;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* 세션 정보 스타일 */
-#sessionStatus, #memberRole {
-    text-align: center;
-    font-size: 16px;
-    color: #95a5a6;
-    margin-bottom: 10px;
-}
-
-/* 공지사항 스타일 */
-.notice {
-    text-align: center;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
-    color: #e74c3c;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-align: left;
 }
 
-/* 네비게이션 바 스타일 */
-.navbar {
-    width: 240px;
-    background: linear-gradient(180deg, #180c79, #2c3e50);
+h1 span {
+    font-size: 14px;
+    color: #7f8c8d;
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+/* 사용자 정보 섹션 */
+.user-info {
     display: flex;
-    flex-direction: column;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
-}
-
-/* 네비게이션 링크 스타일 */
-.navbar a {
-    text-decoration: none;
-    color: white;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 15px 0;
-    display: block;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.navbar a:hover {
-    background-color: #34495e;
-    transform: scale(1.05);
-}
-
-/* 메인 콘텐츠 스타일 */
-.container {
-    margin-left: 260px; /* 네비게이션 바 너비만큼 여백 추가 */
-    padding: 20px;
-    flex: 1;
-}
-
-.content-card {
+    justify-content: space-between;
     background: #fff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    align-items: center;
 }
 
-.content-card h3 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 10px;
+.user-info .profile {
+    display: flex;
+    align-items: center;
 }
 
-.content-card p {
+.user-info .profile img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.user-info .profile p {
+    font-size: 16px;
+    color: #34495e;
+    margin: 5px 0;
+}
+
+.user-info .profile p span {
+    display: block;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+.user-info .notice {
+    text-align: right;
+    color: #e74c3c;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* 테이블 섹션 */
+.table-container {
+    margin-top: 20px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-container h2 {
+    font-size: 18px;
+    color: #34495e;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background: #34495e;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+table tr:hover {
+    background: #f1f1f1;
+}
+
+table td {
     font-size: 14px;
     color: #7f8c8d;
 }
 
-/* 표 스타일 */
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+table td a {
+    text-decoration: none;
+    color: #3498db;
+    font-weight: bold;
+    padding: 5px 10px;
+    border: 1px solid #3498db;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.table th, .table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-}
-
-.table th {
-    background-color: #34495e;
-    color: white;
-    font-weight: 600;
-}
-
-.table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.table tr:hover {
-    background-color: #f1f1f1;
+table td a:hover {
+    background: #3498db;
+    color: #fff;
 }
 
 /* 버튼 스타일 */
 button {
     padding: 10px 20px;
-    background-color: #3498db;
-    color: white;
+    background-color: #e74c3c;
+    color: #fff;
     border: none;
     border-radius: 5px;
     font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    margin-top: 20px;
+    display: block;
+    margin: 20px auto;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #2980b9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #c0392b;
 }

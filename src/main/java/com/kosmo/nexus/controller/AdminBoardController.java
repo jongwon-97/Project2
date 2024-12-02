@@ -88,11 +88,12 @@ public class AdminBoardController {
         model.addAttribute("notifications", list);
         model.addAttribute("paging", paging);
 
-
         //model.addAttribute("content", "notice/adminNotificationList :: content");
         //return "sidebar";
 
-        return "notice/adminNotificationList";
+        //return "notice/adminNotificationList";
+        model.addAttribute("content", "notice/adminNotificationList");
+        return "sidebar";
     }
 
     // 공지사항 상세보기
@@ -428,7 +429,8 @@ public class AdminBoardController {
         model.addAttribute("findType", findType); // 검색 유형
         model.addAttribute("findKeyword", findKeyword); // 검색 키워드
 
-        return "qna/adminQnaList"; // Q&A 목록 페이지로 이동
+        model.addAttribute("content", "qna/adminQnaList");
+        return "sidebar"; // 전역 레이아웃 반환
     }
 
     // QnA 상세보기
@@ -464,6 +466,7 @@ public class AdminBoardController {
 
     @GetMapping("/board/qna")
     public String goToQnaForm(){
+
         return "qna/adminQna";
     }
 

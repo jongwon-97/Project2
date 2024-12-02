@@ -1,7 +1,12 @@
 package com.kosmo.nexus.controller;
 
+import com.kosmo.nexus.dto.BoardDTO;
 import com.kosmo.nexus.dto.LoginDTO;
+import com.kosmo.nexus.dto.PagingDTO;
+import com.kosmo.nexus.dto.SeasonDTO;
 import com.kosmo.nexus.exception.NoMemberException;
+import com.kosmo.nexus.service.BoardService;
+import com.kosmo.nexus.service.EventService;
 import com.kosmo.nexus.service.LoginService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,12 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -29,6 +36,12 @@ public class LoginController {
     public LoginController(LoginService loginService) { // 생성자 주입
         this.loginService = loginService;
     }
+
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private BoardService boardService;
 
     //개인회원 로그인 페이지
     @GetMapping("/pLogin")
@@ -154,30 +167,67 @@ public class LoginController {
     }
     // Admin 홈
     @GetMapping("/admin/home")
-    public String adminHome(HttpSession session) {
-        return validateRole(session, "Admin", "member/adminhome"); // 역할 확인 후 이동
+    public String adminHome(HttpSession ses, Model model) {
+        // 권한 확인 및 페이지 이동
+        String validationResult = validateRole(ses, "Admin", "member/adminhome", model);
+        if (validationResult.startsWith("redirect")) {
+            return validationResult; // 권한 없음 -> 리다이렉트
+        }
+
+        // 권한 확인 성공 시 레이아웃에 삽입할 콘텐츠 뷰 경로를 전달
+        model.addAttribute("content", validationResult);
+        return "sidebar"; // sidebar.html이 기본 레이아웃
+
+        //return validateRole(ses, "Admin", "member/adminhome"); // 역할 확인 후 이동
     }
 
     // User 홈
     @GetMapping("/user/home")
-    public String userHome(HttpSession session) {
-        return validateRole(session, "User", "member/userhome");
+    public String userHome(HttpSession ses,Model model) {
+        /*String roleValidationResult = validateRole(ses, "User", null);
+        if (roleValidationResult != null) {
+            return roleValidationResult; // 권한이 없으면 에러 페이지로 리다이렉트
+        }
+
+        // 모델에 필요한 데이터 추가
+        model.addAttribute("content", "member/userhome"); // 동적으로 삽입할 콘텐츠 뷰 경로
+        return "sidebar"; // sidebar.html을 기본 레이아웃으로 사용*/
+        return validateRole(ses, "User", "member/userhome", model);
     }
 
     // Dev 홈
     @GetMapping("/dev/home")
-    public String devHome(HttpSession session) {
-        return validateRole(session, "Dev", "member/devhome");
+    public String devHome(HttpSession ses,Model model) {
+        return validateRole(ses, "Dev", "member/devhome", model);
     }
 
     // 권한 확인 메서드 (공통화)
-    private String validateRole(HttpSession session, String requiredRole, String successPage) {
+    private String validateRole(HttpSession session, String requiredRole, String successPage
+            , Model model) {
         LoginDTO loginUser = (LoginDTO) session.getAttribute("loginUser");
         if (loginUser == null || !requiredRole.equalsIgnoreCase(loginUser.getMemberRole())) {
             return "redirect:/accessDenied";
         }
+        model.addAttribute("member", loginUser);
+        if(successPage.equals("member/adminhome")){
+            Long companyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
+            int qna = boardService.selectUnansByCompanyID(companyId);
+            model.addAttribute("qna", qna);
+            PagingDTO paging = new PagingDTO();
+            paging.setTotalCount(5);
+            paging.setOneRecordPage(5);
+            paging.init();
+            List<BoardDTO> list = boardService.selectNotificationListByCompanyId(paging, companyId);
+            model.addAttribute("notifications", list);
+            List<SeasonDTO> seasonList = eventService.searchSeasons("", "모집중");
+            if (seasonList.size() > 5) {
+                seasonList = seasonList.subList(0, 5); // 0부터 5번째 전까지의 항목만 반환
+            }
+            model.addAttribute("seasonList", seasonList);
+        }
         return successPage;
     }
+
 
     // 권한 없음 페이지
     @GetMapping("/accessDenied")

@@ -1,28 +1,44 @@
 /* 기본 스타일 초기화 */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif !important;
+    min-height: 100vh; /* 화면 전체 높이를 기준으로 설정 */
+    font-size: 30px !important;
+}
+
 .layout-sidebar {
     display: flex;
     min-height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif;
+    overflow: hidden; /* 스크롤 문제 방지 */
 }
 
 /* 사이드바 스타일 */
 .layout-sidebar .sidebar {
-    width: 200px;
-    background: linear-gradient(to bottom, #000080, #4b0082);
+    width: 250px;
+    background: #180c79; /* 진한 파랑 */
     color: white;
-    padding: 20px;
+    padding: 0;
+    margin: 0;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 상단 메뉴와 하단 로그아웃 버튼 간 균등화 */
+    align-items: stretch;
 }
 
+/* 메뉴 리스트 스타일 */
 .layout-sidebar .sidebar ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+    flex-grow: 1; /* 메뉴 리스트가 사이드바를 꽉 채우도록 설정 */
 }
 
 .layout-sidebar .sidebar li {
-    margin: 10px 0;
+    margin: 5px 0; /* 각 항목 간격 최소화 */
 }
 
 .layout-sidebar .sidebar li a {
@@ -30,13 +46,39 @@
     color: white;
     font-weight: bold;
     display: block;
-    padding: 10px;
+    padding: 15px 20px; /* 동일한 패딩 */
     border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
 .layout-sidebar .sidebar li a:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2); /* hover 효과 */
+}
+
+/* 로그아웃 버튼 스타일 */
+.logout-section {
+    padding: 10px 20px;
+    background: #180c79; /* 사이드바 배경과 동일 */
+    text-align: center;
+    margin-top: auto; /* 항상 하단에 고정 */
+}
+
+.logout-section button {
+    width: calc(100% - 40px); /* 양쪽 패딩 제외 */
+    padding: 10px;
+    background: white;
+    color: #001a4d;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout-section button:hover {
+    background: #f0f0f0;
+    color: #001f5f;
 }
 
 /* 콘텐츠 영역 스타일 */
@@ -45,4 +87,5 @@
     padding: 20px;
     background: #f4f4f9;
     box-sizing: border-box;
+    overflow-y: auto; /* 콘텐츠가 길어질 경우 스크롤 활성화 */
 }

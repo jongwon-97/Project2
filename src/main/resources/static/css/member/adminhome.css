@@ -32,47 +32,6 @@ h1 {
     color: #95a5a6;
 }
 
-/* 네비게이션 바 스타일 */
-.navbar {
-    width: 240px;
-    background: linear-gradient(180deg, #180c79, #2c3e50);
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: 0;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
-}
-
-/* 네비게이션 버튼 스타일 */
-.navbar a {
-    text-decoration: none;
-    color: white;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-}
-
-.navbar a:hover {
-    background-color: #34495e;
-    color: #ecf0f1;
-    transform: scale(1.05);
-}
-
-/* 마지막 버튼 구분선 제거 */
-.navbar a:last-child {
-    border-bottom: none;
-}
-
 /* 로그아웃 버튼 스타일 */
 button {
     padding: 15px 30px;
@@ -101,7 +60,6 @@ button:hover {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
     margin-top: 50px;
-    margin-left: 260px; /* 네비게이션 바의 너비를 고려하여 여백 추가 */
     padding-bottom: 40px;
 }
 

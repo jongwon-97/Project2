@@ -44,4 +44,6 @@ public interface BoardService {
 
     List<BoardDTO> selectNotificationListByCompanyId(PagingDTO paging, Long companyId);
     List<BoardDTO> selectQnaListByCompanyID(PagingDTO paging, Long companyId);
+
+    int selectUnansByCompanyID(Long companyId);
 }

@@ -362,4 +362,14 @@
         ORDER BY b.board_id DESC
         LIMIT #{paging.start}, #{paging.oneRecordPage};
     </select>
+
+    <select id="selectUnansByCompanyID">
+        SELECT COUNT(*)
+        FROM c_board b
+        JOIN c_member m ON b.member_id = m.member_id
+        WHERE b.board_category = 'QnA'
+        AND (m.company_id = #{companyId} OR m.company_id = 0)
+        AND b.answer_status ='N'
+    </select>
+
 </mapper>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <base href="/admin/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>메인 레이아웃</title>
@@ -9,17 +10,31 @@
 <body class="layout-sidebar">
 <div class="sidebar">
   <ul>
-    <li><a href="user/home">Home</a></li>
-    <li><a href="user/memberList">사원 관리</a></li>
-    <li><a href="user/board/eventList">이벤트 관리</a></li>
-    <li><a href="user/board/notificationList">공지사항 목록</a></li>
-    <li><a href="user/board/qnaList">Q&A</a></li>
+    <li><a href="home">Home</a></li>
+    <li><a href="memberList">사원 관리</a></li>
+    <li><a href="board/eventList">이벤트 관리</a></li>
+    <li><a href="board/notificationList">공지사항 목록</a></li>
+    <li><a href="board/qnaList">Q&A</a></li>
   </ul>
+  <!-- 사이드바 하단 로그아웃 버튼 -->
+  <div class="logout-section">
+    <button onclick="logout()">로그아웃</button>
+  </div>
 </div>
 
 <div class="content">
-  <!-- 여기서 개별 페이지의 내용이 렌더링됩니다 -->
-  <!-- <div th:replace="~{notice/adminNotificationList :: content}"></div> -->
+  <!-- 개별 페이지 콘텐츠 삽입 -->
+  <div th:insert="${content}"></div>
 </div>
+
+<script>
+  // 로그아웃 함수
+  function logout() {
+    fetch('/logout', { method: 'POST' })
+      .then(() => {
+        window.location.href = '/'; // 로그아웃 후 로그인 페이지로 이동
+      });
+  }
+</script>
 </body>
 </html>

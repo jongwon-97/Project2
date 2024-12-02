@@ -1,0 +1,115 @@
+/* 기본 스타일 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* 아이디 찾기 컨테이너 */
+#findAccountForm {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 40px;
+    width: 500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* 제목 스타일 */
+#findAccountForm h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 40px;
+    text-align:left;
+}
+
+/* 라디오 버튼 섹션 */
+.radio-group {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.radio-group label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #333;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 10px;
+}
+
+/* 입력 필드 스타일 */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #555;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background: #fafafa;
+    transition: all 0.3s ease;
+}
+
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: #1e90ff;
+    background: #ffffff;
+    box-shadow: 0 0 5px rgba(30, 144, 255, 0.2);
+}
+
+/* 버튼 스타일 */
+#findAccountForm button {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: #0077b6;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#findAccountForm button:hover {
+    background: #005f8d;
+}
+
+/* 숨겨진 폼 섹션 */
+.hidden-form {
+    display: none;
+}
+
+.hidden-form.active {
+    display: block;
+}
+
+/* 기업회원 섹션 */
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #0077b6;
+    margin-bottom: 15px;
+    text-align: left;
+}

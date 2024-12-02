@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>개인 회원가입</title>
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="/css/signup/pSignup.css">
-
+    <script src="/js/validation.js"></script>
 </head>
 <body>
 <div class="signup-container">
@@ -27,10 +27,12 @@
             <div class="form-group">
                 <label for="memberPw">비밀번호</label>
                 <input type="password" id="memberPw" name="memberPw" placeholder="비밀번호를 입력하세요">
+                <div class="error-message" id="passwordError"></div>
             </div>
             <div class="form-group">
                 <label for="confirmPw">비밀번호 확인</label>
                 <input type="password" id="confirmPw" name="confirmPw" placeholder="비밀번호를 다시 입력하세요">
+                <div class="error-message" id="confirmPasswordError"></div>
             </div>
         </fieldset>
 
@@ -40,10 +42,17 @@
             <div class="form-group">
                 <label for="memberName">이름</label>
                 <input type="text" id="memberName" name="memberName" placeholder="이름을 입력하세요">
+                <div class="error-message" id="nameError"></div>
+            </div>
+            <div class="form-group">
+                <label for="memberEmail">이메일</label>
+                <input type="email" id="memberEmail" name="memberEmail" placeholder="이메일을 입력하세요">
+                <div class="error-message" id="emailError"></div>
             </div>
             <div class="form-group">
                 <label for="memberBirth">생년월일</label>
                 <input type="date" id="memberBirth" name="memberBirth">
+                <div class="error-message" id="birthError"></div>
             </div>
             <div class="form-group">
                 <label>성별</label>
@@ -53,9 +62,11 @@
                 </div>
                 <input type="hidden" id="memberGender" name="memberGender">
             </div>
+            <div class="error-message" id="genderError"></div>
             <div class="form-group">
                 <label for="memberPhone">전화번호</label>
                 <input type="tel" id="memberPhone" name="memberPhone" placeholder="예(010-xxxx-xxxx)">
+                <div class="error-message" id="phoneError"></div>
             </div>
         </fieldset>
 
@@ -68,10 +79,11 @@
                     <input type="text" id="memberPostcode" name="memberPostcode" placeholder="우편번호" readonly>
                     <button type="button" id="searchPostcodeBtn">우편번호 찾기</button>
                 </div>
+                <div class="error-message" id="postcodeError"></div>
             </div>
             <div class="form-group">
                 <label for="memberAddress">주소</label>
-                <input type="text" id="memberAddress" name="memberAddress" placeholder="주소" readonly>
+                <input type="text" id="memberAddress" name="memberAddress" placeholder="주소">
             </div>
             <div class="form-group">
                 <label for="memberDAddress">상세 주소</label>
@@ -97,7 +109,13 @@
 </div>
 
 <script>
-    // 아이디 중복 확인 팝업
+    // 팝업 창에서 호출할 함수
+    function setIdCheckResult(memberId) {
+        const memberIdInput = document.getElementById("memberId");
+        memberIdInput.value = memberId;
+    }
+
+    // 아이디 중복 확인 팝업 열기
     function openIdCheckPopup() {
         window.open("/idCheck", "idCheck", "width=400,height=300,left=100,top=100");
     }

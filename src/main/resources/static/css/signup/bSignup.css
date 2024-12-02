@@ -210,7 +210,7 @@ legend {
 
 /* 가입 버튼 스타일 */
 .signup-container .signup-button {
-    width: 89%; /* 버튼이 전체 너비를 차지하도록 설정 */
+    width: 93%; /* 버튼이 전체 너비를 차지하도록 설정 */
     padding: 15px;
     background: #005f8d;
     color: white;
@@ -220,7 +220,7 @@ legend {
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-top: 20px;
-    margin-left: 41px;
+    margin-left:20px;
 }
 
 .signup-container .signup-button:hover {

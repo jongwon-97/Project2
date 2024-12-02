@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             }
                         },
                         error: function () {
-                            alert("내부 데이터 조회 중 오류가 발생했습니다.");
+
                         },
                     });
                 } else {

@@ -199,3 +199,10 @@ body {
 .signup-button:hover {
     background: #0077b6;
 }
+
+.error-message {
+    font-size: 0.9rem;
+    color: red;
+    margin-top: 5px;
+    display: none; /* 기본적으로 숨김 */
+}

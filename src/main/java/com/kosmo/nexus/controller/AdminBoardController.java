@@ -88,6 +88,10 @@ public class AdminBoardController {
         model.addAttribute("notifications", list);
         model.addAttribute("paging", paging);
 
+
+        //model.addAttribute("content", "notice/adminNotificationList :: content");
+        //return "sidebar";
+
         return "notice/adminNotificationList";
     }
 

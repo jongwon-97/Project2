@@ -4,251 +4,367 @@
   <title>이벤트 목록</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
-      margin: 0;
-      padding: 20px;
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* 전체 페이지 가운데 정렬 */
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #333;
+        text-align: center;
+        margin: 30px 0;
+        color: #343a40;
+        font-size: 3em;
+        font-weight: bold;
     }
 
-    .tabs {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #ddd;
-    }
-
+    /* 탭 스타일 */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
     .tab {
-      padding: 10px 20px;
-      border: 1px solid #ddd;
-      border-bottom: none;
-      background-color: #fff;
-      cursor: pointer;
-      font-size: 16px;
-      margin-right: 5px;
+        padding: 15px 30px;
+        border: 1px solid #ddd;
+        border-radius: 8px 8px 0 0;
+        background-color: #f1f3f5;
+        cursor: pointer;
+        font-size: 18px;
+        color: #495057;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-weight: 500;
+    }
+
+    .tab:hover {
+        background-color: #e9ecef;
+        color: #007bff;
     }
 
     .tab.active {
-      font-weight: bold;
-      border-top: 3px solid #ff4500;
-      color: #ff4500;
+        font-weight: bold;
+        background-color: #ffffff;
+        color: #28a745;
+        border-bottom: 3px solid transparent;
     }
 
     .tab-content {
-      display: none;
-      background-color: #fff;
-      padding: 20px;
-      border: 1px solid #ddd;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 한 행에 3개 */
+        gap: 50px; /* 카드 간 간격 */
+        width: 120%; /* 컨텐츠 전체 너비 사용 */
+        max-width: 1200px; /* 최대 너비 설정 */
+        justify-content: center; /* 카드 그룹 가운데 정렬 */
+        padding: 20px;
+        box-sizing: border-box; /* 패딩 포함한 크기 계산 */
     }
 
-    .tab-content.active {
-      display: block;
+    .card {
+        width: 100%;
+        max-width: 480px; /* 카드 최대 너비 설정 (가로 길게) */
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0 auto;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    thead {
-      background-color: #007bff;
-      color: #ffffff;
-    }
-
-    th, td {
-      text-align: center;
-      padding: 15px;
-      border: 1px solid #ddd;
-    }
-
-    tbody tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-
-    tbody tr:hover {
-      background-color: #f1f1f1;
-    }
-
-    .d-day {
-      font-weight: bold;
-      color: #007bff;
-    }
-
-    .status {
-      font-weight: bold;
-    }
-
-    .status.open {
-      color: green;
-    }
-
-    .status.closed {
-      color: red;
-    }
-
-    td[colspan="9"] {
-      font-style: italic;
-      color: #666;
-    }
-
-    .event-thumbnail {
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 10px;
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
 
     .event-thumbnail img {
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-      border-radius: 5px;
-      border: 1px solid #ddd;
+        width: 100%;
+        height: 220px; /* 썸네일 크기 증가 */
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 15px;
     }
 
     .event-title {
-      display: inline-block;
-      vertical-align: middle;
-      font-weight: bold;
-      color: #333;
+        font-weight: bold;
+        font-size: 1.5em; /* 제목 크기 증가 */
+        color: #343a40;
+        margin-bottom: 15px;
+        text-align: center; /* 제목 가운데 정렬 */
+    }
+
+    .card-content {
+        flex-grow: 1;
+        margin-bottom: 20px;
+    }
+
+    .card-content p {
+    font-size: 16px; /* 텍스트 크기 */
+    font-weight: 800; /* 글씨 두께를 중간 정도로 */
+    line-height: 1.8; /* 줄 간격을 늘려 가독성 개선 */
+    margin: 20px 0; /* 문단 간 간격 추가 */
+    color: #212529; /* 더 진한 색상으로 설정 */
+    }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .d-day {
+        font-weight: bold;
+        font-size: 1.2em;
+        padding: 8px 12px;
+        border-radius: 5px;
+        background-color: #e2f7e2;
+        color: #28a745;
+        text-align: center;
+        margin-right: auto;
+    }
+
+    .d-day.expired {
+        background-color: #fdeaea;
+        color: #dc3545;
+    }
+
+    .status {
+        font-weight: bold;
+        font-size: 14px;
+        padding: 8px 12px;
+        border-radius: 5px;
+        text-transform: uppercase;
+        margin-left: auto;
+    }
+
+    .status.open {
+        background-color: #e9f7ef;
+        color: #28a745;
+    }
+
+    .status.closed {
+        background-color: #fdecea;
+        color: #dc3545;
     }
 
     .apply-btn {
-      padding: 8px 15px;
-      background-color: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      font-size: 14px;
+        padding: 12px 25px; /* 버튼 크기 증가 */
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 16px; /* 버튼 텍스트 크기 증가 */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        font-weight: bold;
+        align-self: flex-end;
     }
 
     .apply-btn:hover {
-      background-color: #218838;
+        background-color: #0056b3;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     }
+
+    input[type="text"] {
+        width: 350px; /* 검색창 너비 */
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-right: 10px;
+        font-size: 16px; /* 검색창 텍스트 크기 증가 */
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+        border-color: #28a745;
+        outline: none;
+    }
+
+    button[type="submit"] {
+        padding: 12px 25px;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px; /* 버튼 텍스트 크기 증가 */
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        font-weight: bold;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #218838;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    .season-end-date {
+display: none;
+}
+
+/* 페이지를 감싸는 박스 스타일 */
+.page-container {
+width: 90%; /* 전체 화면에서 차지하는 너비 */
+max-width: 1300px; /* 최대 너비 설정 */
+margin: 30px auto; /* 화면 가운데 정렬 */
+background-color: #ffffff; /* 박스 배경색 */
+border: 1px solid #ddd; /* 박스 테두리 */
+border-radius: 10px; /* 박스 모서리를 둥글게 */
+box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
+padding: 20px; /* 내부 여백 */
+box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+/* h1 스타일 유지 */
+h1 {
+text-align: center;
+margin: 20px 0 40px; /* 상단 여백 축소, 하단 여백 확대 */
+color: #343a40;
+font-size: 3em;
+font-weight: bold;
+}
+
+    /* 검색 창과 버튼을 가운데 정렬 */
+#searchForm {
+display: flex;
+justify-content: center; /* 수평 가운데 정렬 */
+align-items: center; /* 수직 가운데 정렬 */
+margin-bottom: 20px; /* 아래 간격 */
+}
+
+/* 검색 입력 창 스타일 */
+#searchForm input[type="text"] {
+width: 300px; /* 검색창 너비 */
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+margin-right: 10px; /* 버튼과 간격 */
+font-size: 14px;
+box-sizing: border-box;
+transition: border-color 0.3s ease;
+}
+
+#searchForm input[type="text"]:focus {
+border-color: #28a745;
+outline: none;
+}
+
+/* 검색 버튼 스타일 */
+#searchForm button[type="submit"] {
+padding: 10px 20px;
+background-color: #28a745;
+color: #fff;
+border: none;
+border-radius: 5px;
+font-size: 14px;
+cursor: pointer;
+transition: background-color 0.3s ease, box-shadow 0.3s ease;
+font-weight: bold;
+}
+
+#searchForm button[type="submit"]:hover {
+background-color: #218838;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 탭 아래 구분선 추가 */
+.tabs {
+display: flex;
+justify-content: center; /* 가운데 정렬 */
+margin-bottom: 10px; /* 아래 간격 */
+gap: 10px;
+position: relative; /* 구분선 배치를 위한 상대적 위치 */
+}
+
+.tabs:after {
+content: "";
+display: block;
+width: 100%; /* 구분선 너비 */
+height: 2px; /* 구분선 두께 */
+background-color: #ddd; /* 구분선 색상 */
+position: absolute;
+bottom: -5px; /* 탭 아래에 위치 */
+left: 0;
+}
+
   </style>
 </head>
 <body>
+<div class="page-container">
+  <h1>이벤트 목록</h1>
 
-<h1>이벤트 목록</h1>
+  <!-- 검색 폼 -->
+  <form method="get" action="" id="searchForm">
+    <input type="text" name="findKeyword" placeholder="제목 검색"
+           th:value="${findKeyword != null ? findKeyword : ''}">
+    <input type="hidden" name="status" id="statusInput"
+           th:value="${status != null ? status : '모집중'}">
+    <button type="submit">검색</button>
+  </form>
 
-<!-- 검색 폼 -->
-<form method="get" action="" id="searchForm">
-  <input type="text" name="findKeyword" placeholder="제목 검색"
-         th:value="${findKeyword != null ? findKeyword : ''}">
-  <input type="hidden" name="status" id="statusInput"
-         th:value="${status != null ? status : '모집중'}">
-  <button type="submit">검색</button>
-</form>
-
-<!-- 탭 -->
-<div class="tabs">
-  <div class="tab" data-tab="ongoing" onclick="setStatus('모집중')">모집중 행사</div>
-  <div class="tab" data-tab="ended" onclick="setStatus('마감')">마감된 행사</div>
-</div>
-
-<!-- 모집중 행사 -->
-<div id="ongoing" class="tab-content active">
-  <table>
-    <thead>
-    <tr>
-      <th>이벤트 제목</th>
-      <th>설명</th>
-      <th>제한 인원</th>
-      <th>참가비</th>
-      <th>시작 날짜</th>
-      <th>종료 날짜</th>
-      <th>상태</th>
-      <th>D-DAY</th>
-      <th>신청</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${seasonList.size() == 0}">
-      <td colspan="9">모집중인 행사가 없습니다</td>
-    </tr>
-    <tr th:each="season : ${seasonList}" th:if="${season.seasonState == '모집중'}">
-      <td>
-        <div class="event-thumbnail">
-          <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}"
-               alt="썸네일" />
-        </div>
-
+  <!-- 탭 -->
+  <div class="tabs">
+    <div class="tab" data-tab="ongoing" onclick="setStatus('모집중')">모집중 행사</div>
+    <div class="tab" data-tab="ended" onclick="setStatus('마감')">마감된 행사</div>
+  </div>
+  <form id="actionForm" method="POST" >
+  <!-- 모집중 행사 -->
+  <div id="ongoing" class="tab-content active">
+    <div class="card" th:each="season : ${seasonList}" th:if="${season.seasonState == '모집중'}">
+      <div class="event-thumbnail">
+        <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}" alt="썸네일" />
+      </div>
+      <div class="card-content">
         <div class="event-title">
           <a th:href="@{'/user/board/event/detail/' + ${season.seasonId}}" th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></a>
         </div>
-      </td>
-      <td th:text="${season.seasonInfo != null ? season.seasonInfo : '정보 없음'}"></td>
-      <td th:text="${season.seasonLimit}"></td>
-      <td th:text="${season.seasonFee != null ? season.seasonFee : '무료'}"></td>
-      <td th:text="${season.seasonStartDate}"></td>
-      <td th:text="${season.seasonEndDate}" class="season-end-date"></td>
-      <td class="status open" th:text="${season.seasonState}"></td>
-      <td class="d-day"></td>
-      <td>
-        <a th:if="${requestURI.contains('/admin')}"
-           th:href="@{'/admin/event/apply/' + ${season.seasonId}}"
-           class="apply-btn">단체 신청하러 가기</a>
+        <p th:text="'설명: ' + (${season.seasonInfo != null ? season.seasonInfo : '정보 없음'})"></p>
+        <p th:text="'제한 인원: ' + ${season.seasonLimit}"></p>
+        <p th:text="'참가비: ' + (${season.seasonFee != null ? season.seasonFee : '무료'})"></p>
+        <p th:text="'기간: ' + ${season.seasonStartDate} + ' ~ ' + ${season.seasonEndDate}"></p>
+        <p class="season-end-date" th:text="${season.seasonEndDate}" style="display: none;"></p>
 
-        <a th:if="${!requestURI.contains('/admin')}"
-           th:href="@{'/user/event/apply/' + ${season.seasonId}}"
-           class="apply-btn">신청하러 가기</a>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+      </div>
+      <div class="card-footer">
+        <span class="d-day"></span>
+        <span class="status closed" th:text="${season.seasonState}"></span>
+        <a onclick="submitAction(this)" class="apply-btn" th:data-member-id="${season.seasonId}">신청하러 가기</a>
 
-<!-- 마감된 행사 -->
-<!-- 마감된 행사 -->
-<div id="ended" class="tab-content">
-  <table>
-    <thead>
-    <tr>
-      <th>이벤트 제목</th>
-      <th>설명</th>
-      <th>제한 인원</th>
-      <th>참가비</th>
-      <th>시작 날짜</th>
-      <th>종료 날짜</th>
-      <th>상태</th>
-      <th>D-DAY</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${seasonList.size() == 0}">
-      <td colspan="9">마감된 행사가 없습니다</td>
-    </tr>
-    <tr th:each="season : ${seasonList}" th:if="${season.seasonState == '마감'}">
-      <td>
-        <div class="event-thumbnail">
-          <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}"
-               alt="썸네일" />
-        </div>
+      </div>
+    </div>
+  </div>
+  </form>
+  <!-- 마감된 행사 -->
+
+  <div id="ended" class="tab-content">
+    <div class="card" th:each="season : ${seasonList}" th:if="${season.seasonState == '마감'}">
+      <div class="event-thumbnail">
+        <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}" alt="썸네일" />
+      </div>
+      <div class="card-content">
         <div class="event-title">
-          <a th:href="@{'/user/board/endevent/detail/' + ${season.seasonId}}"
-             th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></a>
+          <a th:href="@{'/user/board/endevent/detail/' + ${season.seasonId}}" th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></a>
         </div>
-      </td>
-      <td th:text="${season.seasonInfo != null ? season.seasonInfo : '정보 없음'}"></td>
-      <td th:text="${season.seasonLimit}"></td>
-      <td th:text="${season.seasonFee != null ? season.seasonFee : '무료'}"></td>
-      <td th:text="${season.seasonStartDate}"></td>
-      <td th:text="${season.seasonEndDate}" class="season-end-date"></td>
-      <td class="status closed" th:text="${season.seasonState}"></td>
-      <td class="d-day"></td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+        <p th:text="'설명: ' + (${season.seasonInfo != null ? season.seasonInfo : '정보 없음'})"></p>
+        <p th:text="'제한 인원: ' + ${season.seasonLimit}"></p>
+        <p th:text="'참가비: ' + (${season.seasonFee != null ? season.seasonFee : '무료'})"></p>
+        <p th:text="'기간: ' + ${season.seasonStartDate} + ' ~ ' + ${season.seasonEndDate}"></p>
+        <p class="season-end-date" th:text="${season.seasonEndDate}" style="display: none;"></p>
 
+      </div>
+      <div class="card-footer">
+        <span class="d-day"></span>
+        <span class="status closed" th:text="${season.seasonState}"></span>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
   function setStatus(status) {
   // 상태를 hidden input에 설정
@@ -257,8 +373,8 @@
 
   // 현재 URL 경로 확인
   const currentPath = window.location.pathname;
-  if (currentPath.includes("/admin")) {
-    form.action = "/admin/board/eventList"; // 관리자 경로 설정
+  if (currentPath.includes("/user")) {
+    form.action = "/user/board/eventList"; // 관리자 경로 설정
   } else {
     form.action = "/user/board/eventList"; // 일반 사용자 경로 설정
   }
@@ -298,7 +414,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // D-DAY 계산 및 상태 업데이트
-  const rows = document.querySelectorAll("tbody tr");
+  const rows = document.querySelectorAll(".tab-content .card");
+
   rows.forEach(row => {
     const endDateCell = row.querySelector(".season-end-date");
     const statusCell = row.querySelector(".status");
@@ -330,6 +447,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+  function submitAction(button){
+        const form = document.forms['actionForm'];
+        let seasonId = button.getAttribute('data-member-id');
+        form.action = '/user/event/apply/'+seasonId;
+        form.submit();
+    }
 
 </script>
 </body>

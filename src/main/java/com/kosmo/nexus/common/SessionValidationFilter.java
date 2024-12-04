@@ -27,9 +27,6 @@ public class SessionValidationFilter implements Filter {
         if (session != null && (requestURI.equals("/dev/home") || requestURI.equals("/admin/home") || requestURI.equals("/user/home"))) {
             // 세션이 유지 중이라면 필터 체인 통과
             chain.doFilter(req, res);
-        } else if (session == null && (requestURI.equals("/dev/home") || requestURI.equals("/admin/home") || requestURI.equals("/user/home"))) {
-            // 세션이 없으면 로그아웃 페이지로 리다이렉트
-            httpResponse.sendRedirect("/accessDenied");
         } else {
             // 기타 URL은 일반 처리
             chain.doFilter(req, res);

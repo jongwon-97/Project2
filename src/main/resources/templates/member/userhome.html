@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>User Home</title>
-  <link rel="stylesheet" href="/css/member/userHome.css">
   <script>
     function checkSession() {
       fetch('/session-status', { method: 'GET' })
@@ -42,7 +41,7 @@
 <p id="memberRole">권한 정보를 불러오는 중...</p>
 
 <a href = "/user/myPage"> 마이 페이지 </a><br>
-<a href = "/board/eventList"> 이벤트 목록 </a><br>
+<a href = "/user/board/eventList"> 이벤트 목록 </a><br>
 <a href = "/user/board/notificationList"> 공지사항 목록 </a><br>
 <a href = "/user/board/qnaList"> Q&A </a><br><br>
 

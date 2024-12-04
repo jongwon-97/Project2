@@ -45,7 +45,10 @@ public interface EventService {
     void increaseSeasonViews(int seasonId);
 
     int applyEventByAdmin(List<String> memberIds, int seasonId, Long companyId);
+    int applyEventByUser(String memberId, int seasonId, Long companyId);
     List<MemberDTO> findAttentionMemberList(int seasonId, Long companyId);
+    MemberDTO findAttentionMember(int seasonId, Long companyId, String memberId);
+
     List<MemberDTO> findAbsenceMemberList(int seasonId, Long companyId);
     List<MemberDTO> searchAbsenceMemberList(String search, String option, int seasonId, Long companyId);
     List<MemberDTO> searchAbsenceMemberListByDate(Map<String, Object> params);

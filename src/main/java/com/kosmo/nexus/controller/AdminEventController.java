@@ -233,7 +233,6 @@ public class AdminEventController {
         model.addAttribute("status", status);
         model.addAttribute("findKeyword", findKeyword);
         model.addAttribute("requestURI", request.getRequestURI()); // 현재 요청 URI 전달
-
         return "event/adminEventList";
     }//---------------------------------------
     // 이벤트 목록

@@ -171,8 +171,18 @@ public class EventServiceImpl implements EventService{
     }
 
     @Override
+    public int applyEventByUser(String memberId, int seasonId, Long companyId) {
+        return eventMapper.applyEventByUser(memberId, seasonId, companyId);
+    }
+
+    @Override
     public List<MemberDTO> findAttentionMemberList(int seasonId, Long companyId) {
         return eventMapper.findAttentionMemberList(seasonId, companyId);
+    }
+
+    @Override
+    public MemberDTO findAttentionMember(int seasonId, Long companyId, String memberId) {
+        return eventMapper.findAttentionMember(seasonId, companyId, memberId);
     }
 
     @Override

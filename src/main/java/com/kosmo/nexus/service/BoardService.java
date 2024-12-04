@@ -46,6 +46,5 @@ public interface BoardService {
     List<BoardDTO> selectQnaListByCompanyID(PagingDTO paging, Long companyId);
 
     int selectUnansByCompanyID(Long companyId);
-
     int selectUnans();
 }

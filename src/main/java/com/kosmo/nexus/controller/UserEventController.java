@@ -370,7 +370,7 @@ public class UserEventController {
         model.addAttribute("isDev", false); // 일반 유저
 
 
-        log.info("Season 상세보기 데이터 == {}", season);
+//        log.info("Season 상세보기 데이터 == {}", season);
 
         return "event/userEventDetail"; // eventDetail.html로 이동
     }
@@ -593,7 +593,7 @@ public class UserEventController {
                     textDTO.setContentData(text.trim());
                     textDTO.setContentOrder(order++);
                     fileService.saveContent(textDTO);
-                    log.info("텍스트 저장 성공: {}", textDTO);
+//                    log.info("텍스트 저장 성공: {}", textDTO);
                 }
             }
         }
@@ -613,7 +613,7 @@ public class UserEventController {
                     imageDTO.setImgOriginName(image.getOriginalFilename());
                     imageDTO.setContentOrder(order++);
                     fileService.saveContent(imageDTO);
-                    log.info("이미지 저장 성공: {}", imageDTO);
+//                    log.info("이미지 저장 성공: {}", imageDTO);
                 }
             }
         }
@@ -630,11 +630,9 @@ public class UserEventController {
             boardDTO.setBoardCreateDate(LocalDate.now().toString());
             boardDTO.setDisclosureStatus("공개");
             boardService.updateBoard(boardDTO);
-            log.info("c_board 업데이트 성공: {}", boardDTO);
+//            log.info("c_board 업데이트 성공: {}", boardDTO);
         }
     }
-
-
 
 
 //    @GetMapping("/admin/event/apply/{seasonId}")
@@ -795,12 +793,12 @@ public class UserEventController {
             File existingFile = new File(fullPath);
             if (existingFile.exists() && existingFile.isFile()) {
                 if (existingFile.delete()) {
-                    log.info("기존 파일 삭제 성공: {}", fullPath);
+//                    log.info("기존 파일 삭제 성공: {}", fullPath);
                 } else {
-                    log.warn("기존 파일 삭제 실패: {}", fullPath);
+//                    log.warn("기존 파일 삭제 실패: {}", fullPath);
                 }
             } else {
-                log.warn("삭제하려는 파일이 존재하지 않음: {}", fullPath);
+//                log.warn("삭제하려는 파일이 존재하지 않음: {}", fullPath);
             }
         }
     }//-----------
@@ -842,6 +840,30 @@ public class UserEventController {
     @ResponseBody
     public List<SeasonDTO> getSeasonsByEventId(@PathVariable("eventId") int eventId) {
         return eventService.getSeasonsByEventId(eventId);
+    }
+
+    @PostMapping("/event/apply/{seasonId}")
+    public String getApplyMember(@PathVariable("seasonId") int seasonId,
+                                 HttpSession ses, Model model){
+
+        // ses에서 로그인 아이디와 컴퍼니 아이디 가져오기.
+        String memberId = ((LoginDTO) ses.getAttribute("loginUser")).getMemberId();
+        Long companyId = ((LoginDTO) ses.getAttribute("loginUser")).getCompanyId();
+
+//        log.info("memberIds=={}",memberId);
+
+        MemberDTO attentionMember = eventService.findAttentionMember(seasonId, companyId, memberId);
+        // 이미 등록한 적 있는 경우 알림.
+        if (attentionMember!=null){
+            String msg = "이미 등록했습니다.";
+            String loc = "/user/board/eventList";
+            return message(model, msg, loc);
+        }
+
+        int result = eventService.applyEventByUser(memberId, seasonId, companyId);
+        String msg = "등록되었습니다.";
+        String loc = "/user/board/eventList";
+        return message(model, msg, loc);
     }
 
 

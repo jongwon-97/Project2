@@ -65,11 +65,8 @@ public class SignupController {
             signup.setMemberImgName("images/noIdp.png"); // 기본 이미지 설정
         }
 
-
         boolean isValid = signupService.validateSignup(signup);
-
         if (!isValid) {
-
             model.addAttribute("msg", "입력한 정보에 오류가 있습니다. 다시 확인해주세요.");
             model.addAttribute("loc", "/pSignup");
             return "message";

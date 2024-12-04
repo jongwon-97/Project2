@@ -7,6 +7,8 @@ import com.kosmo.nexus.mapper.SignupMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+
 
 @Service
 @Slf4j
@@ -34,7 +36,8 @@ public class SignupServiceImpl implements SignupService{
         // 필수 필드 값 확인 (아이디 포함)
         if (isBlank(signup.getMemberId()) || isBlank(signup.getMemberPw()) ||
                 isBlank(signup.getMemberEmail()) || isBlank(signup.getMemberName()) ||
-                isBlank(signup.getMemberPhone())) {
+                isBlank(signup.getMemberPhone()) || signup.getMemberBirth() == null ||
+                signup.getMemberPostcode() == 0|| isBlank(signup.getMemberAddress())){
             return false; // 필수 항목이 누락된 경우
         }
 
@@ -42,6 +45,16 @@ public class SignupServiceImpl implements SignupService{
         return  isValidPassword(signup.getMemberPw()) &&
                 isValidEmail(signup.getMemberEmail()) &&
                 isValidPhone(signup.getMemberPhone());
+    }
+
+    private boolean isValidPostcode(int memberPostcode) {
+        // 우편번호는 양수여야 함 (예: 12345)
+        return memberPostcode > 0;
+    }
+
+    private boolean isBlank(Date memberBirth) {
+        Date today = new Date(System.currentTimeMillis());
+        return !memberBirth.after(today);
     }
 
     // 공백 및 null 확인

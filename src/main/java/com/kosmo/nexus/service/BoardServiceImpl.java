@@ -30,22 +30,22 @@ public class BoardServiceImpl implements BoardService {
     }
     @Override
     public void insertNotification(NoticeDTO noticeDTO) {
-        log.info("공지사항 추가: {}", noticeDTO);
+        //log.info("공지사항 추가: {}", noticeDTO);
         boardMapper.insertNotification(noticeDTO);
     }
     @Override
     public void deleteNotification(int num) {
-        log.info("공지사항 삭제 요청: {}", num);
+        //log.info("공지사항 삭제 요청: {}", num);
         boardMapper.deleteNotification(num);
     }
     @Override
     public void updateNotification(NoticeDTO noticeDTO) {
-        log.info("공지사항 수정: {}", noticeDTO);
+        //log.info("공지사항 수정: {}", noticeDTO);
         boardMapper.updateNotification(noticeDTO);
     }
     @Override
     public void increaseViewCount(int num) {
-        log.info("조회수 증가 요청: {}", num);
+        //log.info("조회수 증가 요청: {}", num);
         boardMapper.updateViewCount(num);
     }
 
@@ -65,11 +65,17 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.getTotalGeneralCount(pagingDTO);
     }
 
+    // 일반 글의 총 개수를 가져오는 메서드 구현
+    @Override
+    public int getTotalCompanyCount(PagingDTO pagingDTO, Long companyId) {
+        return boardMapper.getTotalCompanyCount(pagingDTO, companyId);
+    }
+
     @Override
     public void insertBoard(BoardDTO boardDTO) {
-        log.info("insertBoard 호출 전: {}", boardDTO);
+        //log.info("insertBoard 호출 전: {}", boardDTO);
         boardMapper.insertBoard(boardDTO);
-        log.info("insertBoard 호출 후: boardId = {}", boardDTO.getBoardId());
+        //log.info("insertBoard 호출 후: boardId = {}", boardDTO.getBoardId());
     }
 
 
@@ -85,31 +91,36 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public int getTotalQnaCompanyCount(PagingDTO paging, Long companyId){
+        return boardMapper.getTotalQnaCompanyCount(paging, companyId);
+    }
+
+    @Override
     public BoardDTO findQnaById(int num) {
         return boardMapper.selectQnaById(num);
     }
 
     @Override
     public void insertQna(BoardDTO boardDTO) {
-        log.info("QnA 추가: {}", boardDTO);
+        //log.info("QnA 추가: {}", boardDTO);
         boardMapper.insertQna(boardDTO);
     }
 
     @Override
     public void updateQna(BoardDTO boardDTO) {
-        log.info("QnA 수정: {}", boardDTO);
+        //log.info("QnA 수정: {}", boardDTO);
         boardMapper.updateQna(boardDTO);
     }
 
     @Override
     public void deleteQna(int num) {
-        log.info("QnA 삭제 요청: {}", num);
+        //log.info("QnA 삭제 요청: {}", num);
         boardMapper.deleteQna(num);
     }
 
     @Override
     public void increaseQnaViewCount(int num) {
-        log.info("QnA 조회수 증가 요청: {}", num);
+        //log.info("QnA 조회수 증가 요청: {}", num);
         boardMapper.updateQnaViewCount(num);
     }
 
@@ -125,5 +136,25 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void updateBoard(BoardDTO boardDTO) {
         boardMapper.updateBoard(boardDTO);
+    }
+
+    @Override
+    public List<BoardDTO> selectNotificationListByCompanyId(PagingDTO paging, Long companyId) {
+        return boardMapper.selectNotificationListByCompanyId(paging, companyId);
+    }
+
+    @Override
+    public List<BoardDTO> selectQnaListByCompanyID(PagingDTO paging, Long companyId) {
+        return boardMapper.selectQnaListByCompanyID(paging, companyId);
+    }
+
+    @Override
+    public int selectUnansByCompanyID(Long companyId) {
+        return boardMapper.selectUnansByCompanyID(companyId);
+    }
+
+    @Override
+    public int selectUnans() {
+        return boardMapper.selectUnans();
     }
 }

@@ -2,49 +2,94 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/notice/notification.css">
     <title>공지사항 작성 (Admin)</title>
 </head>
 <body>
 <!-- 공지사항 작성 폼 -->
 <div>
     <h1>공지사항 작성</h1>
-    <form th:action="@{/board/adminNotification}" method="post" enctype="multipart/form-data">
-        <!-- 등록 및 임시저장 버튼 -->
-        <div>
-            <button type="submit">등록</button>
-            <button type="button">임시저장</button>
-        </div>
-
+    <form th:action="@{/admin/board/notification}" th:method="post" enctype="multipart/form-data">
         <!-- 제목 입력 -->
-        <div>
+        <div class="form-group">
             <label for="boardTitle">제목</label>
             <input type="text" id="boardTitle" name="boardTitle" placeholder="제목을 입력하세요" required>
-            <span style="color: blue;">&lt;기업&gt;</span> <!-- 푸른 글씨체로 "<기업>" 표시 -->
         </div>
 
         <!-- 공지 체크박스 -->
-        <div>
+        <div class="form-group">
             <input type="checkbox" id="isNotice" name="isNotice" value="true">
             <label for="isNotice">공지</label>
         </div>
 
-        <!-- 파일 첨부 -->
-        <div>
-            <label for="file">파일 첨부</label>
-            <input type="file" id="file" name="file">
+        <!-- 여러 파일 첨부 -->
+        <div class="form-group">
+            <label for="files">파일 첨부</label>
+            <input type="file" id="files" name="files" multiple>
+            <div id="file-list">
+                <ul id="file-names"></ul>
+            </div>
         </div>
 
         <!-- 내용 작성 -->
-        <div>
+        <div class="form-group">
             <label for="boardContent">내용</label>
             <textarea id="boardContent" name="boardContent" rows="10" placeholder="내용을 입력하세요"></textarea>
         </div>
 
-        <!-- 목록 버튼 -->
-        <div>
-            <a th:href="@{/board/notificationList}"><button type="button">목록</button></a>
+        <!-- 등록 및 임시저장 버튼 -->
+        <div class="form-actions">
+            <button type="submit">등록</button>
         </div>
     </form>
 </div>
+
+<script>
+    const fileInput = document.getElementById("files");
+    const fileList = document.getElementById("file-names");
+
+    // 파일 선택 시 이벤트 처리
+    fileInput.addEventListener("change", function () {
+        fileList.innerHTML = ""; // 기존 파일 리스트 초기화
+
+        Array.from(this.files).forEach((file, index) => {
+            const listItem = document.createElement("li");
+            listItem.className = "file-item";
+            listItem.innerHTML = `
+                <span>${file.name}</span>
+                <button type="button" class="remove-btn" data-index="${index}">삭제</button>
+            `;
+            fileList.appendChild(listItem);
+        });
+    });
+
+    // 파일 리스트에서 파일 삭제
+    fileList.addEventListener("click", function (event) {
+        if (event.target.classList.contains("remove-btn")) {
+            const index = event.target.getAttribute("data-index");
+            const files = Array.from(fileInput.files);
+
+            // 선택된 파일 제거
+            files.splice(index, 1);
+
+            // 새 FileList 생성
+            const dataTransfer = new DataTransfer();
+            files.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+
+            // 파일 리스트 업데이트
+            fileList.innerHTML = "";
+            Array.from(fileInput.files).forEach((file, idx) => {
+                const listItem = document.createElement("li");
+                listItem.className = "file-item";
+                listItem.innerHTML = `
+                    <span>${file.name}</span>
+                    <button type="button" class="remove-btn" data-index="${idx}">삭제</button>
+                `;
+                fileList.appendChild(listItem);
+            });
+        }
+    });
+</script>
 </body>
 </html>

@@ -63,7 +63,7 @@
 <body>
 <div class="container">
   <h2>모집 공고 글쓰기</h2>
-  <form action="/board/event" method="post" enctype="multipart/form-data">
+  <form action="/dev/board/event" method="post" enctype="multipart/form-data">
     <div class="form-group">
       <label for="event-id">이벤트 선택</label>
       <select id="event-id" name="event_id" required>
@@ -101,6 +101,15 @@
       <label for="season-info">회차 설명</label>
       <textarea id="season-info" name="season_info" required></textarea>
     </div>
+    <!--이미지 추가, 글 추가-->
+    <div id="content-container">
+      <!-- 이곳에 글과 이미지를 동적으로 추가 -->
+    </div>
+
+    <button type="button" id="addText">글 추가</button>
+    <button type="button" id="addImage">이미지 추가</button>
+
+
     <div class="form-actions">
       <div class="left-actions">
         <button type="button">임시저장</button>
@@ -114,7 +123,7 @@
 <script>
   // 서버에서 이벤트 목록 가져와서 select에 추가하는 예제
   window.onload = function() {
-    fetch('/api/events')  // JSON 데이터를 가져오는 API 호출
+    fetch('/dev/api/events') // JSON 데이터를 가져오는 API 호출
       .then(response => {
         if (!response.ok) {
           throw new Error('네트워크 응답에 문제가 있습니다.');
@@ -128,7 +137,7 @@
         if (data && data.length > 0) {
           data.forEach(event => {
             let option = document.createElement("option");
-            option.value = event.eventId;   // 실제로 서버에서 넘어온 eventId를 value로 설정
+            option.value = event.eventId; // 실제로 서버에서 넘어온 eventId를 value로 설정
             option.text = `${event.eventId} - ${event.eventTitle}`; // 드롭다운에 보이는 텍스트는 eventId와 eventTitle
             eventSelect.add(option);
           });
@@ -137,7 +146,57 @@
         }
       })
       .catch(error => console.error('Error:', error));
+  };
+
+  // 동적으로 글 추가
+  document.getElementById('addText').addEventListener('click', function() {
+    const container = document.getElementById('content-container');
+    const textDiv = document.createElement('div');
+    textDiv.className = 'content-item';
+    textDiv.innerHTML = `
+      <textarea name="texts[]" placeholder="여기에 글을 입력하세요"></textarea>
+      <button type="button" onclick="removeItem(this)">삭제</button>
+    `;
+    container.appendChild(textDiv);
+  });
+
+  // 동적으로 이미지 추가
+  document.getElementById('addImage').addEventListener('click', function() {
+    const container = document.getElementById('content-container');
+    const imageDiv = document.createElement('div');
+    imageDiv.className = 'content-item';
+
+    imageDiv.innerHTML = `
+      <input type="file" name="images[]" accept="image/*">
+      <button type="button" onclick="removeItem(this)">삭제</button>
+    `;
+    container.appendChild(imageDiv);
+  });
+
+  // 삭제
+  function removeItem(button) {
+    button.parentElement.remove();
   }
+
+  // 폼 제출 이벤트
+  document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // 폼 제출을 일시적으로 막음
+
+    const formData = new FormData(this);
+
+    // FormData 내용을 콘솔에 출력
+    console.log('폼 데이터 확인:');
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}: ${value.name} (파일)`);
+      } else {
+        console.log(`${key}: ${value}`);
+      }
+    }
+
+    // 폼을 실제로 서버로 제출
+    this.submit();
+  });
 </script>
 </body>
 </html>

@@ -5,7 +5,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^(01[0|1|6|7|8|9]-\d{3,4}-\d{4}|02-\d{3,4}-\d{4}|0[3-6][1-9]-\d{3,4}-\d{4}|050-\d{4}-\d{4}|050\d-\d{4}-\d{4})$/;
 //const phonePattern = /^01[0|1|6|7|8|9]-\d{3,4}-\d{4}$/;
 //const phonePattern = /^\d{10,11}$/;
-
+const birthDatePattern = /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 // 전화번호 포맷팅 함수
 function autoFormatPhoneNumber(phone) {
     const onlyNumbers = phone.replace(/[^0-9]/g, "");
@@ -75,13 +75,6 @@ const init = () => {
     form.addEventListener('submit', (event) => {
         if (!validateForm()) {
             event.preventDefault(); // 폼 제출 방지
-        } else {
-            console.log("Form Data:", {
-                memberId: document.getElementById("memberId").value,
-                memberPw: document.getElementById("memberPw").value,
-                memberPhone: document.getElementById("memberPhone").value,
-                memberGender: document.querySelector('input[name="memberGender"]:checked')?.value
-            });
         }
     });
 }; // <- init 함수 닫기 추가
@@ -92,9 +85,11 @@ function validateName() {
     const error = document.getElementById("nameError");
     if (!name.trim()) {
         error.textContent = "이름을 입력하세요.";
+        error.style.display = "block";
         return false;
     }
     error.textContent = "";
+    error.style.display = "none";
     return true;
 }
 
@@ -104,9 +99,11 @@ function validatePassword() {
     const error = document.getElementById("passwordError");
     if (!passwordPattern.test(password)) {
         error.textContent = "비밀번호는 8자 이상이며, 소문자+숫자+특수문자를 포함해야 합니다.";
+        error.style.display = "block";
         return false;
     }
     error.textContent = "";
+    error.style.display = "none";
     return true;
 }
 
@@ -116,9 +113,11 @@ function validateConfirmPassword() {
     const error = document.getElementById("confirmPasswordError");
     if (password !== confirmPassword) {
         error.textContent = "비밀번호가 일치하지 않습니다.";
+         error.style.display = "block";
         return false;
     }
     error.textContent = "";
+    error.style.display = "none"; // 메시지 숨김
     return true;
 }
 
@@ -127,9 +126,11 @@ function validateEmail() {
     const error = document.getElementById("emailError");
     if (!emailPattern.test(email)) {
         error.textContent = "유효한 이메일 주소를 입력하세요.";
+        error.style.display = "block";
         return false;
     }
     error.textContent = "";
+    error.style.display = "none";
     return true;
 }
 
@@ -139,6 +140,7 @@ function validatePhone() {
 
     if (!phonePattern.test(phone)) {
         error.textContent = "전화번호 형식이 올바르지 않습니다.";
+        error.style.display = "block";
         return false;
     }
 
@@ -146,17 +148,43 @@ function validatePhone() {
     document.getElementById("memberPhone").value = autoFormatPhoneNumber(phone);
     console.log("Formatted Phone Before Submit:", autoFormatPhoneNumber(memberPhone));
     error.textContent = "";
+    error.style.display = "none";
     return true;
 }
 
 function validateBirthDate() {
-    const birthDate = document.getElementById("memberBirth").value;
+    const birthDateInput = document.getElementById("memberBirth");
+    const birthDate = birthDateInput.value.trim();
     const error = document.getElementById("birthError");
+
     if (!birthDate) {
         error.textContent = "생년월일을 입력하세요.";
+        error.style.display = "block";
+        birthDateInput.value = null; // 빈 값을 null로 설정
+        return false;
+    }
+
+    if (!birthDatePattern.test(birthDate)) {
+        error.textContent = "유효한 생년월일 형식(YYYY-MM-DD)이 아닙니다.";
+        error.style.display = "block";
+        return false;
+    }
+
+    error.textContent = "";
+    error.style.display = "none";
+    return true;
+}
+
+function validatePostcode() {
+    const postcode = document.getElementById("memberPostcode").value.trim();
+    const error = document.getElementById("postcodeError");
+    if (!postcode.trim()) {
+        error.textContent = "우편번호를 입력하세요.";
+        error.style.display = "block";
         return false;
     }
     error.textContent = "";
+    error.style.display = "none";
     return true;
 }
 
@@ -166,9 +194,11 @@ function validateGender() {
     const error = document.getElementById("genderError");
     if (!genderMale && !genderFemale) {
         error.textContent = "성별을 선택하세요.";
+        error.style.display = "block";
         return false;
     }
     error.textContent = "";
+    error.style.display = "none";
     return true;
 }
 
@@ -181,9 +211,10 @@ function validateForm() {
     const isBirthDateValid = validateBirthDate();
     const isGenderValid = validateGender();
     const isNameValid = validateName();
+    const isPostcodeValid = validatePostcode();
 
     if ( !isPasswordValid || !isConfirmPasswordValid || !isEmailValid ||
-        !isPhoneValid || !isBirthDateValid || !isGenderValid || !isNameValid) {
+        !isPhoneValid || !isBirthDateValid || !isGenderValid || !isNameValid || !isPostcodeValid) {
         alert("입력 정보를 다시 확인하세요.");
         return false;
     }

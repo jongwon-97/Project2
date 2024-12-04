@@ -1,0 +1,188 @@
+/* 기본 스타일 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #f4f4f4;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 화면 중앙 정렬 */
+    overflow: hidden; /* 스크롤 방지 */
+    box-sizing: border-box;
+}
+
+/* 배경 슬라이드 */
+.background-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.background-slider img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    animation: fade 12s infinite;
+}
+
+.background-slider img:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.background-slider img:nth-child(2) {
+    animation-delay: 4s;
+}
+
+.background-slider img:nth-child(3) {
+    animation-delay: 8s;
+}
+
+@keyframes fade {
+    0% { opacity: 0; }
+    33% { opacity: 1; }
+    66% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* 로고 스타일 */
+.logo {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #005f8d;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* 텍스트 그림자 추가 */
+}
+
+/* 메인 컨테이너 */
+.container {
+    background: rgba(255, 255, 255, 0.9); /* 약간 투명한 흰색 */
+    padding: 50px 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 650px;
+    position: relative; /* iframe 컨테이너 위치를 위해 추가 */
+    transition: transform 0.3s ease-in-out;
+}
+
+/* 호버 효과: 컨테이너가 살짝 커짐 */
+.container:hover {
+    transform: scale(1.05);
+}
+
+/* 공지사항 스타일 */
+.notice-container {
+    width: 100%;
+    overflow: hidden;
+    background: #fffbf1;
+    padding: 12px 0;
+    border-top: 2px solid #f1c232;
+    border-bottom: 2px solid #f1c232;
+    margin-bottom: 25px;
+    font-weight: bold;
+    color: #c70000;
+}
+
+/* 공지사항 텍스트 */
+.notice-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scroll 12s linear infinite;
+    font-size: 15px;
+    color: #c70000;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* 버튼 스타일 */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+/* 로그인 버튼 스타일 */
+button.login-button {
+    width: 160px;
+    height: 160px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to bottom, #004f6b, #0071a4); /* 진한 파랑색 */
+    transition: all 0.3s ease;
+}
+
+button.login-button:hover {
+    background: linear-gradient(to bottom, #007bff, #004f6b); /* 밝아지는 파랑색 효과 */
+    transform: scale(1.1);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 확장 */
+}
+
+/* iframe 컨테이너 */
+.iframe-container {
+    display: none; /* 초기 상태: 숨김 */
+    position: fixed; /* 화면 전체 기준으로 고정 */
+    top: 0;
+    left: 0;
+    width: 100vw; /* 전체 화면 너비 */
+    height: 100vh; /* 전체 화면 높이 */
+    background: rgba(0, 0, 0, 0.7); /* 어두운 반투명 배경 */
+    z-index: 100; /* 다른 요소 위에 표시 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    transition: opacity 0.3s ease;
+}
+
+/* iframe */
+iframe {
+    border: none;
+    border-radius: 10px;
+    background: white;
+    width: 600px; /* 고정된 너비 */
+    height: 350px; /* 고정된 높이 */
+    position: relative; /* 닫기 버튼 기준 위치 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 닫기 버튼 */
+.close-button {
+    position: absolute;
+    top: -15px; /* iframe 상단 위로 살짝 나옴 */
+    right: -15px; /* iframe 오른쪽 밖으로 살짝 나옴 */
+    background: #ff5c5c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px; /* 버튼 고정 크기 */
+    height: 35px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    line-height: 35px;
+    z-index: 101; /* iframe보다 위에 표시 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+}
+
+/* 닫기 버튼 호버 시 색상 변화 */
+.close-button:hover {
+    background: #ff4040;
+}

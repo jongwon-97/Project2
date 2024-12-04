@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/notice/notificationEdit.css">
+    <title>공지사항 수정</title>
+</head>
+<body>
+<div class="container">
+    <h1>공지사항 수정</h1>
+    <form action="../board/editNotification" method="post" enctype="multipart/form-data">
+        <!-- 게시글 ID -->
+        <input type="hidden" name="boardId" th:value="${notification.boardId}">
+
+        <!-- 제목 -->
+        <div>
+            <label for="title">제목:</label>
+            <input type="text" id="title" name="boardTitle" th:value="${notification.boardTitle}" required>
+        </div>
+
+        <!-- 공지 여부 체크박스 -->
+        <div>
+            <input type="checkbox" id="isNotice" name="isNotice" value="true" th:checked="${notification.isNotice}">
+            <label for="isNotice">공지</label>
+        </div>
+
+        <!-- 내용 -->
+        <div>
+            <label for="content">내용:</label>
+            <textarea id="content" name="boardContent" required th:text="${notification.boardContent}"></textarea>
+        </div>
+
+        <!-- 기존 첨부파일 -->
+        <div>
+            <p><strong>기존 첨부파일:</strong></p>
+            <div id="existing-file-list">
+                <ul>
+                    <li th:each="file : ${attachedFiles}" class="file-item">
+                        <span th:text="${file.fileOriginName}"></span>
+                        <button type="button" class="remove-btn" th:onclick="|deleteAttachedFile(${file.fileId})|">삭제</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 새로 첨부할 파일 -->
+        <div>
+            <label for="newFiles">새 파일 첨부:</label>
+            <input type="file" id="newFiles" name="newFiles" multiple>
+            <div id="new-file-list">
+                <ul></ul>
+            </div>
+        </div>
+
+        <!-- 버튼 -->
+        <div class="actions">
+            <button type="submit">수정하기</button>
+            <a th:href="@{/dev/board/notificationList}"><button type="button">취소</button></a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 기존 첨부파일 삭제 요청
+    function deleteAttachedFile(fileId) {
+        if (confirm("첨부파일을 삭제하시겠습니까?")) {
+            fetch(`/file/delete?fileId=${fileId}`, {method: 'DELETE'})
+                .then(response => {
+                    if (response.ok) {
+                        alert("첨부파일이 삭제되었습니다.");
+                        location.reload(); // 페이지 새로고침
+                    } else {
+                        alert("첨부파일 삭제에 실패했습니다.");
+                    }
+                })
+                .catch(error => {
+                    alert("오류가 발생했습니다: " + error.message);
+                });
+        }
+    }
+
+    // 새 파일 리스트 추가
+    const newFilesInput = document.getElementById("newFiles");
+    const newFileList = document.getElementById("new-file-list").querySelector("ul");
+
+    newFilesInput.addEventListener("change", function () {
+        newFileList.innerHTML = ""; // 기존 파일 리스트 초기화
+
+        Array.from(this.files).forEach((file, index) => {
+            const listItem = document.createElement("li");
+            listItem.className = "file-item";
+            listItem.innerHTML = `
+                <span>${file.name}</span>
+                <button type="button" class="remove-btn" data-index="${index}">삭제</button>
+            `;
+            newFileList.appendChild(listItem);
+        });
+    });
+
+    // 새 파일 삭제
+    newFileList.addEventListener("click", function (event) {
+        if (event.target.classList.contains("remove-btn")) {
+            const index = event.target.getAttribute("data-index");
+            const files = Array.from(newFilesInput.files);
+
+            // 선택된 파일 제거
+            files.splice(index, 1);
+
+            // 새 FileList 생성
+            const dataTransfer = new DataTransfer();
+            files.forEach(file => dataTransfer.items.add(file));
+            newFilesInput.files = dataTransfer.files;
+
+            // 파일 리스트 업데이트
+            newFileList.innerHTML = "";
+            Array.from(newFilesInput.files).forEach((file, idx) => {
+                const listItem = document.createElement("li");
+                listItem.className = "file-item";
+                listItem.innerHTML = `
+                    <span>${file.name}</span>
+                    <button type="button" class="remove-btn" data-index="${idx}">삭제</button>
+                `;
+                newFileList.appendChild(listItem);
+            });
+        }
+    });
+</script>
+</body>
+</html>

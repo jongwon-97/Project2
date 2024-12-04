@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/notice/notificationDetail.css">
     <title>공지사항 상세보기</title>
     <script>
         function deleteNotification(notificationId) {
@@ -59,7 +60,11 @@
     <p><strong>첨부파일:</strong></p>
     <ul>
         <li th:each="file : ${attachedFiles}">
-            <a th:href="@{${file.filePath}}" th:text="${file.fileOriginName}" download></a>
+            <span th:text="${file.fileOriginName}"></span>
+            <a th:href="@{/board/download(filePath=${file.filePath})}" download>다운로드</a>
+        </li>
+        <li th:each="file : ${newFiles}">
+            <span th:text="${file.fileName}"></span>
         </li>
     </ul>
     <p th:if="${#lists.isEmpty(attachedFiles)}">첨부된 파일이 없습니다.</p>

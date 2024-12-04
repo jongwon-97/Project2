@@ -6,32 +6,55 @@
 
 <mapper namespace="com.kosmo.nexus.mapper.EventMapper">
 
+    <resultMap id="MemberResultMap" type="Member">
+        <result property="memberId" column="member_id"/>
+        <result property="memberName" column="member_name"/>
+        <result property="memberRole" column="member_role"/>
+        <result property="memberImgName" column="member_img"/>
+        <result property="memberSns" column="member_sns"/>
+        <result property="memberEmail" column="member_email"/>
+        <result property="memberPhone" column="member_phone"/>
+        <result property="memberGender" column="member_gender"/>
+        <result property="memberBirth" column="member_birth"/>
+        <result property="memberPostcode" column="member_postcode"/>
+        <result property="memberAddress" column="member_address"/>
+        <result property="memberDAddress" column="member_d_address"/>
+        <result property="memberNum" column="member_num"/>
+        <result property="memberRank" column="member_rank"/>
+        <result property="memberDepartment" column="member_department"/>
+        <result property="companyId" column="company_id"/>
+        <result property="memberStatus" column="member_status"/>
+        <result property="memberStartDate" column="member_start_date"/>
+        <result property="memberLastDate" column="member_last_date"/>
+        <result property="attentionStatus" column="attention_status"/>
+    </resultMap>
+
     <insert id="insertEvent" parameterType="Event" useGeneratedKeys="true" keyProperty="eventId">
         INSERT INTO c_event (event_title, member_id)
         VALUES (#{eventTitle}, #{memberId})
     </insert>
 
     <insert id="insertSeason" parameterType="Season">
-        INSERT INTO c_season (season_title, season_info, season_limit, season_fee, season_views, season_start_date, season_end_date, event_id, season_state, board_id, round_number, season_thumbnail)
-        VALUES (#{seasonTitle}, #{seasonInfo}, #{seasonLimit}, #{seasonFee}, #{seasonViews}, #{seasonStartDate}, #{seasonEndDate}, #{eventId}, #{seasonState}, #{boardId}, #{roundNumber}, #{seasonThumbnail})
+        INSERT INTO c_season (season_id, season_title, season_info, season_limit, season_fee, season_views, season_start_date, season_end_date, event_id, season_state, board_id, round_number, season_thumbnail)
+        VALUES (#{seasonId}, #{seasonTitle}, #{seasonInfo}, #{seasonLimit}, #{seasonFee}, #{seasonViews}, #{seasonStartDate}, #{seasonEndDate}, #{eventId}, #{seasonState}, #{boardId}, #{roundNumber}, #{seasonThumbnail})
     </insert>
 
     <!-- 모든 회차를 조회하는 쿼리 -->
     <select id="getAllSeasons" resultType="Season">
         SELECT
-            season_id AS seasonId,
-            season_title AS seasonTitle,
-            season_info AS seasonInfo,
-            season_limit AS seasonLimit,
-            season_fee AS seasonFee,
-            season_views AS seasonViews,
-            season_start_date AS seasonStartDate,
-            season_end_date AS seasonEndDate,
-            event_id AS eventId,
-            season_state AS seasonState,
-            board_id AS boardId,
-            round_number AS roundNumber,
-            season_thumbnail AS seasonThumbnail
+        season_id AS seasonId,
+        season_title AS seasonTitle,
+        season_info AS seasonInfo,
+        season_limit AS seasonLimit,
+        season_fee AS seasonFee,
+        season_views AS seasonViews,
+        season_start_date AS seasonStartDate,
+        season_end_date AS seasonEndDate,
+        event_id AS eventId,
+        season_state AS seasonState,
+        board_id AS boardId,
+        round_number AS roundNumber,
+        season_thumbnail AS seasonThumbnail
         FROM c_season
     </select>
 
@@ -60,19 +83,19 @@
     <!-- 업데이트 -->
     <select id="getSeasonById" parameterType="int" resultType="Season">
         SELECT
-            season_id AS seasonId,
-            season_title AS seasonTitle,
-            season_info AS seasonInfo,
-            season_limit AS seasonLimit,
-            season_fee AS seasonFee,
-            season_views AS seasonViews,
-            season_start_date AS seasonStartDate,
-            season_end_date AS seasonEndDate,
-            event_id AS eventId,
-            season_state AS seasonState,
-            board_id AS boardId,
-            round_number AS roundNumber,
-            season_thumbnail AS seasonThumbnail
+        season_id AS seasonId,
+        season_title AS seasonTitle,
+        season_info AS seasonInfo,
+        season_limit AS seasonLimit,
+        season_fee AS seasonFee,
+        season_views AS seasonViews,
+        season_start_date AS seasonStartDate,
+        season_end_date AS seasonEndDate,
+        event_id AS eventId,
+        season_state AS seasonState,
+        board_id AS boardId,
+        round_number AS roundNumber,
+        season_thumbnail AS seasonThumbnail
         FROM c_season
         WHERE season_id = #{seasonId}
     </select>
@@ -80,31 +103,33 @@
     <update id="updateSeason" parameterType="Season">
         UPDATE c_season
         SET season_title = #{seasonTitle},
+        season_id = #{seasonId}
         season_info = #{seasonInfo},
         season_limit = #{seasonLimit},
         season_fee = #{seasonFee},
         season_start_date = #{seasonStartDate},
         season_end_date = #{seasonEndDate},
         season_thumbnail = #{seasonThumbnail}, <!-- 단일 파일 경로로 처리 -->
+        season_state = #{seasonState}, -- 상태 업데이트 포함
         round_number = #{roundNumber}
         WHERE season_id = #{seasonId}
     </update>
 
     <select id="selectSeasonList" resultType="Season">
         SELECT
-            season_id AS seasonId,
-            season_title AS seasonTitle,
-            season_info AS seasonInfo,
-            season_limit AS seasonLimit,
-            season_fee AS seasonFee,
-            season_views AS seasonViews,
-            season_start_date AS seasonStartDate,
-            season_end_date AS seasonEndDate,
-            event_id AS eventId,
-            season_state AS seasonState,
-            board_id AS boardId,
-            round_number AS roundNumber,
-            season_thumbnail AS seasonThumbnail
+        season_id AS seasonId,
+        season_title AS seasonTitle,
+        season_info AS seasonInfo,
+        season_limit AS seasonLimit,
+        season_fee AS seasonFee,
+        season_views AS seasonViews,
+        season_start_date AS seasonStartDate,
+        season_end_date AS seasonEndDate,
+        event_id AS eventId,
+        season_state AS seasonState,
+        board_id AS boardId,
+        round_number AS roundNumber,
+        season_thumbnail AS seasonThumbnail
         FROM c_season
         ORDER BY season_start_date DESC
     </select>
@@ -165,5 +190,199 @@
         SET season_views = season_views + 1
         WHERE season_id = #{seasonId}
     </update>
+
+    <insert id="applyEventByAdmin">
+        insert into c_attention (member_id, season_id, company_id)
+        values
+        <foreach collection="memberIds" item="memberId" separator=",">
+            (#{memberId}, #{seasonId}, #{companyId})
+        </foreach>
+    </insert>
+
+    <select id="findAttentionMemberList" resultMap="MemberResultMap">
+        <![CDATA[
+    SELECT m.member_id, m.member_name, m.member_role, m.member_img, m.member_sns,
+           m.member_email, m.member_phone, m.member_gender, m.member_birth,
+           m.member_postcode, m.member_address, m.member_d_address, m.member_num,
+           m.member_rank, m.member_department, m.company_id, m.member_status,
+           m.member_start_date, m.member_last_date
+    FROM c_member m
+    WHERE m.company_id = #{companyId}
+        AND m.member_id IN (
+        SELECT a.member_id
+        FROM c_attention a
+        WHERE a.season_id = #{seasonId}
+        AND a.company_id = #{companyId}
+    )
+    ]]>
+    </select>
+
+    <select id="findAbsenceMemberList" resultMap="MemberResultMap">
+        <![CDATA[
+        SELECT m.member_id, m.member_name, m.member_role, m.member_img, m.member_sns,
+               m.member_email, m.member_phone, m.member_gender, m.member_birth,
+               m.member_postcode, m.member_address, m.member_d_address, m.member_num,
+               m.member_rank, m.member_department, m.company_id, m.member_status,
+               m.member_start_date, m.member_last_date
+        FROM c_member m
+        WHERE  m.company_id = #{companyId}
+        AND NOT EXISTS (
+          SELECT 1
+          FROM c_attention a
+          WHERE a.member_id = m.member_id
+          AND a.season_id = #{seasonId}
+          AND a.company_id = #{companyId}
+        )
+        ]]>
+    </select>
+
+    <select id="searchAbsenceMemberList" resultMap="MemberResultMap">
+        SELECT m.member_id, m.member_name, m.member_role, m.member_img, m.member_sns,
+        m.member_email, m.member_phone, m.member_gender, m.member_birth,
+        m.member_postcode, m.member_address, m.member_d_address, m.member_num,
+        m.member_rank, m.member_department, m.company_id, m.member_status,
+        m.member_start_date, m.member_last_date
+        FROM c_member m
+        WHERE m.company_id = #{companyId}
+        <if test="option != null and search != null">
+            AND
+            <choose>
+                <when test="option == 'memberDepartment'">
+                    LOWER(m.member_department) LIKE CONCAT('%', LOWER(#{search}), '%')
+                </when>
+                <when test="option == 'memberId'">member_id = #{search}</when>
+                <when test="option == 'memberNum'">
+                    LOWER(m.member_num) LIKE CONCAT('%', LOWER(#{search}), '%')
+                </when>
+                <when test="option == 'memberName'">
+                    LOWER(m.member_name) LIKE CONCAT('%', LOWER(#{search}), '%')
+                </when>
+                <when test="option == 'memberRank'">
+                    LOWER(m.member_rank) LIKE CONCAT('%', LOWER(#{search}), '%')
+                </when>
+                <otherwise>1 = 0</otherwise> <!-- 잘못된 option일 경우 예외 처리 -->
+            </choose>
+        </if>
+        AND NOT EXISTS (
+        SELECT 1
+        FROM c_attention a
+        WHERE a.member_id = m.member_id
+        AND a.season_id = #{seasonId}
+        AND a.company_id = #{companyId}
+        )
+    </select>
+
+    <select id="searchAbsenceMemberListByDate" resultMap="MemberResultMap">
+        SELECT m.member_id, m.member_name, m.member_role, m.member_img, m.member_sns,
+            m.member_email, m.member_phone, m.member_gender, m.member_birth,
+            m.member_postcode, m.member_address, m.member_d_address, m.member_num,
+            m.member_rank, m.member_department, m.company_id, m.member_status,
+            m.member_start_date, m.member_last_date
+        FROM c_member m
+        LEFT JOIN c_attention a
+            ON m.member_id = a.member_id
+            AND a.season_id = #{seasonId}
+            AND a.company_id = #{companyId}
+        WHERE m.company_id = #{companyId}
+            AND (a.member_id IS NULL)
+            <if test="birthStart != null">
+                AND m.member_birth >= #{birthStart}
+            </if>
+            <if test="birthEnd != null">
+                <![CDATA[ AND m.member_birth <= #{birthEnd}]]>
+            </if>
+            <if test="hireStart != null">
+                AND m.member_start_date >= #{hireStart}
+            </if>
+            <if test="hireEnd != null">
+                <![CDATA[ AND m.member_start_date <= #{hireEnd}]]>
+            </if>
+    </select>
+    
+    <delete id="deleteCancelMember">
+        DELETE FROM c_attention
+        WHERE member_id = #{memberId}
+        AND season_id = #{seasonId}
+        AND company_id = #{companyId}
+    </delete>
+
+    <select id="findSeasonsByBoardId" parameterType="int" resultType="Season">
+        SELECT
+        season_id AS seasonId,
+        season_title AS seasonTitle,
+        season_info AS seasonInfo,
+        season_limit AS seasonLimit,
+        season_fee AS seasonFee,
+        season_views AS seasonViews,
+        season_start_date AS seasonStartDate,
+        season_end_date AS seasonEndDate,
+        event_id AS eventId,
+        season_state AS seasonState,
+        board_id AS boardId,
+        round_number AS roundNumber,
+        season_thumbnail AS seasonThumbnail
+        FROM c_season
+        WHERE board_id = #{boardId}
+    </select>
+
+    <select id="findLimitCount" resultType="_int">
+        SELECT season_limit
+        FROM c_season
+        WHERE season_id = #{seasonId}
+    </select>
+
+    <select id="findAvailableCount" resultType="_int">
+        SELECT season_limit - (
+        SELECT COUNT(*)
+        FROM c_attention
+        WHERE season_id = #{seasonId}
+        )
+        FROM c_season
+        WHERE season_id = #{seasonId}
+    </select>
+
+    <select id="findSeasonsByEventId" parameterType="int" resultType="Season">
+        SELECT
+        season_id AS seasonId,
+        season_title AS seasonTitle,
+        season_start_date AS seasonStartDate,
+        season_end_date AS seasonEndDate,
+        season_limit AS seasonLimit,
+        season_fee AS seasonFee,
+        season_info AS seasonInfo,
+        season_state AS seasonState,
+        round_number AS roundNumber,
+        event_id AS eventId,
+        board_id AS boardId,
+        season_views AS seasonViews,
+        season_thumbnail AS seasonThumbnail
+        FROM c_season
+        WHERE event_id = #{eventId}
+        ORDER BY round_number ASC
+    </select>
+
+    <select id="findEventIdBySeasonId" parameterType="int" resultType="int">
+        SELECT event_id
+        FROM c_season
+        WHERE season_id = #{seasonId}
+    </select>
+
+    <select id="findAllAttentionMemberList" resultMap="MemberResultMap">
+        SELECT
+        m.member_id,
+        m.member_name,
+        m.member_email,
+        m.member_phone,
+        m.company_id,
+        a.attention_status
+        FROM
+        c_member m
+        INNER JOIN
+        c_attention a ON m.member_id = a.member_id
+        WHERE
+        a.season_id = #{seasonId}
+    </select>
+
+
 
 </mapper>

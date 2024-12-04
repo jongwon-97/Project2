@@ -1,0 +1,208 @@
+/* 공통 스타일 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #eef1f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.signup-container {
+    width: 550px;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.signup-container h1 {
+    text-align: left;
+    margin-bottom: 30px;
+    font-size: 24px;
+    color: #333;
+    margin-left: 50px;
+}
+
+/* 필드셋 */
+.signup-form fieldset {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 30px;
+    padding: 30px;
+    width: 400px;
+    margin-left: 46px
+}
+
+.signup-form legend {
+    font-size: 16px;
+    font-weight: bold;
+    color: #005f8d;
+    margin-bottom: 10px;
+}
+
+/* 입력 그룹 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* 입력 필드 */
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* ID 중복 확인 버튼 */
+.input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-group input {
+    flex-grow: 1;
+}
+
+.id-check-button {
+    width: 120px;
+    height: 40px;
+    background: #005f8d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.id-check-button:hover {
+    background: #0077b6;
+}
+
+/* 우편번호 찾기 버튼 */
+#searchPostcodeBtn {
+    width: 140px;
+    height: 40px;
+    background: #005f8d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#searchPostcodeBtn:hover {
+    background: #0077b6;
+}
+
+/* 성별 선택 */
+.gender-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.gender-button {
+    width: 48%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f9f9f9;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.gender-button.selected {
+    background: #005f8d;
+    color: white;
+    border-color: #005f8d;
+}
+
+/* 프로필 이미지 */
+.image-upload {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+}
+
+.image-preview {
+    width: 150px;
+    height: 150px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #f9f9f9;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 파일 선택 버튼 스타일 */
+.image-upload input[type="file"] {
+    display: none; /* 기본 파일 선택 버튼 숨김 */
+}
+
+.custom-file-button {
+    font-size: 14px;
+    padding: 10px 20px;
+    background: #005f8d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    margin-top: 100px;
+}
+
+.custom-file-button:hover {
+    background: #0077b6;
+}
+
+.custom-file-button:active {
+    transform: scale(0.95); /* 클릭 시 살짝 축소 효과 */
+}
+
+/* 가입 버튼 */
+.signup-button {
+    width: 465px;
+    padding: 15px;
+    background: #005f8d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    margin-left: 45px;
+}
+
+.signup-button:hover {
+    background: #0077b6;
+}
+
+.error-message {
+    font-size: 0.9rem;
+    color: red;
+    margin-top: 5px;
+    display: none; /* 기본적으로 숨김 */
+}

@@ -1,47 +1,145 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/member/devhome.css">
   <title>Dev Home</title>
-  <script src="/static/js/common.js"></script>
+
   <script>
-    function checkSession() {
-      fetch('/session-status', { method: 'GET' })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error("로그인 상태가 아닙니다.");
-          }
-        })
-        .then(data => {
-          document.getElementById('sessionStatus').innerText = `${data.memberName} 님 로그인 중입니다.`;
-          document.getElementById('memberRole').innerText = `권한: ${data.memberRole}`;
-        })
-        .catch(() => {
-          document.getElementById('sessionStatus').innerText = "로그인 정보가 없습니다.";
-          document.getElementById('memberRole').innerText = "권한 정보를 확인할 수 없습니다.";
-        });
-    }
-
-    window.onload = function() {
-      checkSession();
-      enableBackButtonProtection("/devhome");
-    };
-
     function logout() {
       fetch('/logout', { method: 'POST' })
-        .then(() => {
-          window.location.href = '/';
-        });
+              .then(() => {
+                window.location.href = '/';
+              });
     }
   </script>
 </head>
 <body>
 <h1>Dev Home</h1>
-<p id="sessionStatus">세션 정보를 불러오는 중...</p>
-<p id="memberRole">권한 정보를 불러오는 중...</p>
+
+<!-- 상단 네비게이션 바 -->
+<div class="navbar">
+  <a href="/dev/home">Home</a>
+  <a href="/dev/companyList">회사 목록 보기</a>
+  <a href="/dev/board/eventList">이벤트 목록 보기</a>
+  <a href="/dev/board/notificationList">공지사항 목록</a>
+  <a href="/dev/board/qnaList">Q&A</a>
+</div>
+
+<!-- 상단 네비게이션 바 -->
+<div class="navbar">
+  <a href="/admin/home">Home</a>
+  <a href="/admin/memberList">사원 관리</a>
+  <a href="/admin/board/eventList">이벤트 관리</a>
+  <a href="/admin/board/notificationList">공지사항 목록</a>
+  <a href="/admin/board/qnaList">Q&A</a>
+</div>
+
+<!-- 대시보드 내용 -->
+<div class="container">
+  <!-- 사용자 정보 카드 -->
+  <div class="card" id="userCard">
+    <table >
+      <tr>
+        <td> 아이디 </td>
+        <td>
+          <span th:text="${member.memberId}"></span>
+        </td>
+      </tr>
+      <tr>
+        <td> 이메일 </td>
+        <td>
+          <span th:text="${member.memberEmail}"></span>
+        </td>
+      </tr>
+      <tr>
+        <td> 사번 </td>
+        <td>
+          <span th:text="${member.memberNum}"></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 다른 카드 -->
+  <div class="card">
+    <h3>답변대기중인 Q&A</h3>
+    <span th:text="${qna}"> </span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h3>행사 모집현황</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>이벤트 제목</th>
+        <th>제한 인원</th>
+        <th>참가비</th>
+        <th>시작 날짜</th>
+        <th>종료 날짜</th>
+        <th>상태</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:if="${seasonList.size() == 0}">
+        <td colspan="10">등록된 이벤트가 없습니다</td>
+      </tr>
+      <tr th:each="season : ${seasonList}">
+        <td>
+          <a th:href="@{/dev/board/event/detail/{seasonId}(seasonId=${season.seasonId})}"
+             th:text="${season.seasonTitle} + ' (' + ${season.roundNumber} + '회차)'"></a>
+        </td>
+        <td th:text="${season.seasonLimit}"></td>
+        <td th:text="${season.seasonFee != null ? season.seasonFee : '무료'}"></td>
+        <td th:text="${season.seasonStartDate}"></td>
+        <td th:text="${season.seasonEndDate}" class="season-end-date"></td>
+        <td th:text="${season.seasonState}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <div class="card">
+    <h3>공지사항</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>글번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일자</th>
+        <th>조회수</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="notification : ${notifications}">
+        <!-- 공지 글번호 표시 -->
+        <td>
+          <span th:if="${notification.isNotice}" style="color: red;">[공지]</span>
+          <span th:unless="${notification.isNotice}" th:text="${notification.boardId}"></span>
+        </td>
+        <!-- 제목 -->
+        <td>
+          <a th:href="@{/dev/board/notificationDetail(num=${notification.boardId})}" th:text="${notification.boardTitle}"></a>
+          <!-- 댓글 개수 표시 -->
+          <span th:if="${notification.commentCount > 0}"
+                th:text="' (' + ${notification.commentCount} + ')'"
+                style="color: red; font-size: 0.9em;"></span>
+        </td>
+        <td th:text="${notification.memberId}"></td>
+        <td th:text="${notification.boardCreateDate}"></td>
+        <td th:text="${notification.boardViews}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 로그아웃 버튼 -->
 <button onclick="logout()">로그아웃</button>
-<a href = "/dev/companyList"> 회사 목록 보기 </a>
+
 </body>
 </html>

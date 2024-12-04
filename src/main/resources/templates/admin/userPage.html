@@ -3,9 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>사원페이지</title>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <style>
         input {
             border: none;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none; /* 기본적으로 숨김 */
+        }
+
+        #postcodeButton {
+            display: none; /* 기본적으로 숨김 */
         }
     </style>
 </head>
@@ -13,14 +25,20 @@
     <h1>User Page</h1>
     <div class="table-section">
     <h2 th:text="${member.memberName}+'님의 상세페이지('+${member.memberRole}+')'">상세 페이지</h2>
-    <form name="userMyPageForm" action="../admin/userPage" method="post" enctype = "multipart/form-data">
+    <form id="userMyPageForm" name="userMyPageForm" action="../admin/userPage" method="post" enctype = "multipart/form-data">
         <table>
             <tbody>
             <tr>
                 <td>사번</td>
-                <td colspan="2"><input id="memberNum" name="memberNum" th:value="${member.memberNum}" readonly></td>
+                <td colspan="2">
+                <input id="memberNum" name="memberNum" th:value="${member.memberNum}" readonly>
+                <input type="hidden" id="companyId" name="companyId" th:value="${member.companyId}">
+                </td>
                 <td rowspan="7" style="width: 100px; text-align: center; vertical-align: middle;">
                     <img id="memberImgName" name="memberImgName" th:src="${member.memberImgName}" alt="사진" th:value="${member.memberImgName}" style="width: 80px; height: 80px;">
+                    <br>
+                    <button type="button" id="imgUpdate" name="imgUpdate">이미지 교체</button>
+                    <input type="file" id="memberImgFile" name="memberImgFile" style="display: none;">
                 </td>
             </tr>
             <tr>
@@ -41,11 +59,12 @@
             </tr>
             <tr>
                 <td>전화번호</td>
-                <td colspan="2"><input id="memberPhone" name="memberPhone" th:value="${member.memberPhone}" readonly></td>
+                <td colspan="2"><input id="memberPhone" name="memberPhone" th:value="${member.memberPhone}" readonly>
+                </td>
             </tr>
             <tr>
                 <td>생년월일</td>
-                <td colspan="3"><input id="memberBirth" name="memberBirth" th:value="${member.memberBirth}" readonly></td>
+                <td colspan="3"><input type="date" id="memberBirth" name="memberBirth" th:value="${member.memberBirth}" readonly></td>
             </tr>
             <tr>
                 <td>성별</td>
@@ -70,7 +89,10 @@
             </tr>
             <tr>
                 <td>주소</td>
-                <td colspan="3"><input id="memberAddress" name="memberAddress" th:value="${member.memberAddress}" readonly></td>
+                <td colspan="3">
+                    <input id="memberAddress" name="memberAddress" th:value="${member.memberAddress}" readonly>
+                    <button type="button" id="postcodeButton">주소 찾기</button>
+                </td>
             </tr>
             <tr>
                 <td>상세주소</td>
@@ -91,49 +113,6 @@
     </form>
     </div>
 </body>
-<script>
-    function enableEdit() {
-        const numInput = document.getElementById("memberNum");
-        const nameInput = document.getElementById("memberName");
-        const departmentInput = document.getElementById("memberDepartment");
-        const rankInput = document.getElementById("memberRank");
-
-        const phoneInput = document.getElementById("memberPhone");
-        const birthInput = document.getElementById("memberBirth");
-        const emailInput = document.getElementById("memberEmail");
-        const addressInput = document.getElementById("memberDAddress");
-        const statusInput = document.getElementById("memberStatus");
-
-        numInput.removeAttribute("readonly");
-        numInput.style.border = '1px solid #000';
-        nameInput.removeAttribute("readonly");
-        nameInput.style.border = '1px solid #000';
-        departmentInput.removeAttribute("readonly");
-        departmentInput.style.border = '1px solid #000';
-        rankInput.removeAttribute("readonly");
-        rankInput.style.border = '1px solid #000';
-
-        phoneInput.removeAttribute("readonly");
-        phoneInput.style.border = '1px solid #000';
-        birthInput.removeAttribute("readonly");
-        birthInput.style.border = '1px solid #000';
-        emailInput.removeAttribute("readonly");
-        emailInput.style.border = '1px solid #000';
-        addressInput.removeAttribute("readonly");
-        addressInput.style.border = '1px solid #000';
-        statusInput.removeAttribute("readonly");
-        statusInput.style.border = '1px solid #000';
-
-        const genderM = document.getElementById("memberGenderM");
-        const genderF = document.getElementById("memberGenderF");
-        genderM.removeAttribute("disabled");
-        genderF.removeAttribute("disabled");
-
-        const submitButton = document.getElementById("submit");
-        submitButton.style.visibility = "visible";
-        const editButton = document.getElementById("edit");
-        editButton.style.visibility = "hidden";
-    }
-</script>
-
+<script type="module" src="/js/admin/userPage.js"></script>
+<script type="module" src="/js/admin/userPageImg.js"></script>
 </html>

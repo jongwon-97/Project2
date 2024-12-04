@@ -1,0 +1,167 @@
+/* =============== 전체 페이지 스타일 =============== */
+body {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0d1b2a;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* 컨테이너 스타일 */
+.container {
+    background: #1b263b;
+    width: 600px;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+.container h1 {
+    font-size: 2rem;
+    color: #e0e1dd;
+    margin-bottom: 25px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* =============== 폼 스타일 =============== */
+form .form-group {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #a9b4c2;
+    margin-bottom: 8px;
+}
+
+input[type="text"], textarea, input[type="file"] {
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px;
+    border: 1px solid #3e5060;
+    border-radius: 6px;
+    background-color: #2e3b4e;
+    color: #ffffff;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus, textarea:focus, input[type="file"]:focus {
+    border-color: #00b4d8;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 180, 216, 0.7);
+}
+
+textarea {
+    resize: none;
+    height: 120px;
+}
+
+/* 체크박스 스타일 */
+input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    accent-color: #00b4d8;
+    vertical-align: middle;
+}
+
+/* 파일 첨부 섹션 */
+#file-list {
+    margin-top: 10px;
+    background: #2e3b4e;
+    border: 1px solid #3e5060;
+    padding: 10px;
+    border-radius: 6px;
+    color: #a9b4c2;
+}
+
+#file-names {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #3e5060;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-item .remove-btn {
+    background-color: #ff6b6b;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 12px;
+    color: white;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.file-item .remove-btn:hover {
+    background-color: #d90429;
+    transform: scale(1.05);
+}
+
+/* =============== 버튼 스타일 =============== */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #00b4d8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #0077b6;
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(1);
+}
+
+button:last-child {
+    background-color: #adb5bd;
+}
+
+button:last-child:hover {
+    background-color: #868e96;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+}

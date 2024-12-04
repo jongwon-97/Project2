@@ -1,0 +1,181 @@
+/* admin/addUserPage.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1, h3 {
+    text-align: center;
+    color: #444;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #f9f9f9; /* 표 배경색 설정 */
+    border-radius: 12px; /* 표 모서리 둥글게 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 표 그림자 */
+    table-layout: fixed; /* 고정 레이아웃 */
+    overflow: hidden;
+}
+
+thead {
+    background: #fff; /* 헤더 배경색 설정 */
+    color: #444; /* 헤더 텍스트 색상 */
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-bottom: 2px solid #444;
+}
+
+th, td {
+    padding: 14px 18px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    font-size: 0.9rem;
+    color: #4e73df; /* 기본 텍스트 색상 */
+    word-wrap: break-word; /* 긴 텍스트 줄바꿈 */
+}
+
+/* 열별 너비 설정 */
+th:nth-child(1), td:nth-child(1) {
+    width: 3%; /* 번호 열 */
+}
+
+th:nth-child(2), td:nth-child(2) {
+    width: 5%; /* 체크박스 열 */
+}
+
+th:nth-child(3), td:nth-child(3) {
+    width: 13%; /* 사번 열 */
+}
+
+th:nth-child(4), td:nth-child(4) {
+    width: 20%; /* 회원 ID 열 */
+}
+
+th:nth-child(5), td:nth-child(5) {
+    width: 12%; /* 이름 열 */
+}
+
+th:nth-child(6), td:nth-child(6) {
+    width: 15%; /* 직급 열 */
+}
+
+th:nth-child(7), td:nth-child(7) {
+    width: 15%; /* 부서 열 */
+}
+
+th:nth-child(8), td:nth-child(8) {
+    width: 23%; /* 전화번호 열 */
+}
+
+th:nth-child(9), td:nth-child(9) {
+    width: 25%; /* 생년월일 열 */
+}
+
+th:nth-child(10), td:nth-child(10) {
+    width: 17%; /* 성별 열 */
+}
+
+th:nth-child(11), td:nth-child(11) {
+    width: 30%; /* 이메일 열 */
+}
+
+th:nth-child(12), td:nth-child(12) {
+    width: 15%; /* 우편번호 열 */
+}
+
+th:nth-child(13), td:nth-child(13) {
+    width: 40%; /* 주소 열 */
+}
+
+th:nth-child(14), td:nth-child(14) {
+    width: 15%; /* 상세주소 열 */
+}
+
+th:nth-child(15), td:nth-child(15) {
+    width: 25%; /* 입사일 열 */
+}
+
+/* 입력 필드 스타일 */
+table td input[type="text"],
+table td input[type="number"],
+table td input[type="email"],
+table td input[type="date"],
+table td select {
+    width: 90%; /* 필드 너비를 셀 너비에 맞춤 */
+    padding: 8px;
+    border: 1px solid #d6d6d6;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* 버튼 스타일 */
+button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.2s;
+    margin: 5px; /* 버튼 간의 간격 */
+}
+
+/* 기본 버튼 색상 */
+button {
+    background-color: #4e73df; /* 기본 파란색 */
+}
+
+button:hover {
+    background-color: #375ac9; /* hover 시 어두운 파란색 */
+    transform: scale(1.05); /* hover 시 살짝 확대 */
+}
+
+/* 삭제 버튼 스타일 */
+button.delete-btn {
+    background-color: #e74a3b; /* 빨간색 */
+}
+
+button.delete-btn:hover {
+    background-color: #c0382b; /* hover 시 더 어두운 빨간색 */
+}
+
+/* 추가 버튼 스타일 */
+button.add-btn {
+    background-color: #1cc88a; /* 초록색 */
+}
+
+button.add-btn:hover {
+    background-color: #17a673; /* hover 시 더 어두운 초록색 */
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    table {
+        font-size: 12px;
+    }
+
+    button {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    table td input[type="text"],
+    table td input[type="number"],
+    table td input[type="email"],
+    table td input[type="date"],
+    table td select {
+        width: 90%;
+        font-size: 12px;
+    }
+}

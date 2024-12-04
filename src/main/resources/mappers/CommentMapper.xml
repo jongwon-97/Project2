@@ -72,4 +72,6 @@
         WHERE board_id = #{boardId}
     </update>
 
+
+
 </mapper>

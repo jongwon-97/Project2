@@ -1,0 +1,202 @@
+/* =============== 전체 페이지 스타일 =============== */
+body {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    color: #212529;
+    line-height: 1.6;
+}
+
+h1, h3 {
+    text-align: center;
+    margin: 0;
+    padding: 10px 0;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #343a40;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 1rem;
+    color: #868e96;
+}
+
+/* =============== 메인 컨테이너 =============== */
+.main {
+    width: 95%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* =============== 검색 필드셋 스타일 =============== */
+fieldset {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+legend {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #495057;
+    cursor: pointer;
+}
+
+fieldset div {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* =============== 검색 입력 및 셀렉트 스타일 =============== */
+input[type="text"], input[type="date"], select {
+    font-size: 0.85rem;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    width: auto;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus, input[type="date"]:focus, select:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* =============== 버튼 스타일 =============== */
+button {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:last-child {
+    background-color: #6c757d;
+}
+
+button:last-child:hover {
+    background-color: #5a6268;
+}
+
+/* =============== 테이블 스타일 =============== */
+.table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    table-layout: fixed;
+}
+
+thead {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    font-size: 0.85rem;
+    word-wrap: break-word;
+}
+
+th {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+th:hover {
+    background-color: #495057;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* 테이블 입력 필드 스타일 */
+table td input[type="text"],
+table td input[readonly] {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    font-size: inherit;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 테이블 이미지 스타일 */
+img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* 체크박스 스타일 */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #007bff;
+}
+
+/* =============== 액션 버튼 섹션 =============== */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.actions label {
+    font-size: 0.85rem;
+    color: #495057;
+    margin-right: 10px;
+}
+
+.actions select {
+    padding: 8px;
+    font-size: 0.85rem;
+    margin-right: 10px;
+}
+
+/* 상세보기 버튼 */
+.view-btn {
+    background-color: #28a745;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    color: #ffffff;
+}
+
+.view-btn:hover {
+    background-color: #218838;
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/qna/qnaDetail.css">
+    <title>Q&A 수정</title>
+</head>
+<body>
+<h1>Q&A 수정</h1>
+<form th:action="@{/admin/board/editQna}" th:method="post">
+    <!-- 게시글 ID -->
+    <input type="hidden" name="boardId" th:value="${qna.boardId}">
+
+    <!-- 제목 -->
+    <div>
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="boardTitle" th:value="${qna.boardTitle}" required>
+    </div>
+
+    <!-- 공개 여부 선택 -->
+    <div>
+        <p><strong>공개 여부:</strong></p>
+        <input type="radio" id="public" name="disclosureStatus" value="공개"
+               th:checked="${qna.disclosureStatus == '공개'}" required>
+        <label for="public">공개</label>
+        <input type="radio" id="private" name="disclosureStatus" value="비공개"
+               th:checked="${qna.disclosureStatus == '비공개'}">
+        <label for="private">비공개</label>
+    </div>
+
+    <!-- 내용 -->
+    <div>
+        <label for="content">내용:</label>
+        <textarea id="content" name="boardContent" required th:text="${qna.boardContent}"></textarea>
+    </div>
+
+    <!-- 버튼 -->
+    <div>
+        <button type="submit">수정하기</button>
+        <a th:href="@{/admin/board/qnaList}">취소</a>
+    </div>
+</form>
+</body>
+</html>

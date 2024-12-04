@@ -12,9 +12,9 @@ import java.io.IOException;
 public class SessionValidationFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) req;
+        HttpServletResponse httpResponse = (HttpServletResponse) res;
         HttpSession session = httpRequest.getSession(false);
 
         // 브라우저 캐시 방지
@@ -26,13 +26,13 @@ public class SessionValidationFilter implements Filter {
         String requestURI = httpRequest.getRequestURI();
         if (session != null && (requestURI.equals("/dev/home") || requestURI.equals("/admin/home") || requestURI.equals("/user/home"))) {
             // 세션이 유지 중이라면 필터 체인 통과
-            chain.doFilter(request, response);
+            chain.doFilter(req, res);
         } else if (session == null && (requestURI.equals("/dev/home") || requestURI.equals("/admin/home") || requestURI.equals("/user/home"))) {
             // 세션이 없으면 로그아웃 페이지로 리다이렉트
             httpResponse.sendRedirect("/accessDenied");
         } else {
             // 기타 URL은 일반 처리
-            chain.doFilter(request, response);
+            chain.doFilter(req, res);
         }
     }
 }

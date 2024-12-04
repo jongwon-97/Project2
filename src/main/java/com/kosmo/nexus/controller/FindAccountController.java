@@ -20,55 +20,10 @@ public class FindAccountController {
     @GetMapping("/findAccount")
     public String findAccountForm(){
 
-        return "findaccount/findhome";
+        return "findaccount/findAccount";
     }
 
-    @GetMapping("/findPAccount")
-    public String findPAccountForm() {
-
-        return "findaccount/findPhome";
-    }
-    @PostMapping("/processPAccount")
-    public String processPAccount(
-            @RequestParam(required = false) String memberNameEmail,
-            @RequestParam(required = false) String memberNamePhone,
-            @RequestParam(required = false) String memberEmail,
-            @RequestParam(required = false) String memberPhone,
-            Model model) {
-
-        // 입력값 처리
-        String memberName = (memberNameEmail != null && !memberNameEmail.isEmpty())
-                ? memberNameEmail
-                : memberNamePhone;
-        FindAccountDTO result = null;
-
-        // 분기 처리
-        if (memberEmail != null && !memberEmail.isEmpty()) {
-            result = findAccountService.findPersonalAccountByEmail(memberName, memberEmail);
-        } else if (memberPhone != null && !memberPhone.isEmpty()) {
-            result = findAccountService.findPersonalAccountByPhone(memberName, memberPhone);
-        }
-
-        if (result == null) {
-            log.warn("No result found for memberName={}, memberEmail={}, memberPhone={}",
-                    memberName, memberEmail, memberPhone);
-            model.addAttribute("result", null);
-        } else {
-            log.info("Found account: memberId={}", result.getMemberId());
-            model.addAttribute("result", result);
-        }
-
-        return "findaccount/result";
-    }
-
-
-    @GetMapping("/findBAccount")
-    public String findBAccountForm() {
-
-        return "findaccount/findBhome";
-    }
-
-    @PostMapping("/processBAccount")
+    @PostMapping("/processAccount")
     public String processBAccount(@RequestParam(required = false) String companyNum,
                                   @RequestParam(required = false) String memberNum,
                                   @RequestParam(required = false) String memberNameEmail,
@@ -87,13 +42,13 @@ public class FindAccountController {
         // 분기 처리
         if (companyNum != null && !companyNum.isEmpty() && memberNum != null && !memberNum.isEmpty()) {
             // 사업자등록번호 + 사원번호로 찾기
-            result = findAccountService.findBusinessAccountByCompanyNum(companyNum, memberNum);
+            result = findAccountService.findAccountByCompanyNum(companyNum, memberNum);
         } else if (memberEmail != null && !memberEmail.isEmpty()) {
             // 이름 + 이메일로 찾기
-            result = findAccountService.findBusinessAccountByEmail(memberName, memberEmail);
+            result = findAccountService.findAccountByEmail(memberName, memberEmail);
         } else if (memberPhone != null && !memberPhone.isEmpty()) {
             // 이름 + 전화번호로 찾기
-            result = findAccountService.findBusinessAccountByPhone(memberName, memberPhone);
+            result = findAccountService.findAccountByPhone(memberName, memberPhone);
         }
 
         // 결과 처리
@@ -109,6 +64,7 @@ public class FindAccountController {
         return "findaccount/result";
     }
 
+    //비밀번호 재설정
     @GetMapping("/findPassword")
     public String findPassword(){
         return"findaccount/findPassword";

@@ -12,11 +12,11 @@
     <!-- 특정 게시판 ID로 파일 조회 -->
     <select id="selectFileByBoardId" resultType="File">
         SELECT file_id AS fileId,
-               file_path AS filePath,
-               board_id AS boardId,
-               file_size AS fileSize,
-               file_date AS fileDate,
-               file_origin_name AS fileOriginName
+        file_path AS filePath,
+        board_id AS boardId,
+        file_size AS fileSize,
+        file_date AS fileDate,
+        file_origin_name AS fileOriginName
         FROM c_file
         WHERE board_id = #{boardId}
     </select>
@@ -29,11 +29,11 @@
     <!-- 특정 게시판 ID로 모든 파일 조회 -->
     <select id="selectFilesByBoardId" resultType="File">
         SELECT file_id AS fileId,
-               file_path AS filePath,
-               board_id AS boardId,
-               file_size AS fileSize,
-               file_date AS fileDate,
-               file_origin_name AS fileOriginName
+        file_path AS filePath,
+        board_id AS boardId,
+        file_size AS fileSize,
+        file_date AS fileDate,
+        file_origin_name AS fileOriginName
         FROM c_file
         WHERE board_id = #{boardId}
     </select>
@@ -41,16 +41,16 @@
     <!-- 특정 시즌 ID로 파일 조회 -->
     <select id="selectFilesBySeasonId" resultType="File">
         SELECT file_id AS fileId,
-           file_path AS filePath,
-           board_id AS boardId,
-           file_size AS fileSize,
-           file_date AS fileDate,
-           file_origin_name AS fileOriginName
+        file_path AS filePath,
+        board_id AS boardId,
+        file_size AS fileSize,
+        file_date AS fileDate,
+        file_origin_name AS fileOriginName
         FROM c_file
         WHERE board_id IN (
-            SELECT board_id
-            FROM c_season
-            WHERE season_id = #{seasonId}
+        SELECT board_id
+        FROM c_season
+        WHERE season_id = #{seasonId}
         )
     </select>
 
@@ -58,10 +58,106 @@
     <delete id="deleteFilesBySeasonId" parameterType="int">
         DELETE FROM c_file
         WHERE board_id IN (
-            SELECT board_id
-            FROM c_season
-            WHERE season_id = #{seasonId}
+        SELECT board_id
+        FROM c_season
+        WHERE season_id = #{seasonId}
         )
     </delete>
+
+    <insert id="insertContent" parameterType="Image">
+        INSERT INTO c_image
+        (board_id, img_path, img_date, img_size, img_origin_name, content_order, content_type, content_data)
+        VALUES
+        (#{boardId}, #{imgPath}, NOW(), #{imgSize}, #{imgOriginName}, #{contentOrder}, #{contentType}, #{contentData})
+    </insert>
+
+    <!-- 게시글 ID로 이미지 및 텍스트 조회 -->
+    <select id="selectContentByBoardId" resultType="Image">
+        SELECT
+        img_id AS imgId,
+        img_path AS imgPath,
+        img_date AS imgDate,
+        img_size AS imgSize,
+        img_origin_name AS imgOriginName,
+        content_order AS contentOrder,
+        content_type AS contentType,
+        content_data AS contentData,
+        board_id AS boardId
+        FROM c_image
+        WHERE board_id = #{boardId}
+        ORDER BY content_order ASC
+    </select>
+
+    <!-- 특정 board_id와 연결된 이미지 조회 -->
+    <select id="getImagesByBoardId" resultType="Image">
+        SELECT
+        img_id AS imgId,
+        img_path AS imgPath,
+        img_date AS imgDate,
+        img_size AS imgSize,
+        img_origin_name AS imgOriginName,
+        board_id AS boardId,
+        content_order AS contentOrder,
+        content_type AS contentType,
+        content_data AS contentData
+        FROM c_image
+        WHERE board_id = #{boardId}
+    </select>
+
+    <!-- 특정 board_id와 연결된 이미지 삭제 -->
+    <delete id="deleteImagesByBoardId">
+        DELETE FROM c_image
+        WHERE board_id = #{boardId}
+    </delete>
+
+    <!-- 특정 boardId로 텍스트 조회 -->
+    <select id="getTextsByBoardId" resultType="Image">
+        SELECT
+        img_id AS imgId,               -- 이미지 ID
+        board_id AS boardId,           -- 게시글 ID
+        content_type AS contentType,   -- 콘텐츠 유형
+        content_order AS contentOrder, -- 콘텐츠 순서
+        content_data AS contentData    -- 콘텐츠 데이터
+        FROM c_image
+        WHERE board_id = #{boardId} AND content_type = 'text'
+        ORDER BY content_order ASC
+    </select>
+
+    <!-- 특정 boardId로 텍스트 삭제 -->
+    <delete id="deleteTextsByBoardId">
+        DELETE FROM c_image
+        WHERE board_id = #{boardId} AND content_type = 'text'
+    </delete>
+    <!-- 특정 boardId로 이미지만 삭제 -->
+    <delete id="deleteOnlyImagesByBoardId" parameterType="int">
+        DELETE FROM c_image
+        WHERE board_id = #{boardId} AND content_type = 'image'
+    </delete>
+
+    <!-- 텍스트 또는 이미지 삭제 -->
+    <delete id="deleteContentByIdAndType">
+        DELETE FROM c_image
+        WHERE img_id = #{id}
+        AND content_type = #{type}
+    </delete>
+
+
+    <!-- 텍스트 또는 이미지 업데이트 -->
+    <update id="updateContent">
+        UPDATE c_image
+        SET
+        content_order = #{contentOrder},
+        content_data = #{contentData},
+        img_path = #{imgPath},
+        img_origin_name = #{imgOriginName},
+        img_size = #{imgSize}
+        WHERE img_id = #{imgId}
+    </update>
+
+    <select id="getMaxContentOrder" resultType="int">
+        SELECT COALESCE(MAX(content_order), 0)
+        FROM c_image
+        WHERE board_id = #{boardId} AND content_type = #{contentType}
+    </select>
 
 </mapper>

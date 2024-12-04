@@ -67,8 +67,9 @@ public class AdminController {
         log.info("MemberDTOList====={}", listMember);
         log.info("DepartmentList====={}", departments);
         log.info("RankList====={}", ranks);
-
-        return "/admin/memberList";
+        // 사이드바 레이아웃에 동적으로 삽입될 콘텐츠 경로를 설정
+        model.addAttribute("content", "admin/memberList");
+        return "sidebar"; // 전역 레이아웃 템플릿 반환
     }
 
     @GetMapping("/addMember")

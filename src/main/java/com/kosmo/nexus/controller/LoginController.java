@@ -43,6 +43,12 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private BoardService boardService;
+
     //개인회원 로그인 페이지
     @GetMapping("/pLogin")
     public String personalLoginForm(){
@@ -179,8 +185,9 @@ public class LoginController {
 
     // Dev 홈
     @GetMapping("/dev/home")
-    public String devHome(HttpSession session, Model model) {
-        return validateRole(session, "Dev", "member/devhome", model);
+    public String devHome(HttpSession ses,Model model) {
+        return validateRole(ses, "Dev", "member/devhome", model);
+
     }
 
     // 권한 확인 메서드 (공통화)
@@ -215,6 +222,7 @@ public class LoginController {
         model.addAttribute("notifications", list);
         return successPage;
     }
+
 
     // 권한 없음 페이지
     @GetMapping("/accessDenied")

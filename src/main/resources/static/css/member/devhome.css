@@ -139,6 +139,11 @@ button:hover {
 }
 
 
+.container .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
 
 .container .card h3 {
     font-size: 22px;
@@ -171,6 +176,7 @@ button:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
+
 /* 테이블 스타일링 */
 table {
     width: 100%;

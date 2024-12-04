@@ -88,7 +88,6 @@ public class AdminBoardController {
         model.addAttribute("notifications", list);
         model.addAttribute("paging", paging);
 
-
         //model.addAttribute("content", "notice/adminNotificationList :: content");
         //return "sidebar";
 
@@ -429,6 +428,7 @@ public class AdminBoardController {
         model.addAttribute("findKeyword", findKeyword); // 검색 키워드
 
         return "qna/adminQnaList"; // Q&A 목록 페이지로 이동
+
     }
 
     // QnA 상세보기
@@ -464,6 +464,7 @@ public class AdminBoardController {
 
     @GetMapping("/board/qna")
     public String goToQnaForm(){
+
         return "qna/adminQna";
     }
 

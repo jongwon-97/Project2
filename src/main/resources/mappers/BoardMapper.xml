@@ -372,6 +372,7 @@
         AND b.answer_status ='N'
     </select>
 
+
     <select id="selectUnans">
         SELECT COUNT(*)
         FROM c_board b

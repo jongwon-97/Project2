@@ -43,7 +43,6 @@ public class DevController {
     public String findCompanyList(HttpSession ses, Model model){
         String sesRole = getLoginUserRole(ses, model);
         List<CompanyDTO> companyList = devService.findCompanyList();
-        log.info("출력 결과========{}", companyList);
         model.addAttribute("companyList", companyList);
         return "/dev/companyList";
     }

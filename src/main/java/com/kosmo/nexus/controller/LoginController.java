@@ -167,31 +167,36 @@ public class LoginController {
     }
     // Admin 홈
     @GetMapping("/admin/home")
-    public String adminHome(HttpSession session, Model model) {
-        return validateRole(session, "Admin", "member/adminhome", model); // 역할 확인 후 이동
+    public String adminHome(HttpSession ses, Model model) {
+        return validateRole(ses, "Admin", "member/adminhome", model); // 역할 확인 후 이동
     }
 
     // User 홈
     @GetMapping("/user/home")
-    public String userHome(HttpSession session, Model model) {
-        return validateRole(session, "User", "member/userhome", model);
+    public String userHome(HttpSession ses, Model model) {
+        return validateRole(ses, "User", "member/userhome", model);
     }
 
     // Dev 홈
     @GetMapping("/dev/home")
-    public String devHome(HttpSession session, Model model) {
-        return validateRole(session, "Dev", "member/devhome", model);
+    public String devHome(HttpSession ses, Model model) {
+        return validateRole(ses, "Dev", "member/devhome", model);
     }
 
     // 권한 확인 메서드 (공통화)
-    private String validateRole(HttpSession session, String requiredRole, String successPage
+    private String validateRole(HttpSession ses, String requiredRole, String successPage
                                 , Model model) {
-        LoginDTO loginUser = (LoginDTO) session.getAttribute("loginUser");
+        LoginDTO loginUser = (LoginDTO) ses.getAttribute("loginUser");
         if (loginUser == null || !requiredRole.equalsIgnoreCase(loginUser.getMemberRole())) {
             return "redirect:/accessDenied";
         }
         model.addAttribute("member", loginUser);
-        Long companyId = ((LoginDTO) session.getAttribute("loginUser")).getCompanyId();
+
+        String memberId = loginUser.getMemberId();
+        List<SeasonDTO> participatedSeasons = eventService.findParticipatedSeasonsByMemberId(memberId);
+        model.addAttribute("participatedSeasons", participatedSeasons);
+        
+        Long companyId = ((LoginDTO) ses.getAttribute("loginUser")).getCompanyId();
         PagingDTO paging = new PagingDTO();
         paging.setTotalCount(5);
         paging.setOneRecordPage(5);

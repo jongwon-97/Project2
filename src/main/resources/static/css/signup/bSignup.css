@@ -97,6 +97,7 @@ legend {
     border-radius: 5px;
     font-size: 14px;
     box-sizing: border-box;
+    margin-left:10px;
 }
 
 
@@ -104,12 +105,13 @@ legend {
 .form-group input[type="text"],
 .form-group input[type="tel"],
 .form-group input[type="email"] {
-    flex: 3; /* 입력 필드가 전체 너비의 3/4을 차지 */
+    flex: 2.5; /* 입력 필드가 전체 너비의 3/4을 차지 */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 14px;
     box-sizing: border-box;
+    margin-left:10px;
 }
 
 /* 입력 필드 포커스 스타일 */
@@ -137,6 +139,9 @@ legend {
     background: #0077b6;
 }
 
+.form-group #companyDAddress{
+    margin-left: 15px;
+}
 /* 우편번호 찾기 버튼 */
 .form-group #searchPostcodeBtn {
     padding: 10px 20px;
@@ -154,18 +159,13 @@ legend {
     background: #0077b6;
 }
 
-/* 에러 메시지 컨테이너 */
-.error-container {
-    position: relative; /* 부모 요소 기준으로 위치 지정 가능 */
-    margin-top: 5px; /* 입력 필드와 간격 */
-}
-
 
 /* 에러 메시지 스타일 */
 .error-message {
     color: red;
+    margin-left: 160px;
     font-size: 12px;
-    margin-top: 5px;
+    margin-bottom:10px;
     display: block;
 }
 
@@ -243,4 +243,15 @@ legend {
 
 .signup-container p.terms a:hover {
     text-decoration: underline;
+}
+
+span{
+    color: red;
+}
+
+.msg{
+    color: red;
+    margin-left: 25px;
+    margin-bottom: 10px;
+    font-size:12px;
 }

@@ -46,6 +46,7 @@ legend {
 
 /* =============== 기업 정보 스타일 =============== */
 .company-info-section .form-group {
+    margin-left:20px;
     margin-bottom: 15px;
 }
 
@@ -68,6 +69,7 @@ legend {
 
 /* =============== 기업 회원 정보 스타일 =============== */
 .member-info-section .form-group {
+    margin-left:20px;
     margin-bottom: 15px;
 }
 /* 아이디 입력 필드 */
@@ -149,6 +151,7 @@ legend {
 
 /* =============== 주소 입력 스타일 =============== */
 .address-container {
+    width:95%;
     display: flex;
     gap: 10px;
 }
@@ -175,7 +178,8 @@ legend {
 
 /* =============== 성별 선택 스타일 =============== */
 .gender-options {
-    display: flex;
+    display:flex;
+    width : 95%;
     gap: 10px;
     justify-content: space-between;
 }
@@ -243,7 +247,7 @@ legend {
 
 /* =============== 가입 버튼 =============== */
 .signup-button {
-    width: 100%;
+    width: 95%;
     padding: 15px;
     background: #005f8d;
     color: white;
@@ -256,4 +260,26 @@ legend {
 
 .signup-button:hover {
     background: #0077b6;
+}
+.error-container {
+    position: relative; /* 부모 요소 기준으로 위치 지정 가능 */
+    margin-top: 5px; /* 입력 필드와 간격 */
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+.msg{
+    color: red;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    font-size:12px;
+}
+
+span{
+    color: red;
 }

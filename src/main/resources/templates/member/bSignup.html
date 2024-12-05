@@ -16,12 +16,13 @@
         기업 회원가입 페이지입니다.
         <a href="/pSignup" class="personal-link">개인 회원가입으로 가기</a>
     </p>
+    <div class ="msg">* 는 필수입력 항목입니다.</div>
     <form action="/bSignup" method="post" enctype="multipart/form-data">
         <!-- 사업자 정보 -->
         <fieldset>
             <legend>사업자 정보</legend>
             <div class="form-group">
-                <label for="companyNum">사업자 등록번호</label>
+                <label for="companyNum"><span>*</span> 사업자 등록번호</label>
                 <div class="input-group">
                     <input type="text" id="companyNum" name="companyNum" placeholder="사업자 등록번호를 입력하세요">
                     <button type="button" class="btn-search" onclick="searchBusiness()">검색</button>
@@ -36,21 +37,21 @@
         <fieldset>
             <legend>회사 기본 정보</legend>
             <div class="form-group">
-                <label for="companyName">회사명</label>
+                <label for="companyName"><span>*</span> 회사명</label>
                 <input type="text" id="companyName" name="companyName" placeholder="회사명을 입력하세요">
             </div>
             <div class="error-container">
                 <div id="errorCompanyName" class="error-message"></div>
             </div>
             <div class="form-group">
-                <label for="companyEmail">대표 이메일</label>
+                <label for="companyEmail"><span>*</span> 대표 이메일</label>
                 <input type="text" id="companyEmail" name="companyEmail" placeholder="대표 이메일을 입력하세요">
             </div>
             <div class="error-container">
                 <div id="errorCompanyEmail" class="error-message"></div>
             </div>
             <div class="form-group">
-                <label for="companyPhone">대표 전화번호</label>
+                <label for="companyPhone"><span>*</span> 대표 전화번호</label>
                 <input type="tel" id="companyPhone" name="companyPhone" placeholder="대표 전화번호를 입력하세요">
             </div>
             <div class="error-container">
@@ -62,14 +63,14 @@
         <fieldset>
             <legend>회사 주소</legend>
             <div class="form-group">
-                <input type="text" id="companyPostcode" name="companyPostcode" placeholder="우편번호" readonly>
+                <span>*</span>  <input type="text" id="companyPostcode" name="companyPostcode" placeholder="우편번호" readonly>
                 <button type="button" id="searchPostcodeBtn" onclick="searchPostcode()">우편번호 찾기</button>
             </div>
             <div class="form-group">
-                <input type="text" id="companyAddress" name="companyAddress" placeholder="대표주소" readonly>
+                <span>*</span>  <input type="text" id="companyAddress" name="companyAddress" placeholder="대표주소" readonly>
             </div>
             <div class="form-group">
-                <input type="text" id="companyDAddress" name="companyDAddress" placeholder="상세 주소">
+                 <input type="text" id="companyDAddress" name="companyDAddress" placeholder="상세 주소">
             </div>
         </fieldset>
 

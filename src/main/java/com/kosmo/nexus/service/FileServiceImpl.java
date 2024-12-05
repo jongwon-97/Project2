@@ -121,6 +121,7 @@ public class FileServiceImpl implements FileService {
         return fileMapper.getMaxContentOrder(boardId, contentType);
     }
 
+<<<<<<< HEAD
     @Override
     public String findContentTypeByFileId(Integer fileId) {
         return fileMapper.findContentTypeByFileId(fileId);
@@ -147,5 +148,7 @@ public class FileServiceImpl implements FileService {
     }
 
 
+=======
+>>>>>>> 874ad5901185699f331b024d1b121366d6f828bf
 }
 

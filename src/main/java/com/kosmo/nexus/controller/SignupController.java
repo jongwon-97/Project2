@@ -186,7 +186,6 @@ public class SignupController {
     @GetMapping("/bSignup2")
     public String BsignupForm2(HttpSession ses, Model model){
         CompanyDTO companySignup = (CompanyDTO) ses.getAttribute("companySignup");
-        log.info("companyinfo==={}",companySignup);
 
         if (companySignup == null) {
             model.addAttribute("msg", "이전 단계의 회사 정보가 없습니다. 다시 입력해주세요.");
@@ -209,7 +208,6 @@ public class SignupController {
         // 모델에 기업 정보 전달
 
         model.addAttribute("companyInfo", companySignup);
-        //log.info("compayInfo==={}",companySignup);
         return "member/bSignup2";
     }
 

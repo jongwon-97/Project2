@@ -53,5 +53,4 @@ public interface FileMapper {
 
     int findContentOrder(int fileId);
     int getMaxContentOrderByBoardId(int boardId);
-
 }

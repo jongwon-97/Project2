@@ -1,0 +1,298 @@
+/* =============== 전체 페이지 스타일 =============== */
+/* 전체 body 기본 스타일 */
+body {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    color: #212529;
+    line-height: 1.6;
+}
+
+/* 페이지의 주요 헤딩 스타일 */
+h1, h3 {
+    text-align: center;
+    margin: 0;
+    padding: 10px 0;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #343a40;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 1rem;
+    color: #868e96;
+}
+
+/* =============== 메인 컨테이너 =============== */
+.main {
+    width: 95%;
+    max-width: none;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* =============== 검색 컨테이너 스타일 =============== */
+.search-container {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    gap: 20px; /* 섹션 간 간격 */
+}
+
+/* 간단 검색 스타일 */
+.simple-search {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.simple-search h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #495057;
+    font-weight: bold;
+}
+
+/* 상세 검색 스타일 */
+.advanced-search {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.advanced-search h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #495057;
+    font-weight: bold;
+}
+
+/* 필터 섹션 스타일 */
+.filter-container {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.filter-container h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #495057;
+    font-weight: bold;
+}
+
+.filter-container div {
+    display: flex;
+    flex-wrap: wrap; /* 아이템을 가로로 정렬하며, 화면 너비에 따라 줄바꿈 */
+    gap: 15px; /* 아이템 간 간격 */
+}
+
+.filter-container label {
+    margin-right: 5px;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+/* =============== 검색 입력 및 셀렉트 스타일 =============== */
+input[type="text"], input[type="date"], select {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    width: auto;
+    box-sizing: border-box;
+}
+
+/* 포커스 상태의 입력 및 셀렉트 */
+input[type="text"]:focus, input[type="date"]:focus, select:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* =============== 버튼 스타일 =============== */
+button {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:last-child {
+    background-color: #6c757d;
+}
+
+button:last-child:hover {
+    background-color: #5a6268;
+}
+
+/* =============== 테이블 스타일 =============== */
+.table-container {
+    margin-top: 20px;
+    overflow-x: visible; /* 스크롤 제거 */
+}
+
+table {
+    width: 100%;
+    table-layout: fixed; /* 고정된 레이아웃으로 각 열 너비 조정 가능 */
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    font-size: 0.9rem;
+}
+
+/* 각 열의 너비 설정 */
+th:nth-child(1), td:nth-child(1) { /* 첫 번째 열 (체크박스) */
+    width: 3%;
+}
+
+th:nth-child(2), td:nth-child(2) { /* 사번 */
+    width: 5%;
+}
+
+th:nth-child(3), td:nth-child(3) { /* 증명사진 */
+    width: 10%;
+}
+
+th:nth-child(4), td:nth-child(4) { /* 이름 */
+    width: 10%;
+}
+
+th:nth-child(5), td:nth-child(5) { /* 부서 */
+    width: 10%;
+}
+
+th:nth-child(6), td:nth-child(6) { /* 직급 */
+    width: 10%;
+}
+
+th:nth-child(7), td:nth-child(7) { /* 생년월일 */
+    width: 10%;
+}
+
+th:nth-child(8), td:nth-child(8) { /* 입사일 */
+    width: 10%;
+}
+
+th:nth-child(9), td:nth-child(9) { /* 휴대폰 번호 */
+    width: 10%;
+}
+
+th:nth-child(10), td:nth-child(10) { /* 이메일 */
+    width: 20%;
+}
+
+th:nth-child(11), td:nth-child(11) { /* 상태 */
+    width: 5%;
+}
+
+th:nth-child(12), td:nth-child(12) { /* 상세보기 */
+    width: 10%;
+}
+
+/* 짝수 행 배경색 설정 */
+tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* 커서 올려도 색 변화를 제거 */
+tr:hover {
+    background-color: inherit; /* 기존 색상 유지 */
+    transition: none; /* 색상 전환 효과 제거 */
+}
+
+/* 테이블에 표시되는 이미지 */
+img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* 텍스트 입력 상자의 크기를 해당 열에 맞게 조정 */
+table td input[type="text"],
+table td input[readonly] {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    font-size: inherit;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* 열 너비에 맞게 확장 */
+    box-sizing: border-box; /* 열의 padding과 border를 포함한 너비 계산 */
+}
+
+
+/* =============== 체크박스 스타일 =============== */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #007bff;
+}
+
+/* =============== 액션 버튼 스타일 =============== */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.actions label {
+    font-size: 0.9rem;
+    color: #495057;
+    margin-right: 10px;
+}
+
+.actions select {
+    padding: 5px;
+    font-size: 0.9rem;
+    margin-right: 10px;
+}
+
+/* 상세보기 버튼 스타일 */
+.view-btn {
+    background-color: #28a745;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    color: #ffffff;
+}
+
+.view-btn:hover {
+    background-color: #218838;
+}
+
+

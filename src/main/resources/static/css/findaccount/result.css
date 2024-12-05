@@ -1,0 +1,62 @@
+/* 기본 스타일 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* 컨테이너 스타일 */
+.container {
+    width: 500px;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* 제목 스타일 */
+h2 {
+    font-size: 1.8rem;
+    color: #222;
+    margin-bottom: 20px;
+}
+
+/* 메시지 스타일 */
+.message {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.message.success {
+    color: green;
+}
+
+.message.error {
+    color: red;
+}
+
+/* 버튼 스타일 */
+a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: #0077b6;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    background: #005f8d;
+}

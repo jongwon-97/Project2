@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>이벤트 상세보기</title>
+  <style>
+    /* 헤더 스타일 */
+    .event-header {
+        position: relative;
+        width: 100%;
+        max-height: 300px; /* 원하는 높이로 조정 */
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    /* 썸네일 이미지 */
+    .event-header img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        filter: brightness(70%); /* 이미지 어둡게 */
+    }
+
+    /* 제목 오버레이 */
+    .event-title-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 32px;
+        font-weight: bold;
+        text-align: center;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); /* 텍스트 그림자 */
+    }
+
+    /* 본문 스타일 */
+    .event-details {
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    /* 내용 컨테이너 */
+    .content-container {
+        padding: 20px;
+    }
+
+    /* 각 항목 스타일 */
+    .content-item {
+        margin-bottom: 20px;
+    }
+
+    .content-item img {
+        width: 100%;
+        max-width: 600px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-item p {
+        font-size: 16px;
+        color: #333;
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+<!-- 헤더 섹션 -->
+<div class="event-header">
+  <img th:src="${season.seasonThumbnail != null ? season.seasonThumbnail : '/thumbnails/noImage.jpg'}" alt="썸네일" />
+  <div class="event-title-overlay">
+    <h1 th:text="${season.seasonTitle}"></h1>
+  </div>
+</div>
+
+<!-- 본문 섹션 -->
+<div class="event-details">
+  <p><strong>설명:</strong> <span th:text="${season.seasonInfo}"></span></p>
+  <p><strong>모집 인원:</strong> <span th:text="${season.seasonLimit}"></span></p>
+  <p><strong>참가비:</strong> <span th:text="${season.seasonFee}"></span></p>
+  <p><strong>시작 날짜:</strong> <span th:text="${season.seasonStartDate}"></span></p>
+  <p><strong>종료 날짜:</strong> <span th:text="${season.seasonEndDate}"></span></p>
+  <p><strong>상태:</strong> <span th:text="${season.seasonState}"></span></p>
+  <p><strong>조회수:</strong> <span th:text="${season.seasonViews}"></span></p>
+</div>
+
+<!-- 이미지 및 텍스트 표시 -->
+<div class="content-container">
+  <div th:each="content : ${contentList}" class="content-item">
+    <!-- 이미지일 경우 -->
+    <div th:if="${content.contentType == 'image'}">
+      <img th:src="${content.imgPath}" alt="이미지" />
+    </div>
+
+    <!-- 텍스트일 경우 -->
+    <div th:if="${content.contentType == 'text'}">
+      <p th:text="${content.contentData}"></p>
+    </div>
+  </div>
+</div>
+
+<!-- 삭제 버튼 -->
+<div>
+  <form th:action="@{/board/event/delete}" method="post" style="display:inline;"
+        onsubmit="return confirm('이벤트를 삭제하시겠습니까?');">
+    <input type="hidden" name="seasonId" th:value="${season.seasonId}">
+    <button type="submit">삭제</button>
+  </form>
+</div>
+
+<div>
+  <a href="/board/eventList"><button type="button">목록으로</button></a>
+</div>
+</body>
+</html>

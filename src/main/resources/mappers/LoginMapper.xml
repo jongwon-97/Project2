@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper
+3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosmo.nexus.mapper.LoginMapper">
+
+    <resultMap id="LoginResultMap" type="Login">
+        <result property="memberId" column="member_id"/>
+        <result property="memberPw" column="member_pw"/>
+        <result property="memberName" column="member_name"/>
+        <result property="memberRole" column="member_role"/>
+        <result property="memberPhone" column="member_phone"/>
+        <result property="memberEmail" column="member_email"/>
+        <result property="companyId" column="company_id"/>
+        <result property="memberNum" column="member_num"/>
+    </resultMap>
+
+    <!-- 로그인 기능 -->
+    <select id="login" resultMap="LoginResultMap" parameterType="Login">
+    SELECT member_id, member_pw, member_name, member_role,
+    member_phone, member_email, company_id, member_num
+    FROM c_member
+    WHERE member_id = #{memberId} AND member_pw = #{memberPw}
+    </select>
+
+    <!-- 회원 조회 (아이디로 검색) -->
+    <select id="findMemberByUserId" resultMap="LoginResultMap" parameterType="string">
+    SELECT member_id, member_pw, member_name, member_role,
+    member_phone, member_email, company_id, member_num
+    FROM c_member
+    WHERE member_id = #{value}
+    </select>
+
+    <!-- 회원 상태 업데이트 -->
+    <update id="updateMemberStatus" parameterType="map">
+        UPDATE c_member
+        SET member_status = #{status}
+        WHERE member_id = #{memberId}
+    </update>
+</mapper>

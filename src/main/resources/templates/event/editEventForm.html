@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이벤트 수정</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, textarea, button, img {
+            width: 100%;
+            margin-top: 5px;
+        }
+        img {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>이벤트 수정</h2>
+    <form id="actionForm" method="post" enctype="multipart/form-data">
+        <input type="hidden" name = "seasonViews" th:value="${season.seasonViews}">
+        <input type="hidden" name = "eventId" th:value="${season.eventId}">
+        <input type="hidden" name = "seasonState" th:value="${season.seasonState}">
+        <input type="hidden" name = "boardId" th:value="${season.boardId}">
+        <input type="hidden" name = "roundNumber" th:value="${season.roundNumber}">
+        <input type="hidden" name = "seasonThumbnail" th:value="${season.seasonThumbnail}">
+
+       <!-- 시즌 ID -->
+        <input type="hidden" name="seasonId" th:value="${season.seasonId}">
+
+        <!-- 시즌 제목 -->
+        <div class="form-group">
+            <label for="seasonTitle">제목</label>
+            <input type="text" id="seasonTitle" name="seasonTitle" th:value="${season.seasonTitle}" required>
+        </div>
+
+        <!-- 시즌 설명 -->
+        <div class="form-group">
+            <label for="seasonInfo">설명</label>
+            <textarea id="seasonInfo" name="seasonInfo" required th:text="${season.seasonInfo}"></textarea>
+        </div>
+
+        <!-- 모집 제한 인원 -->
+        <div class="form-group">
+            <label for="seasonLimit">모집 인원</label>
+            <input type="number" id="seasonLimit" name="seasonLimit" th:value="${season.seasonLimit}" required>
+        </div>
+
+        <!-- 참가비 -->
+        <div class="form-group">
+            <label for="seasonFee">참가비</label>
+            <input type="number" id="seasonFee" name="seasonFee" th:value="${season.seasonFee}" required>
+        </div>
+
+        <!-- 모집 기간 -->
+        <div class="form-group">
+            <label for="seasonStartDate">모집 시작일</label>
+            <input type="date" id="seasonStartDate" name="seasonStartDate" th:value="${season.seasonStartDate}" required>
+            <label for="seasonEndDate">모집 종료일</label>
+            <input type="date" id="seasonEndDate" name="seasonEndDate" th:value="${season.seasonEndDate}" required>
+        </div>
+
+        <!-- 대표 이미지 -->
+        <div class="form-group">
+            <label for="thumbnail">대표 이미지</label>
+            <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+            <div th:if="${season.seasonThumbnail}">
+                <p>현재 이미지:</p>
+                <img th:src="@{${season.seasonThumbnail}}" alt="썸네일">
+            </div>
+        </div>
+
+        <!-- 텍스트 추가 및 삭제 -->
+        <div class="form-group">
+            <div id="container">
+                <div th:each="content : ${contents}">
+                    <div th:if="${content.contentType == 'image'}">
+                        <img th:src="@{${content.imgPath}}" alt="이미지">
+                        <input type="hidden" name="ImageIds[]" th:value="${content.imgId}">
+                        <button type="button" th:onclick="'removeContentField(this, ' + ${content.imgId} + ')'" >삭제</button>
+                    </div>
+                    <div th:if="${content.contentType == 'text'}">
+                        <input type="text" name="texts[]" th:value="${content.contentData}" placeholder="텍스트를 입력하세요">
+                        <input type="hidden" name="textIds[]" th:value="${content.imgId}">
+                        <button type="button" th:onclick="'removeContentField(this, ' + ${content.imgId} + ')'" >삭제</button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="addTextField()">텍스트 추가</button>
+
+        </div>
+
+        <!-- 이미지 관리 -->
+        <div class="form-group">
+            <button type="button" onclick="addImageField()">이미지 추가</button>
+
+            <input type="hidden" id="deletedImageIds" name="deletedImageIds[]" value="">
+        </div>
+
+
+        <!-- 버튼 -->
+        <div class="form-actions">
+            <button type="button" onclick="submitUpdate()">수정</button>
+            <a href="/dev/board/eventList">취소</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    let deleteContent = new Set();
+
+    function removeContentField(button, contentId) {
+        const form = document.forms['actionForm']; // Form element
+        const seasonId = form.seasonId.value; // 시즌 ID 가져오기
+
+        deleteContent.add(contentId);
+        console.log(deleteContent);
+        button.parentElement.remove();
+    }
+
+    // 텍스트 필드 추가
+    function addTextField() {
+        const container = document.getElementById('container');
+        const newField = document.createElement('div');
+        newField.innerHTML = `
+            <input type="text" name="texts[]" placeholder="새 텍스트를 입력하세요">
+            <button type="button" onclick="removeContentField(this, null)">삭제</button>
+        `;
+        container.appendChild(newField);
+    }
+
+    function addImageField() {
+    const container = document.getElementById('container');
+    const imageDiv = document.createElement('div');
+    imageDiv.innerHTML = `
+      <input type="file" name="newImages[]" accept="image/*">
+      <button type="button" onclick="removeContentField(this)">삭제</button>
+    `;
+    container.appendChild(imageDiv);
+    }
+
+
+
+
+    function submitUpdate(){
+        const form = document.forms['actionForm'];
+        const deleteContentArray = Array.from(deleteContent);
+
+        const existingInput = document.querySelector('input[name="fileIds"]');
+        if (existingInput) {
+            existingInput.remove();  // 기존 input 삭제
+        }
+
+        deleteContentArray.forEach(contentId => {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'fileIds';  // 서버에서 받을 이름 (복수 항목이므로 'fileIds'로 변경)
+            hiddenInput.value = contentId;  // 각각의 contentId를 value로 설정
+            form.appendChild(hiddenInput);  // 폼에 추가
+        });
+        form.action = '/dev/board/updateEvent';
+        form.submit();
+    }
+
+
+
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // 폼 제출을 일시적으로 막음
+
+    const formData = new FormData(this);
+
+    // FormData 내용을 콘솔에 출력
+    console.log('폼 데이터 확인:');
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}: ${value.name} (파일)`);
+      } else {
+        console.log(`${key}: ${value}`);
+      }
+    }
+
+    // 폼을 실제로 서버로 제출
+    this.submit();
+  });
+</script>
+</body>
+</html>

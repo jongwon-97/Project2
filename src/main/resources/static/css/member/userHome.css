@@ -1,0 +1,147 @@
+/* 기본 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 페이지 배경 및 기본 설정 */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f5f7;
+    color: #333;
+    line-height: 1.6;
+    padding: 0;
+    display: flex;
+}
+
+/* 헤더 스타일 */
+h1 {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 20px 0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 세션 정보 스타일 */
+#sessionStatus, #memberRole {
+    text-align: center;
+    font-size: 16px;
+    color: #95a5a6;
+    margin-bottom: 10px;
+}
+
+/* 공지사항 스타일 */
+.notice {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #e74c3c;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* 네비게이션 바 스타일 */
+.navbar {
+    width: 240px;
+    background: linear-gradient(180deg, #180c79, #2c3e50);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+}
+
+/* 네비게이션 링크 스타일 */
+.navbar a {
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 15px 0;
+    display: block;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.navbar a:hover {
+    background-color: #34495e;
+    transform: scale(1.05);
+}
+
+/* 메인 콘텐츠 스타일 */
+.container {
+    margin-left: 260px; /* 네비게이션 바 너비만큼 여백 추가 */
+    padding: 20px;
+    flex: 1;
+}
+
+.content-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.content-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.content-card p {
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+/* 표 스타일 */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.table th {
+    background-color: #34495e;
+    color: white;
+    font-weight: 600;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* 버튼 스타일 */
+button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #2980b9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

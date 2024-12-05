@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>모집 공고 글쓰기</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+    .container {
+        width: 50%;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    input[type="text"], input[type="number"], input[type="file"], input[type="date"], textarea, select {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+    .left-actions {
+        display: flex;
+        gap: 10px; /* 버튼 간격 */
+    }
+    .form-actions button, .form-actions a {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 5px;
+    }
+    .form-actions button:hover, .form-actions a:hover {
+        background-color: #0056b3;
+    }
+    textarea {
+        width: 100%;
+        height: 200px;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>모집 공고 글쓰기</h2>
+  <form action="/dev/board/event" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="event-id">이벤트 선택</label>
+      <select id="event-id" name="event_id" required>
+        <option value="-1">새로운 이벤트 등록</option>
+        <option th:each="event : ${eventList}" th:value="${event.eventId}" th:text="${event.eventId + ' - ' + event.eventTitle}"></option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="title">제목</label>
+      <input type="text" id="title" name="title" required>
+    </div>
+    <div class="form-group">
+      <label for="thumbnail">대표 이미지</label>
+      <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+    </div>
+    <div class="form-group">
+      <label>모집 기간</label>
+      <input type="date" id="start-date" name="start_date" required> ~
+      <input type="date" id="end-date" name="end_date" required>
+    </div>
+    <div class="form-group">
+      <label for="recruitment-count">모집 인원</label>
+      <input type="number" id="recruitment-count" name="recruitment_count" required>
+    </div>
+    <div class="form-group">
+      <label for="fee">지불 비용</label>
+      <input type="number" id="fee" name="fee" required>
+    </div>
+    <div class="form-group">
+      <label for="file">파일첨부</label>
+      <input type="file" id="file" name="file">
+      <p><i>파일을 업로드하세요</i></p>
+    </div>
+    <div class="form-group">
+      <label for="season-info">회차 설명</label>
+      <textarea id="season-info" name="season_info" required></textarea>
+    </div>
+    <!--이미지 추가, 글 추가-->
+    <div id="content-container">
+      <!-- 이곳에 글과 이미지를 동적으로 추가 -->
+    </div>
+
+    <button type="button" id="addText">글 추가</button>
+    <button type="button" id="addImage">이미지 추가</button>
+
+
+    <div class="form-actions">
+      <div class="left-actions">
+        <button type="submit">등록</button>
+      </div>
+      <a href="/board/eventList">목록 보기</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  // 서버에서 이벤트 목록 가져와서 select에 추가하는 예제
+  window.onload = function() {
+    fetch('/dev/api/events') // JSON 데이터를 가져오는 API 호출
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('네트워크 응답에 문제가 있습니다.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log("받아온 데이터:", data); // 데이터가 제대로 받아오는지 확인
+        const eventSelect = document.getElementById("event-id");
+
+        if (data && data.length > 0) {
+          data.forEach(event => {
+            let option = document.createElement("option");
+            option.value = event.eventId; // 실제로 서버에서 넘어온 eventId를 value로 설정
+            option.text = `${event.eventId} - ${event.eventTitle}`; // 드롭다운에 보이는 텍스트는 eventId와 eventTitle
+            eventSelect.add(option);
+          });
+        } else {
+          console.error("받아온 데이터가 비어있습니다.");
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  };
+
+  // 동적으로 글 추가
+  document.getElementById('addText').addEventListener('click', function() {
+    const container = document.getElementById('content-container');
+    const textDiv = document.createElement('div');
+    textDiv.className = 'content-item';
+    textDiv.innerHTML = `
+      <textarea name="texts[]" placeholder="여기에 글을 입력하세요"></textarea>
+      <button type="button" onclick="removeItem(this)">삭제</button>
+    `;
+    container.appendChild(textDiv);
+  });
+
+  // 동적으로 이미지 추가
+  document.getElementById('addImage').addEventListener('click', function() {
+    const container = document.getElementById('content-container');
+    const imageDiv = document.createElement('div');
+    imageDiv.className = 'content-item';
+
+    imageDiv.innerHTML = `
+      <input type="file" name="images[]" accept="image/*">
+      <button type="button" onclick="removeItem(this)">삭제</button>
+    `;
+    container.appendChild(imageDiv);
+  });
+
+  // 삭제
+  function removeItem(button) {
+    button.parentElement.remove();
+  }
+
+  // 폼 제출 이벤트
+  document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // 폼 제출을 일시적으로 막음
+
+    const formData = new FormData(this);
+
+    // FormData 내용을 콘솔에 출력
+    console.log('폼 데이터 확인:');
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}: ${value.name} (파일)`);
+      } else {
+        console.log(`${key}: ${value}`);
+      }
+    }
+
+    // 폼을 실제로 서버로 제출
+    this.submit();
+  });
+</script>
+</body>
+</html>

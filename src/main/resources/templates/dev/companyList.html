@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/dev/companyList.css">
+    <title>회사 목록</title>
+</head>
+<body>
+<div class="main">
+    <form id="actionForm" method="POST" >
+        <div class="table-container">
+            <table style="text-align:center;">
+                <thead>
+                <tr>
+                    <th onclick="sortTable(0)">회사 id</th>
+                    <th>회사 로고</th>
+                    <th onclick="sortTable(2)">회사명</th>
+                    <th onclick="sortTable(3)">사업자등록번호</th>
+                    <th onclick="sortTable(4)">회사 이메일</th>
+                    <th onclick="sortTable(5)">회사 전화번호</th>
+                    <th onclick="sortTable(6)">대표 주소</th>
+                    <th onclick="sortTable(7)">회사 가입일</th>
+                    <th>상세보기</th>
+                </tr>
+                </thead>
+                <tbody id="companyTableBody">
+                <tr th:each="company : ${companyList}">
+                    <!-- 회사 id -->
+                    <td>
+                        <input id="companyId" name="companyId" th:value="${company.companyId}" readonly>
+                    </td>
+
+                    <!-- 회사 로고 -->
+                    <td>
+                        <img id="companyLogoName"
+                             th:src="${(company.companyLogoUrl != null && !company.companyLogoUrl.trim().isEmpty()) ? '/company_logos/' + company.companyLogoUrl : '/company_logos/noimage.png'}"
+                             alt="회사로고" style="width: 60px; height: 60px;">
+                    </td>
+
+                    <!-- 회사명 -->
+                    <td>
+                        <input id="companyName" name="companyName" th:value="${company.companyName}" readonly>
+                    </td>
+
+                    <!-- 사업자등록번호 -->
+                    <td>
+                        <input id="companyNum" name="companyNum" th:value="${company.companyNum}" readonly>
+                    </td>
+
+                    <!-- 회사 대표 이메일 -->
+                    <td>
+                        <input id="companyEmail" name="companyEmail" th:value="${company.companyEmail}" readonly>
+                    </td>
+
+                    <!-- 회사 대표 전화 -->
+                    <td>
+                        <input id="companyPhone" name="companyPhone" th:value="${company.companyPhone}" readonly>
+                    </td>
+
+                    <!-- 회사 주소 -->
+                    <td>
+                        <input id="companyAddress" name="companyAddress" th:value="${company.companyAddress}" readonly>
+                    </td>
+
+                    <!-- 회사 가입일 -->
+                    <td>
+                        <input id="companyStartDate" name="companyStartDate" th:value="${company.companyStartDate}" readonly>
+                    </td>
+
+                    <!-- 상세보기 버튼 -->
+                    <td style="text-align: center;">
+                        <button type="button" onclick="goToCompanyPage(this)" class="view-btn" th:data-id="${company.companyId}" >상세보기</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+    <button type="button" onclick="window.location.href='/dev/home'"> home </button>
+</div>
+<script src="/js/dev/devCompanyList.js"></script>
+<script>
+    // 모든 input 요소에 대해 크기 조정
+    document.querySelectorAll('input').forEach(input => {
+        // 초기 크기 조정
+        adjustInputWidth(input);
+
+        // 입력될 때마다 크기 조정
+        input.addEventListener('input', function() {
+            adjustInputWidth(input);
+        });
+    });
+
+    // 입력 필드의 너비를 내용에 맞게 조정하는 함수
+    function adjustInputWidth(input) {
+        // 임시로 span 요소를 만들어서 텍스트 길이에 맞춰 계산
+        const span = document.createElement('span');
+        span.style.position = 'absolute';
+        span.style.visibility = 'hidden';
+        span.style.whiteSpace = 'pre';
+        span.style.font = getComputedStyle(input).font;
+        span.textContent = input.value || input.placeholder || ''; // 입력값 또는 placeholder 텍스트
+
+        document.body.appendChild(span);
+        input.style.width = span.offsetWidth + 'px';
+        document.body.removeChild(span);
+    }
+</script>
+</body>
+</html>

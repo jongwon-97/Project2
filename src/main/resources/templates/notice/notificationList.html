@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/notice/notificationList.css">
+  <title>공지사항 목록</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .notice {
+      color: red;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+    <!-- ------------------------------------ -->
+
+    .pagination-container {
+      display: flex;
+      justify-content: center; /* 중앙 정렬 */
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .pagination {
+      display: inline-flex; /* 가로 정렬 */
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .page-item {
+      margin: 0 5px;
+    }
+
+    .page-link {
+      display: block;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #007bff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: white;
+    }
+
+    .page-link:hover {
+      color: #0056b3;
+      background-color: #f8f9fa;
+      border-color: #ddd;
+    }
+
+    .page-item.active .page-link {
+      color: white;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .page-item.disabled .page-link {
+      color: #6c757d;
+      pointer-events: none; /* 클릭 비활성화 */
+      background-color: #e9ecef;
+      border-color: #dee2e6;
+    }
+
+  </style>
+</head>
+<body>
+<h1>공지사항</h1>
+<br>
+<form action="/board/notificationList" method="get">
+  <select name="findType">
+    <option value="title" th:selected="${paging.findType == 'title'}">제목</option>
+    <option value="member" th:selected="${paging.findType == 'member'}">작성자</option>
+  </select>
+  <input type="text" name="findKeyword" th:value="${paging.findKeyword}" placeholder="검색어 입력">
+  <button type="submit">검색</button>
+</form>
+<table>
+  <thead>
+  <tr>
+    <th>글번호</th>
+    <th>제목</th>
+    <th>작성자</th>
+    <th>작성일자</th>
+    <th>조회수</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="notification : ${notifications}">
+    <!-- 공지 글번호 표시 -->
+    <td>
+      <span th:if="${notification.isNotice}" style="color: red;">[공지]</span>
+      <span th:unless="${notification.isNotice}" th:text="${notification.boardId}"></span>
+    </td>
+    <!-- 제목 -->
+    <td>
+      <a th:href="@{/dev/board/notificationDetail(num=${notification.boardId})}" th:text="${notification.boardTitle}"></a>
+      <!-- 댓글 개수 표시 -->
+      <span th:if="${notification.commentCount > 0}"
+            th:text="' (' + ${notification.commentCount} + ')'"
+            style="color: red; font-size: 0.9em;"></span>
+    </td>
+    <td th:text="${notification.memberId}"></td>
+    <td th:text="${notification.boardCreateDate}"></td>
+    <td th:text="${notification.boardViews}"></td>
+  </tr>
+  </tbody>
+</table>
+<!-- 글쓰기 버튼 추가 -->
+<div>
+  <button onclick="location.href=window.location.pathname.replace('/notificationList', '') + '/notification'">글쓰기</button>
+</div>
+<div class="pagination-container" style="text-align: center; margin-top: 20px;">
+  <ul class="pagination">
+    <!-- 처음으로 버튼 -->
+    <li th:classappend="${paging.pageNum == 1} ? 'page-item disabled' : 'page-item'">
+      <a class="page-link"
+         th:href="@{'/board/notificationList'(pageNum=1, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
+        처음
+      </a>
+    </li>
+
+    <!-- 이전 블럭 버튼 -->
+    <li th:if="${paging.prevBlock > 0}" class="page-item">
+      <a class="page-link"
+         th:href="@{'/board/notificationList'(pageNum=${paging.prevBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
+        &laquo; 이전 블럭
+      </a>
+    </li>
+
+    <!-- 페이지 번호 -->
+    <li th:each="i : ${#numbers.sequence(paging.prevBlock + 1, paging.nextBlock - 1)}"
+        th:classappend="${i == paging.pageNum} ? 'page-item active' : 'page-item'">
+      <a class="page-link"
+         th:href="@{'/board/notificationList'(pageNum=${i}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}"
+         th:text="${i}"></a>
+    </li>
+
+    <!-- 다음 블럭 버튼 -->
+    <li th:if="${paging.nextBlock <= paging.pageCount}" class="page-item">
+      <a class="page-link"
+         th:href="@{'/board/notificationList'(pageNum=${paging.nextBlock}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
+        다음 블럭 &raquo;
+      </a>
+    </li>
+
+    <!-- 맨 끝으로 버튼 -->
+    <li th:classappend="${paging.pageNum == paging.pageCount} ? 'page-item disabled' : 'page-item'">
+      <a class="page-link"
+         th:href="@{'/board/notificationList'(pageNum=${paging.pageCount}, findType=${paging.findType}, findKeyword=${paging.findKeyword})}">
+        끝
+      </a>
+    </li>
+  </ul>
+</div>
+
+</body>
+</html>

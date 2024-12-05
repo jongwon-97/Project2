@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/qna/qnaDetail.css">
+  <title>Q&A 상세보기</title>
+  <script>
+    function toggleReplyForm(commentId) {
+      const form = document.getElementById("replyForm_" + commentId);
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+
+    function toggleEditForm(commentId) {
+      const form = document.getElementById("editForm_" + commentId);
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+  </script>
+</head>
+<body>
+<h1>Q&A 상세보기</h1>
+<div>
+  <p><strong>제목:</strong> <span th:text="${qna.boardTitle}"></span></p>
+  <p><strong>작성자:</strong> <span th:text="${qna.memberId}"></span></p>
+  <p><strong>등록일:</strong> <span th:text="${qna.boardCreateDate}"></span></p>
+  <p><strong>조회수:</strong> <span th:text="${qna.boardViews}"></span></p>
+  <p><strong>공개여부:</strong> <span th:text="${qna.disclosureStatus}"></span></p>
+  <p><strong>내용:</strong></p>
+  <p th:text="${qna.boardContent}"></p>
+</div>
+
+<div>
+  <a th:href="@{/board/qnaList}">목록으로</a>
+  <a th:href="@{/board/editQna(num=${qna.boardId})}">수정</a>
+  <form th:action="@{/board/deleteQna}" method="post" style="display:inline;"
+        onsubmit="return confirm('게시물을 삭제하시겠습니까?');">
+    <input type="hidden" name="boardId" th:value="${qna.boardId}">
+    <button type="submit">삭제</button>
+  </form>
+</div>
+
+<!-- 댓글 작성 -->
+<h3>댓글 작성</h3>
+<form th:action="@{/board/addQnaComment}" method="post">
+  <input type="hidden" name="boardId" th:value="${qna.boardId}">
+  <textarea name="commentContent" placeholder="댓글을 입력하세요" required></textarea><br>
+  <button type="submit">등록하기</button>
+</form>
+
+<hr>
+
+<!-- 댓글 목록 -->
+<h3>댓글 목록</h3>
+<div class="comment-list">
+  <ul>
+    <li th:each="comment : ${commentList}">
+      <div>
+        <strong th:text="${comment.memberId}"></strong>
+        <small th:text="${#temporals.format(comment.commentTime, 'yyyy-MM-dd HH:mm')}"></small>
+        <p th:text="${comment.commentContent}"></p>
+
+        <!-- 댓글 삭제 -->
+        <form th:action="@{/board/deleteQnaComment}" method="post" th:if="${comment.memberId == loggedInUserId}">
+          <input type="hidden" name="commentId" th:value="${comment.commentId}">
+          <input type="hidden" name="boardId" th:value="${qna.boardId}">
+          <button type="submit">삭제</button>
+        </form>
+
+        <!-- 댓글 수정 -->
+        <button type="button" th:onclick="|toggleEditForm(${comment.commentId})|">수정</button>
+        <div th:id="'editForm_' + ${comment.commentId}" style="display:none;">
+          <form th:action="@{/board/editQnaComment}" method="post">
+            <textarea name="commentContent" th:text="${comment.commentContent}" required></textarea>
+            <input type="hidden" name="commentId" th:value="${comment.commentId}">
+            <input type="hidden" name="boardId" th:value="${qna.boardId}">
+            <button type="submit">수정 완료</button>
+          </form>
+        </div>
+
+        <!-- 대댓글 작성 -->
+        <button type="button" th:onclick="|toggleReplyForm(${comment.commentId})|">대댓글 달기</button>
+        <div th:id="'replyForm_' + ${comment.commentId}" style="display:none;">
+          <form th:action="@{/board/addQnaComment}" method="post">
+            <textarea name="commentContent" placeholder="대댓글을 입력하세요" required></textarea>
+            <input type="hidden" name="boardId" th:value="${qna.boardId}">
+            <input type="hidden" name="parentId" th:value="${comment.commentId}">
+            <button type="submit">등록</button>
+          </form>
+        </div>
+
+        <!-- 대댓글 목록 -->
+        <ul>
+          <li th:each="reply : ${comment.replies}">
+            <p>
+              <strong th:text="${reply.memberId}"></strong>
+              <small th:text="${#temporals.format(reply.commentTime, 'yyyy-MM-dd HH:mm')}"></small>
+            </p>
+            <p th:text="${reply.commentContent}"></p>
+
+            <!-- 대댓글 삭제 -->
+            <form th:action="@{/board/deleteQnaComment}" method="post" th:if="${reply.memberId == loggedInUserId}">
+              <input type="hidden" name="commentId" th:value="${reply.commentId}">
+              <input type="hidden" name="boardId" th:value="${qna.boardId}">
+              <button type="submit">삭제</button>
+            </form>
+
+            <!-- 대댓글 수정 -->
+            <button type="button" th:onclick="|toggleEditForm(${reply.commentId})|">수정</button>
+            <div th:id="'editForm_' + ${reply.commentId}" style="display:none;">
+              <form th:action="@{/board/editQnaComment}" method="post">
+                <textarea name="commentContent" th:text="${reply.commentContent}" required></textarea>
+                <input type="hidden" name="commentId" th:value="${reply.commentId}">
+                <input type="hidden" name="boardId" th:value="${qna.boardId}">
+                <button type="submit">수정 완료</button>
+              </form>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+</div>
+</body>
+</html>

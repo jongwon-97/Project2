@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>개인회원 로그인</title>
+  <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+<div class="login-container">
+  <button class="close-button" onclick="parent.document.getElementById('iframeContainer').style.display='none';">
+    Close
+  </button>
+  <h1>개인회원 로그인</h1>
+  <form action="/pLogin" method="post" class="form-container">
+      <div class="form-row">
+          <div class="form-fields">
+            <input type="text" name="memberId" placeholder="아이디">
+            <input type="password" name="memberPw" placeholder="비밀번호">
+          </div>
+          <div class="form-button">
+            <button type="submit">로그인</button>
+          </div>
+      </div>
+      <!-- 아이디 저장 -->
+      <label class="save-id">
+        <input type="checkbox" name="saveId" value="true"> 아이디 저장
+      </label>
+      <div class="links">
+        <a onclick="navigateToFindAccount('/findAccount')">아이디 찾기</a> |
+        <a onclick="navigateToFindAccount('/findPassword')">비밀번호 찾기</a> |
+        <a onclick="navigateToSignup('/pSignup')">회원가입</a>
+      </div>
+  </form>
+</div>
+<script src="/js/login.js"></script>
+</body>
+</html>

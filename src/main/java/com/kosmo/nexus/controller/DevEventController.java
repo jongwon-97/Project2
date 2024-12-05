@@ -277,7 +277,7 @@ public class DevEventController {
 
     @GetMapping("/board/event/detail/{seasonId}")
     public String getEventDetail(@PathVariable("seasonId") int seasonId,
-                                  @RequestParam(value = "companyId", required = false) Long companyId,
+                                 @RequestParam(value = "companyId", required = false) Long companyId,
                                  Model model, HttpSession session) {
         // 시즌 데이터 가져오기
         SeasonDTO season = eventService.getSeasonById(seasonId);
@@ -365,7 +365,7 @@ public class DevEventController {
     }//------------------------------------
 
 
-        @GetMapping("/board/editEvent/{seasonId}")
+    @GetMapping("/board/editEvent/{seasonId}")
     public String editEventForm(@PathVariable("seasonId") int seasonId, Model model) {
         // 시즌 데이터 가져오기
         SeasonDTO season = eventService.getSeasonById(seasonId);
@@ -385,7 +385,6 @@ public class DevEventController {
 
         return "event/editEventForm";
     }
-
 
     @PostMapping("/board/deleteFile")
     @ResponseBody
@@ -539,15 +538,7 @@ public class DevEventController {
                 }
             }
 
-<<<<<<< HEAD
             if(seasonDTO.getBoardId() !=0){
-=======
-            // 8. 시즌 정보 업데이트
-            eventService.updateSeason(seasonDTO);
-
-            // 9. c_board 테이블 업데이트
-            if (seasonDTO.getBoardId() > 0) {
->>>>>>> 874ad5901185699f331b024d1b121366d6f828bf
                 BoardDTO boardDTO = new BoardDTO();
                 boardDTO.setBoardId(seasonDTO.getBoardId());
                 boardDTO.setBoardTitle(seasonDTO.getSeasonTitle());
@@ -556,22 +547,15 @@ public class DevEventController {
                 boardDTO.setBoardCreateDate(LocalDate.now().toString());
                 boardDTO.setDisclosureStatus("공개");
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 874ad5901185699f331b024d1b121366d6f828bf
                 boardService.updateBoard(boardDTO);
                 log.info("Board 업데이트 완료: BoardId = {}", boardDTO.getBoardId());
             } else {
                 log.warn("유효한 boardId가 없어 c_board 업데이트를 생략합니다.");
             }
 
-<<<<<<< HEAD
             // 시즌 정보 업데이트
             eventService.updateSeason(seasonDTO);
 
-=======
->>>>>>> 874ad5901185699f331b024d1b121366d6f828bf
             return "redirect:/dev/board/eventList";
         } catch (Exception e) {
             log.error("Season 업데이트 중 오류: {}", e.getMessage(), e);
@@ -615,13 +599,10 @@ public class DevEventController {
         return eventService.getSeasonsByEventId(eventId);
     }
 
-<<<<<<< HEAD
     public String message(Model model, String msg, String loc){
         model.addAttribute("msg", msg);
         model.addAttribute("loc", loc);
         return "message";
     }
-=======
->>>>>>> 874ad5901185699f331b024d1b121366d6f828bf
 
 }

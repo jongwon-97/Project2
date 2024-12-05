@@ -38,7 +38,6 @@ public interface FileService {
     void updateContent(ImageDTO content);
 
     int getMaxContentOrder(int boardId, String contentType);
-<<<<<<< HEAD
 
     String findContentTypeByFileId(Integer fileId);
 
@@ -46,6 +45,5 @@ public interface FileService {
     void deleteContentById(int fileId);
     int findContentOrder(int fileId);
     int getMaxContentOrderByBoardId(int boardId);
-=======
->>>>>>> 874ad5901185699f331b024d1b121366d6f828bf
+
 }

@@ -229,5 +229,10 @@ public class EventServiceImpl implements EventService{
         return eventMapper.findAllAttentionMemberList(seasonId, companyId);
     }
 
+    @Override
+    public List<SeasonDTO> findParticipatedSeasonsByMemberId(String memberId) {
+        return  eventMapper.findParticipatedSeasonsByMemberId(memberId);
+    }
+
 
 }

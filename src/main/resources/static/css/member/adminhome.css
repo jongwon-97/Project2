@@ -268,3 +268,7 @@ td.season-end-date {
 tbody tr {
     transition: background-color 0.3s ease;
 }
+
+span.number{
+   font-size:100px;
+}

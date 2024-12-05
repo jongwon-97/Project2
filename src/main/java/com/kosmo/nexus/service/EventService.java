@@ -62,5 +62,7 @@ public interface EventService {
 
     List<MemberDTO> findAllAttentionMemberList(@Param("seasonId") int seasonId, @Param("companyId") Long companyId);
 
+    List<SeasonDTO> findParticipatedSeasonsByMemberId (String memberId);
+
 }
 

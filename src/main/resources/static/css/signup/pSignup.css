@@ -206,3 +206,14 @@ body {
     margin-top: 5px;
     display: none; /* 기본적으로 숨김 */
 }
+
+span{
+    color: red;
+}
+
+.msg{
+    color: red;
+    margin-left: 50px;
+    margin-bottom: 10px;
+    font-size:12px;
+}

@@ -29,6 +29,22 @@
         <result property="attentionStatus" column="attention_status"/>
     </resultMap>
 
+    <resultMap id="SeasonResultMap" type="Season">
+        <result property="seasonId" column="season_id"/>
+        <result property="seasonTitle" column="season_title"/>
+        <result property="seasonInfo" column="season_info"/>
+        <result property="seasonLimit" column="season_limit"/>
+        <result property="seasonFee" column="season_fee"/>
+        <result property="seasonViews" column="season_views"/>
+        <result property="seasonStartDate" column="season_start_date"/>
+        <result property="seasonEndDate" column="season_end_date"/>
+        <result property="eventId" column="event_id"/>
+        <result property="seasonState" column="season_state"/>
+        <result property="boardId" column="board_id"/>
+        <result property="roundNumber" column="round_number"/>
+        <result property="seasonThumbnail" column="season_thumbnail"/>
+    </resultMap>
+
     <insert id="insertEvent" parameterType="Event" useGeneratedKeys="true" keyProperty="eventId">
         INSERT INTO c_event (event_title, member_id)
         VALUES (#{eventTitle}, #{memberId})
@@ -407,6 +423,24 @@
         a.season_id = #{seasonId}
     </select>
 
+    <select id="findParticipatedSeasonsByMemberId" parameterType="string" resultMap="SeasonResultMap">
+        SELECT
+        s.season_id,
+        s.season_title,
+        s.season_limit,
+        s.season_fee,
+        s.season_start_date,
+        s.season_end_date,
+        s.season_state
+        FROM
+        c_attention a
+        JOIN
+        c_season s ON a.season_id = s.season_id
+        WHERE
+        a.member_id = #{memberId}
+        ORDER BY
+        s.season_start_date DESC
+    </select>
 
 
 </mapper>

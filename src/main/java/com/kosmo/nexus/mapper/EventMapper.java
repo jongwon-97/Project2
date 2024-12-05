@@ -63,4 +63,5 @@ public interface EventMapper {
     int findEventIdBySeasonId(int seasonId);
 
     List<MemberDTO> findAllAttentionMemberList(int seasonId, Long companyId);
+    List<SeasonDTO> findParticipatedSeasonsByMemberId (String memberId);
 }

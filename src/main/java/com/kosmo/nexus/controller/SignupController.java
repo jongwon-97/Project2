@@ -123,7 +123,7 @@ public class SignupController {
                     if (existingCompany.getCompanyLogoName() != null && !existingCompany.getCompanyLogoName().isEmpty()) {
                         existingCompany.setCompanyLogoUrl("/company_logos/" + existingCompany.getCompanyLogoName());
                     } else {
-                        existingCompany.setCompanyLogoUrl("/images/noimage.png"); // 기본 이미지 설정
+                        existingCompany.setCompanyLogoUrl(""); // 기본 이미지 설정
                     }
                 }
 
@@ -159,8 +159,8 @@ public class SignupController {
                 signup.setCompanyLogoUrl(signup.getCompanyLogoUrl());
             } else {
                 // 기본값 설정
-                signup.setCompanyLogoName("/images/noimage.png");
-                signup.setCompanyLogoUrl("/company_logos/default_logo.png");
+                signup.setCompanyLogoName("");
+                signup.setCompanyLogoUrl("");
             }
 
             // 데이터베이스 저장
@@ -209,7 +209,7 @@ public class SignupController {
         // 모델에 기업 정보 전달
 
         model.addAttribute("companyInfo", companySignup);
-        //log.info("compayInfo==={}",companySignup);
+        log.info("compayInfo==={}",companySignup);
         return "member/bSignup2";
     }
 
